@@ -243,5 +243,226 @@ route.get('/perfume',async(req,res)=>{
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
+//DeshBoard (user)
+    //count all orderStatus
+    route.get('/allcount',verification,roleAuthorize('USER'),async(req,res)=>{
+        try{
+            const user= await prisma.user.findUnique({
+                where:{id:Number(req.user.id)}
+            });
+            const totalPendingOrder= await prisma.order.count({
+                where:{user:user.id, status:'PENDING'}
+            });
+            const totalConfirmedOrder= await prisma.order.count({
+                where:{user:user.id, status:'CONFIRMED'}
+            });
+            const totalShippedOrder= await prisma.order.count({
+                where:{user:user.id, status:'SHIPPED'}
+            });
+            const totalDeliveredOrder= await prisma.order.count({
+                where:{user:user.id, status:'DELIVERED'}
+            });
+            const totalCancelOrder= await prisma.order.count({
+                where:{user:user.id, status:'CANCELLED'}
+            });
+            res.status(200).json({totalPendingOrder,totalShippedOrder,totalCancelOrder, totalConfirmedOrder,totalDeliveredOrder})
+        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+    });
+
+    //get all pending order
+    route.get('/allpendingorder', verification,roleAuthorize('USER'),async(req,res)=>{
+        try{
+              const user= await prisma.user.findUnique({
+                where:{id:Number(req.user.id)}
+            });
+            if(!user){return res.status(404).json({msg:'User Not Found'})}
+            const totalPendingOrder=await prisma.order.count({
+                where:{user:user.id, status:'PENDING'}
+            });
+            const page=Number(req.query.page) ||1;
+            const limit=Number(req.query.limit) ||15;
+            const skip=(page-1)*limit
+            const pendingOrder= await prisma.order.findMany({
+                where:{user:user.id, status:'PENDING'},
+                select:{
+                    id:true,
+                    items:true,
+                    total:true,
+                    status:true,
+                    address:true,
+                    createdAt:true,
+                    payment:{
+                        select:{
+                            paymentmethod:true,
+                            status:true
+                        }
+                    }
+
+                },
+                take:limit,
+                skip:skip,
+                orderBy:{createdAt:'desc'}
+            });
+            res.status(200).json({totalPendingOrder, pendingOrder, totalPage:Math.ceil(totalPendingOrder/limit)})
+
+        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+    });
+
+    //get confirmd Order
+    route.get('/allconfirmedorder', verification,roleAuthorize('USER'),async(req,res)=>{
+        try{
+              const user= await prisma.user.findUnique({
+                where:{id:Number(req.user.id)}
+            });
+            if(!user){return res.status(404).json({msg:'User Not Found'})}
+            const totalconfirmedOrder=await prisma.order.count({
+                where:{user:user.id, status:'CONFIRMED'}
+            });
+            const page=Number(req.query.page) ||1;
+            const limit=Number(req.query.limit) ||15;
+            const skip=(page-1)*limit
+            const confirmedOrder= await prisma.order.findMany({
+                where:{user:user.id, status:'CONFIRMED'},
+                select:{
+                    id:true,
+                    items:true,
+                    total:true,
+                    status:true,
+                    address:true,
+                    createdAt:true,
+                    payment:{
+                        select:{
+                            paymentmethod:true,
+                            status:true
+                        }
+                    }
+
+                },
+                take:limit,
+                skip:skip,
+                orderBy:{createdAt:'desc'}
+            });
+            res.status(200).json({totalconfirmedOrder, confirmedOrder, totalPage:Math.ceil(totalConfirmedOrder/limit)})
+
+        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+    });
+
+    //get Shipped order
+    route.get('/allshippedorder', verification,roleAuthorize('USER'),async(req,res)=>{
+        try{
+              const user= await prisma.user.findUnique({
+                where:{id:Number(req.user.id)}
+            });
+            if(!user){return res.status(404).json({msg:'User Not Found'})}
+            const totalShippedOrder=await prisma.order.count({
+                where:{user:user.id, status:'SHIPPED'}
+            });
+            const page=Number(req.query.page) ||1;
+            const limit=Number(req.query.limit) ||15;
+            const skip=(page-1)*limit
+            const shippedOrder= await prisma.order.findMany({
+                where:{user:user.id, status:'SHIPPED'},
+                select:{
+                    id:true,
+                    items:true,
+                    total:true,
+                    status:true,
+                    address:true,
+                    createdAt:true,
+                    payment:{
+                        select:{
+                            paymentmethod:true,
+                            status:true
+                        }
+                    }
+
+                },
+                take:limit,
+                skip:skip,
+                orderBy:{createdAt:'desc'}
+            });
+            res.status(200).json({totalShippedOrder, shippedOrder, totalPage:Math.ceil(totalShippedOrder/limit)})
+
+        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+    });
+
+    //get Deliverd Order
+    route.get('/alldeliveredorder', verification,roleAuthorize('USER'),async(req,res)=>{
+        try{
+              const user= await prisma.user.findUnique({
+                where:{id:Number(req.user.id)}
+            });
+            if(!user){return res.status(404).json({msg:'User Not Found'})}
+            const totalDeliveredOrder=await prisma.order.count({
+                where:{user:user.id, status:'DELIVERED'}
+            });
+            const page=Number(req.query.page) ||1;
+            const limit=Number(req.query.limit) ||15;
+            const skip=(page-1)*limit
+            const deliveredOrder= await prisma.order.findMany({
+                where:{user:user.id, status:'SHIPPED'},
+                select:{
+                    id:true,
+                    items:true,
+                    total:true,
+                    status:true,
+                    address:true,
+                    createdAt:true,
+                    payment:{
+                        select:{
+                            paymentmethod:true,
+                            status:true
+                        }
+                    }
+
+                },
+                take:limit,
+                skip:skip,
+                orderBy:{createdAt:'desc'}
+            });
+            res.status(200).json({totalDeliveredOrder, deliveredOrder, totalPage:Math.ceil(totalDeliveredOrder/limit)})
+
+        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+    });
+
+    //get Cancelled Order
+      route.get('/allcancelledorder', verification,roleAuthorize('USER'),async(req,res)=>{
+        try{
+              const user= await prisma.user.findUnique({
+                where:{id:Number(req.user.id)}
+            });
+            if(!user){return res.status(404).json({msg:'User Not Found'})}
+            const totalCancelledOrder=await prisma.order.count({
+                where:{user:user.id, status:'CANCELLED'}
+            });
+            const page=Number(req.query.page) ||1;
+            const limit=Number(req.query.limit) ||15;
+            const skip=(page-1)*limit
+            const cancelleddOrder= await prisma.order.findMany({
+                where:{user:user.id, status:'CANCELLED'},
+                select:{
+                    id:true,
+                    items:true,
+                    total:true,
+                    status:true,
+                    address:true,
+                    createdAt:true,
+                    payment:{
+                        select:{
+                            paymentmethod:true,
+                            status:true
+                        }
+                    }
+
+                },
+                take:limit,
+                skip:skip,
+                orderBy:{createdAt:'desc'}
+            });
+            res.status(200).json({totalCancelledOrder, cancelleddOrder, totalPage:Math.ceil(totalCancelledOrder/limit)})
+
+        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+    });
+
 
 module.exports=route
