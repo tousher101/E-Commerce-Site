@@ -9,7 +9,7 @@ const upload =require('../middle-wear/multar');
 
 
 // Upload Profile Photo
-route.post('/uploadprofilephoto',verification,roleAuthorize('USER'),upload('photo'),async(req,res)=>{
+route.post('/uploadprofilephoto',verification,roleAuthorize('USER'),upload.single('photo'),async(req,res)=>{
 try{
     const {photo}=req.file
     const user= await prisma.user.findUnique({
