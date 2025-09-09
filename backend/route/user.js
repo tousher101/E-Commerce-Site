@@ -465,4 +465,64 @@ route.get('/perfume',async(req,res)=>{
     });
 
 
+    // Add to Cart Product
+    route.post('/addtocart',verification,roleAuthorize('USER'),async(req,res)=>{
+        try{
+            const {productId, userId, size, color, quantity}=req.body
+            let cart= await prisma.cart.findFirst({where:{userId, status:'PENDING'}});
+            if(!cart){cart=await prisma.cart.create({where:{userId, status:'PENDING'}})};
+            const existingItem = await prisma.cartItem.findFirst({
+                where:{
+                    cartId:cart.id,
+                    productId,
+                    size,
+                    color
+                }
+            });
+            if(existingItem){await prisma.cartItem.update({
+                where:{id:existingItem.id},
+                data:{quantity:existingItem.quantity+quantity}
+            })} else{const product = await prisma.product.findUnique({
+                where:{id:productId}
+            });
+             await prisma.cartItem.create({
+                data:{
+                    cartId:cart.id,
+                    productId,
+                    size,
+                    color,
+                    quantity,
+                    unitPrice: product.price,
+                    totalPrice: product.price*quantity
+                }
+            });
+        }
+        const totalCartItems= await prisma.cartItem.count({
+            where:{cartId:cart.id, status:'PENDING'}
+        })
+       res.status(200).json({msg:'Add to cart', totalCartItems})
+
+
+        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+    });
+
+    //get all cart items
+    route.get('/getallcartitems', verification, roleAuthorize('USER'),async(req,res)=>{
+        try{
+            const cartItems= await prisma.cart.findFirst({
+                where:{userId:req.user.id, status:'PENDING'},
+                select:{
+                    id:true,
+                    items: true,
+                    status:true,
+                    createdAt:true,
+                    updatedAt:true,
+                }
+            });
+            if(!cartItems){return res.status(404).json({msg:'Cart Not Found'})}
+            res.status(200).json({cartItems})
+        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+    });
+
+
 module.exports=route
