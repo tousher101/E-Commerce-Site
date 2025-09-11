@@ -62,6 +62,8 @@ model Order {
   address Address @relation(fields:[addressId], references:[id])
   addressId Int
   shippingFee Float
+  paymentStatus PaymentStatus
+  paymentmethod PaymentMethod
   createdAt DateTime    @default(now())
 
 }

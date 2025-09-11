@@ -5,6 +5,7 @@ const roleAuthorize=require('../middle-wear/roleAuth');
 const prisma=require('../utils/prisma');
 const cloudinary=require('../utils/cloudinary');
 const upload =require('../middle-wear/multar');
+const { PaymentStatus } = require('@prisma/client');
 
 
 
@@ -533,7 +534,7 @@ route.get('/perfume',async(req,res)=>{
     //Create Order
     route.post('/checkout', verification, roleAuthorize('USER'), async(req,res)=>{
         try{
-            const {shippingFee}=req.body
+            const {shippingFee, paymentmethod}=req.body
             const userId=req.user.id
             const cart= await prisma.cart.findFirst({
                 where:{userId, status:'PENDING'},
@@ -545,8 +546,11 @@ route.get('/perfume',async(req,res)=>{
             });
             if(!address){res.status(400).json({msg:'Please Add Shipping Address'})}
             const totalPrice= cart.items.reduce((acc, item)=>acc+item.totalPrice, 0)
+
             const order= await prisma.order.create({
-                data:{userId,totalPrice:totalPrice+shippingFee, status:'PENDING', shippingFee, addressId:address.id, items:{
+                data:{userId,totalPrice:totalPrice+shippingFee, status:'PENDING', shippingFee, addressId:address.id,
+                    paymentStatus:'UNPAID',paymentmethod,
+                    items:{
                     create: cart.items.map((item)=>({
                         productId: item.productId,
                         quantity:item.quantity,
@@ -561,11 +565,13 @@ route.get('/perfume',async(req,res)=>{
                 data:{status:'COMPLETED'}
             });
 
-            res.status(200).json({msg:'Order Placed Successfully', order})
+            res.status(200).json({msg:'Order Placed Successfully', order, paymentmethod})
 
 
         }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
     });
+
+    //payment intigration (Stripe)
 
 
 module.exports=route
