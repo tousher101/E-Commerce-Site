@@ -291,6 +291,7 @@ route.get('/perfume',async(req,res)=>{
                     status:true,
                     address:true,
                     createdAt:true,
+                    shippingFee:true,
                     payment:{
                         select:{
                             paymentmethod:true,
@@ -330,6 +331,7 @@ route.get('/perfume',async(req,res)=>{
                     status:true,
                     address:true,
                     createdAt:true,
+                    shippingFee:true,
                     payment:{
                         select:{
                             paymentmethod:true,
@@ -369,6 +371,7 @@ route.get('/perfume',async(req,res)=>{
                     status:true,
                     address:true,
                     createdAt:true,
+                    shippingFee:true,
                     payment:{
                         select:{
                             paymentmethod:true,
@@ -408,6 +411,7 @@ route.get('/perfume',async(req,res)=>{
                     status:true,
                     address:true,
                     createdAt:true,
+                    shippingFee:true,
                     payment:{
                         select:{
                             paymentmethod:true,
@@ -447,6 +451,7 @@ route.get('/perfume',async(req,res)=>{
                     status:true,
                     address:true,
                     createdAt:true,
+                    shippingFee:true,
                     payment:{
                         select:{
                             paymentmethod:true,
@@ -521,6 +526,44 @@ route.get('/perfume',async(req,res)=>{
             });
             if(!cartItems){return res.status(404).json({msg:'Cart Not Found'})}
             res.status(200).json({cartItems})
+        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+    });
+
+
+    //Create Order
+    route.post('/checkout', verification, roleAuthorize('USER'), async(req,res)=>{
+        try{
+            const {shippingFee}=req.body
+            const userId=req.user.id
+            const cart= await prisma.cart.findFirst({
+                where:{userId, status:'PENDING'},
+                include:{items:true}
+            });
+            if(!cart || cart.items.length===0){return res.status(404).json({msg:'Cart Is Empty'})}
+            const address= await prisma.address.findFirst({
+                where:{userId}
+            });
+            if(!address){res.status(400).json({msg:'Please Add Shipping Address'})}
+            const totalPrice= cart.items.reduce((acc, item)=>acc+item.totalPrice, 0)
+            const order= await prisma.order.create({
+                data:{userId,totalPrice:totalPrice+shippingFee, status:'PENDING', shippingFee, addressId:address.id, items:{
+                    create: cart.items.map((item)=>({
+                        productId: item.productId,
+                        quantity:item.quantity,
+                        unitPrice:item.unitPrice,
+                        totalPrice:item.totalPrice
+                    }))
+                }},
+                include:{items:true}
+            });
+            await prisma.cart.update({
+                where:{id:cart.id},
+                data:{status:'COMPLETED'}
+            });
+
+            res.status(200).json({msg:'Order Placed Successfully', order})
+
+
         }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
     });
 
