@@ -6,6 +6,7 @@ const prisma=require('../utils/prisma');
 const cloudinary=require('../utils/cloudinary');
 const upload =require('../middle-wear/multar');
 const { PaymentStatus } = require('@prisma/client');
+const { count } = require('console');
 
 
 
@@ -59,25 +60,29 @@ route.get('/userinfo',verification,roleAuthorize('USER'), async(req,res)=>{
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
-//get all Product
+//get all Product/ use on card
 route.get('/allproduct', async(req,res)=>{
     try{
         const totalProduct= await prisma.product.count();
         const page= Number(req.query.page)||1;
         const skip= (page-1)*limit
-        const limit=Number(req.query.limit)||15;
+        const limit=Number(req.query.limit)||30;
         const getAllProduct= await prisma.product.findMany({
             select:{
                 name:true,
                 description:true,
                 price:true,
                 stock:true,
-                createdAt:true,
-                updatedAt:true,
                 photos:true,
-                size:true,
-                color:true,
-                category:true
+                category:true,
+                _count:{
+                    select:{comment:true}
+                },
+                _sum:{
+                    orderItem:{
+                        quantity:true
+                    }
+                }
             },
             skip:skip,
             take:limit,
