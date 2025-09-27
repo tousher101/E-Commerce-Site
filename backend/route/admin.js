@@ -410,5 +410,131 @@ route.get('/getallcomment/:id',async(req,res)=>{
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
+// Admin dashboard (Monthly data)
+
+route.get('/getmonthlydata', verification, roleAuthorize('ADMIN'), async(req,res)=>{
+    try{
+        const today= new Date();
+        const currentMonth= today.getMonth()+1;
+        const currentYear = today.getFullYear();
+
+        let prevMonth= currentMonth -1;
+        let prevYear= currentYear
+        if(prevMonth===0){prevMonth= 12; prevYear= currentYear-1}
+
+        const currentStart= new Date(currentYear, currentMonth -1, 1);
+        const currentEnd = new Date(currentYear, currentMonth,1);
+        const prevStart= new Date(prevYear, prevMonth-1, 1);
+        const prevEnd = new Date(currentYear, currentMonth-1 ,1)
+
+        const currentMonthSales= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{status:'DELIVERED', 
+                createdAt:{gte:currentStart, lt: currentEnd}
+            }
+        });
+
+        const prevMonthSales = await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{status:'DELIVERED', 
+                createdAt:{gte: prevStart, lt: prevEnd}
+            }
+        });
+
+        const current = currentMonthSales._sum.totalPrice || 0;
+        const prev = prevMonthSales._sum.totalPrice || 0;
+        const growth =  prev===0?100:((current-prev)/prev)*100;
+
+
+        const currentMonthOrder= await prisma.order.count({
+            where:{ createdAt:{currentStart, lt: currentEnd}}
+        });
+
+        const prevMonthOrder = await prisma.order.count({
+            where:{createdAt:{prevStart, lt:prevEnd}}
+        });
+
+        const currentOrder= currentMonthOrder ||0;
+        const prevOrder = prevMonthOrder || 0;
+        const orderGrowth = prevOrder==0?100:((currentOrder-prevOrder)/prevOrder)*100;
+
+
+
+         const currentMonthPendingOrder= await prisma.order.count({
+            where:{status:'PENDING', createdAt:{gte:currentStart, lt:currentEnd}}
+        });
+
+        const prevMonthPendingOrder = await prisma.order.count({
+            where:{status:'PENDING',createdAt:{gte:prevStart, lt:prevEnd}}
+        });
+
+        const currentPendingOrder= currentMonthPendingOrder ||0;
+        const prevPendingOrder = prevMonthPendingOrder || 0;
+        const orderPendingGrowth = prevPendingOrder==0?100:((currentPendingOrder-prevPendingOrder)/prevPendingOrder)*100;
+
+
+        const currentMonthConfirmedOrder= await prisma.order.count({
+            where:{status:'CONFIRMED', createdAt:{gte:currentStart, lt:currentEnd}}
+        });
+
+        const prevMonthConfirmedOrder = await prisma.order.count({
+            where:{status:'CONFIRMED',createdAt:{gte:prevStart, lt:prevEnd}}
+        });
+
+        const currentConfirmedOrder= currentMonthConfirmedOrder ||0;
+        const prevConfirmedOrder = prevMonthConfirmedOrder || 0;
+        const orderConfirmedGrowth = prevConfirmedOrder==0?100:((currentConfirmedOrder-prevConfirmedOrder)/prevConfirmedOrder)*100;
+
+
+        const currentMonthShippedOrder= await prisma.order.count({
+            where:{status:'SHIPPED', createdAt:{gte:currentStart, lt:currentEnd}}
+        });
+
+        const prevMonthShippedOrder = await prisma.order.count({
+            where:{status:'SHIPPED',createdAt:{gte:prevStart, lt:prevEnd}}
+        });
+
+        const currentShippedOrder= currentMonthShippedOrder ||0;
+        const prevShippedOrder = prevMonthShippedOrder || 0;
+        const orderShippedGrowth = prevShippedOrder==0?100:((currentShippedOrder-prevShippedOrder)/prevShippedOrder)*100;
+
+
+        const currentMonthDeliverdOrder= await prisma.order.count({
+            where:{status:'DELIVERED', createdAt:{gte: currentStart, lt:currentEnd}}
+        });
+
+        const prevMonthDeliverdOrder = await prisma.order.count({
+            where:{status:'DELIVERED',createdAt:{gte:prevStart, lt:prevEnd}}
+        });
+
+        const currentDeliverdOrder= currentMonthDeliverdOrder ||0;
+        const prevDeliverdOrder = prevMonthDeliverdOrder || 0;
+        const orderDeliverdGrowth = prevDeliverdOrder==0?100:((currentDeliverdOrder-prevDeliverdOrder)/prevDeliverdOrder)*100;
+
+
+        
+        const currentMonthCancelledOrder= await prisma.order.count({
+            where:{status:'CANCELLED', createdAt:{gte:currentStart, lt:currentEnd}}
+        });
+
+        const prevMonthCancelledOrder = await prisma.order.count({
+            where:{status:'CANCELLED',createdAt:{gte:prevStart, lt:prevEnd}}
+        });
+
+        const currentCancelledOrder= currentMonthCancelledOrder ||0;
+        const prevCancelledOrder = prevMonthCancelledOrder || 0;
+        const orderCancelledGrowth = prevCancelledOrder==0?100:((currentCancelledOrder-prevCancelledOrder)/prevCancelledOrder)*100;
+
+
+        res.status(200).json({growth:growth.toFixed(2), current, prev, orderGrowth:orderGrowth.toFixed(2), currentOrder, prevOrder,
+            orderPendingGrowth:orderPendingGrowth.toFixed(2), currentMonthPendingOrder, prevMonthPendingOrder, orderConfirmedGrowth:orderConfirmedGrowth.toFixed(2),
+            currentConfirmedOrder, prevConfirmedOrder, orderShippedGrowth:orderShippedGrowth.toFixed(2), currentMonthShippedOrder, prevShippedOrder,
+            orderDeliverdGrowth:orderDeliverdGrowth.toFixed(2), currentDeliverdOrder, prevDeliverdOrder,
+            orderCancelledGrowth:orderCancelledGrowth.toFixed(2),currentCancelledOrder, prevCancelledOrder
+
+        });
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
 
 module.exports=route
