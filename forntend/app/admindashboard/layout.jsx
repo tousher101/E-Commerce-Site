@@ -1,0 +1,68 @@
+import Link from "next/link"
+
+
+export default function layout({children}){
+ 
+
+    return(
+               <div className="max-w-[1380px] mx-[10px] overflow-hidden mb-[80px]">
+            <div className="flex gap-3">
+            <div className="flex flex-[20%] shadow-xl h-[550px] rounded-xl ">
+                <div className="grid grid-cols-1 gap-2 p-3">
+                    <div className="flex items-center gap-1">
+                        <img className="w-[40px] h-[40px]" src="/task-management.gif"/>
+                        <h1 className="  text-center text-xl font-semibold mb-[10px]">Manage Order</h1>
+                    </div>
+                    
+                    <div className="flex items-center  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/home.gif"/>
+                        <Link href={'/admindashboard'}><h1 className="p-2 rounded-xl cursor-pointer ">Home</h1></Link>
+                    </div>
+
+                     <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/rfp.gif"/>
+                         <Link href={'/admindashboard/orderrequest'}><h1 className="p-2 ">Order Request</h1></Link>
+                    </div>
+
+                    <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/hand-paper-check.gif"/>
+                        <Link href={'/admindashboard/confirmedorder'}><h1 className="p-2">Confirmed Order</h1></Link>
+                    </div>
+
+                    <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/warehouse.gif"/>
+                        <Link href={'/admindashboard/shippedorder'}><h1 className="p-2">Shipped Order</h1></Link>
+                    </div>
+
+                     <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/shippe.gif"/>
+                        <Link href={'/admindashboard/deliveredorder'}><h1 className="p-2 ">Delivered Order</h1></Link>
+                    </div>
+
+                     <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/delivery.gif"/>
+                        <Link href={'/admindashboard/cancelledorder'}><h1 className="p-2">Cancel Order</h1></Link>
+                    </div>
+
+                    <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/receipt.gif"/>
+                        <Link href={'/admindashboard/paidorder'}><h1 className="p-2">Paid Order</h1></Link>
+                    </div>
+
+                    <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/cash-on-delivery.png"/>
+                         <Link href={'/admindashboard/codorder'}><h1 className="p-2">COD Order</h1></Link>
+
+                    </div>
+                </div>
+            </div>
+            <div className="flex-[80%]  justify-center shadow-xl">
+                {children}
+                    </div>
+               
+            </div>
+              
+        </div>      
+        
+    )
+}

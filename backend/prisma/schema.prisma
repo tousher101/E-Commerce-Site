@@ -1,0 +1,202 @@
+
+
+generator client {
+  provider = "prisma-client-js"
+
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  password  String
+  phone     String    @unique
+  photo     String?
+  publicId  String?
+  role      Role      @default(USER)
+  orders    Order[]
+  carts Cart[]
+  address Address[]
+  comment Comment[]
+  createdAt DateTime  @default(now())
+}
+
+model Product {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  price       Float
+  stock       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  order OrderItem[]
+  cart CartItem[]
+  photos ProductPhotos[]
+  size  String?
+  color String?
+  category Category
+  comment Comment[]
+  weight Float
+}
+
+model ProductPhotos{
+  id Int @id @default(autoincrement())
+  url String
+  publicId String?
+  product Product @relation(fields:[productId], references:[id])
+  productId Int
+}
+
+model Order {
+  id        Int         @id @default(autoincrement())
+  user      User        @relation(fields: [userId], references: [id])
+  userId    Int
+  items     OrderItem[]
+  totalPrice     Float
+  status    OrderStatus @default(PENDING)
+  payment Payment?
+  address Address @relation(fields:[addressId], references:[id])
+  addressId Int
+  paymentStatus PaymentStatus
+  paymentmethod PaymentMethod
+  createdAt DateTime    @default(now())
+
+}
+
+model ShippingRate {
+  id Int @id @default(autoincrement())
+  location String
+  baseFee Float
+  perKgFee Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  quantity  Int
+  unitPrice     Float 
+  totalPrice Float
+ 
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int
+  user      User       @relation(fields:[userId], references:[id], onDelete: Cascade)
+  items     CartItem[]
+  status    CartStatus
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  @@index([userId])
+}
+
+model CartItem {
+  id          Int            @id @default(autoincrement())
+  cartId      Int
+  cart        Cart           @relation(fields:[cartId], references:[id], onDelete: Cascade)
+
+  productId   Int
+  product     Product        @relation(fields:[productId], references:[id], onDelete: Restrict)
+  size  String?
+  color String?
+  quantity    Int            @default(1)
+  // snapshot so price change later doesn't affect the cart
+  unitPrice   Decimal        @db.Decimal(10,2)
+  totalPrice  Decimal        @db.Decimal(10,2)
+
+  @@index([cartId])
+  @@index([productId])
+}
+
+model Payment {
+  id            Int            @id @default(autoincrement())
+  orderId       Int            @unique
+  order         Order          @relation(fields:[orderId], references:[id])
+
+  status        PaymentStatus 
+  amount        Decimal        @db.Decimal(10,2)
+  currency      String         @default("BDT")
+  transactionId String?        @unique
+  rawPayload    Json?
+  paymentmethod PaymentMethod 
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([ status])
+}
+
+model Address {
+  id         Int      @id @default(autoincrement())
+  userId     Int?
+  user       User?    @relation(fields:[userId], references:[id], onDelete: SetNull)
+  label      String?  // e.g. "Home", "Office"
+  name       String
+  phone      String
+  line1      String
+  line2      String?
+  city       String
+  state      String?
+  postalCode String?
+  country    String    @default("BD")
+  order         Order[]    
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+
+model Comment {
+  id Int @id @default(autoincrement())
+  comment String
+  createdAt DateTime @default(now())
+  user User @relation(fields:[userId], references:[id])
+  userId Int
+  product Product @relation(fields:[productId], references:[id])
+  productId Int
+}
+
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum CartStatus {
+  PENDING
+  COMPLETED
+}
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus{
+  PAID
+  UNPAID
+  CANCELLED
+
+}
+enum Category{
+  MENSFASHION
+  WOMENFASHION
+  KIDSFASHION
+  ACCESSORIES
+  PERFUME
+}
+enum PaymentMethod{
+  COD
+  CARD
+
+}
