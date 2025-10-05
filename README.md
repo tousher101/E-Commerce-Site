@@ -37,7 +37,7 @@ As a result, version control was managed manually outside of VS Code for this pr
 Clone the project:
 
 ```bash
-git clone https://github.com/tousher101/Blog-Nest.git
+git clone https://github.com/tousher101/E-Commerce-Site
 cd Blog-Nest
 npm install
 npm run dev
