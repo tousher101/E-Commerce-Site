@@ -1,4 +1,4 @@
-# Blog-Nest App
+# Touch & Take - E-Commarce Site
 Single Vendor Multi Fuctional e-commarce site.
 
 # Features
