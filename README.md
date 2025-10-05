@@ -11,6 +11,7 @@ Single Vendor Multi Fuctional e-commarce site.
 - User Dashboard with all Order Status.(Pending, Shipped, Delivered, etc)
 - Payment System (Stripe).
 - Manuall Shipping fee and courier service selection.
+- Refresh Token with cookie based auth system.
 - fully responsive for (Desktop, laptop, tab, mobile)
 
 
