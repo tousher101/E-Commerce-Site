@@ -38,7 +38,7 @@ Clone the project:
 
 ```bash
 git clone https://github.com/tousher101/E-Commerce-Site
-cd Blog-Nest
+cd backend
 npm install
 npm run dev
 
