@@ -525,7 +525,6 @@ route.get('/perfume',async(req,res)=>{
                 select:{
                     id:true,
                     items: true,
-                    status:true,
                     createdAt:true,
                     updatedAt:true,
                 }

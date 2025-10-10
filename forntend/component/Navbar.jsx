@@ -4,13 +4,25 @@ import logo from '../public/logo.png'
 import userIcon from '../public/account.png'
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useState } from "react";
+import Cart from '../component/Cart'
 
 export default function navBar() {
     const router=useRouter()
     const goSingIn=()=>{
         router.push('/signin')
     }
+    const [openCartModal, setOpenCartModal]=useState(false);
+
+    const openModal=()=>{
+      setOpenCartModal(true)
+    }
+
+    const closeModal=()=>{
+      setOpenCartModal(false)
+    }
     return(
+      <>
         <nav className=" flex max-w-[1380px] h-[80px] items-center justify-between shadow-xl">
             <div className="h-[80px] w-[120px]  ml-[10px]">
             <Link href='/'><Image className="" src={logo} alt="logo" width={180} height={80}/></Link>
@@ -19,7 +31,7 @@ export default function navBar() {
               <input className="border border-gray-400 p-[5px]  rounded-xl" type="text" placeholder="Search Product"/>
               <button className="h-[35px] w-[100px] bg-blue-500 text-white cursor-pointer rounded-2xl shadow-xl">Search</button>
             </div>
-            <div className="flex justify-between items-center">
+            <div onClick={openModal} className="flex justify-between items-center">
                 <div className="cursor-pointer">
                  <img className="h-[50px] w-[50px]" src="/shopping-cart.gif" alt="shopping-cart"/>
                 </div>
@@ -69,5 +81,7 @@ export default function navBar() {
                 
             </div>
         </nav>
+      {openCartModal&&<Cart closeModal={closeModal}/>}
+      </>
     )
 }

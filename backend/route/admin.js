@@ -93,14 +93,45 @@ route.get('/countorderstatus',verification, roleAuthorize('ADMIN'),async(req,res
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
-//get order Request
-route.get('/getorderrequest',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+
+
+// Request Order/Card
+route.get('/requestorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
     try{
-        const totalReq= await prisma.order.count({
-            where:{status:'PENDING'}
-        });
-        const orderReq= await prisma.order.findMany({
+        const reqOrder= await prisma.order.findMany({
             where:{status:'PENDING'},
+            select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                paymentStatus:true,
+                PaymentMethod:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+            }
+        });
+        const totalOrder= await prisma.order.count({
+            where:{status:'PENDING'}
+        })
+        res.status(200).json({reqOrder, totalOrder})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+
+//get order Request/details
+route.get('/getorderrequest/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const {orderId}=req.params;
+
+        const orderReq= await prisma.order.findMany({
+            where:{id:orderId, status:'PENDING'},
             select:{
                 id:true,
                 address:true,
@@ -126,7 +157,7 @@ route.get('/getorderrequest',verification,roleAuthorize('ADMIN'),async(req,res)=
                 }
             
         });
-        res.status(200).json({orderReq, totalReq})
+        res.status(200).json({orderReq})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
@@ -574,26 +605,6 @@ route.get('/chartdata',verification,roleAuthorize('ADMIN'), async(req,res)=>{
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
-// Request Order
-route.get('/requestorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
-    try{
-        const reqOrder= await prisma.order.findMany({
-            where:{status:'PENDING'},
-            select:{
-                id:true,
-                totalPrice:true,
-                status:true,
-                paymentStatus:true,
-                PaymentMethod:true,
-                createdAt:true
-            }
-        });
-        const totalOrder= await prisma.order.count({
-            where:{status:'PENDING'}
-        })
-        res.status(200).json({reqOrder, totalOrder})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
-});
 
 //add Shipping Rate
 route.post('/addshippingrate', verification, roleAuthorize('ADMIN'), async(req,res)=>{
