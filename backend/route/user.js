@@ -5,8 +5,6 @@ const roleAuthorize=require('../middle-wear/roleAuth');
 const prisma=require('../utils/prisma');
 const cloudinary=require('../utils/cloudinary');
 const upload =require('../middle-wear/multar');
-const { PaymentStatus } = require('@prisma/client');
-const { count } = require('console');
 
 
 

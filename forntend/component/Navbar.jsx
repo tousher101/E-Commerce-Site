@@ -29,7 +29,7 @@ export default function navBar() {
             </div>
             <div className=" flex items-center gap-5 ">
               <input className="border border-gray-400 p-[5px]  rounded-xl" type="text" placeholder="Search Product"/>
-              <button className="h-[35px] w-[100px] bg-blue-500 text-white cursor-pointer rounded-2xl shadow-xl">Search</button>
+              <button className="h-[35px] w-[100px] bg-blue-500 text-white cursor-pointer rounded-2xl shadow-sm">Search</button>
             </div>
             <div onClick={openModal} className="flex justify-between items-center">
                 <div className="cursor-pointer">
