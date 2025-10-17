@@ -7,6 +7,7 @@ const prisma=require('../utils/prisma')
 const ACCESS_TOKEN_SECRATE=process.env.JWT_ACCESS_SECRATE
 const REFRESH_TOKEN_SECRATE= process.env.JWT_REFRESH_SECRATE
 const verification=require('../middle-wear/verification')
+import {refCodeGen} from '../utils/refCodeGen'
 
 
 //Create User/SignUp
@@ -16,7 +17,7 @@ body('password', 'Enter Valid Password').isLength({min:5}), body('phone').isLeng
         if (!errors.isEmpty()) {
          return res.status(400).json({ msg: 'Something Went Wrong. Check Your Information', errors: errors.array() });}
          try{
-            const {name,email,password,phone}=req.body;
+            const {name,email,password,phone,referralCode}=req.body;
             const dupUser= await prisma.user.findUnique({
                 where:{email,phone}
             });
@@ -24,10 +25,21 @@ body('password', 'Enter Valid Password').isLength({min:5}), body('phone').isLeng
             const salt= await bcrypt.genSalt(8);
             const secPass = await bcrypt.hash(password,salt);
             const userCount= await prisma.user.count();
-            const adminCount=userCount===0?'ADMIN':'USER'
+            const adminCount=userCount===0?'ADMIN':'USER';
+            const myReferralCode= await refCodeGen(prisma,name);
+            let referredBy=null;
+            if(referralCode){
+                const refUser= await prisma.user.findUnique({
+                    where:{referralCode}
+                });
+                if(refUser) referredBy=refUser.referralCode
+            }
             const newUser=await prisma.user.create({
-                data:{name, email,password:secPass, phone, role:adminCount}
+                data:{name, email,password:secPass, phone, role:adminCount,referralCode:myReferralCode,
+                    referredBy
+                }
             });
+        
             res.status(200).json({msg:'Account Create Successfully'})
          }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });

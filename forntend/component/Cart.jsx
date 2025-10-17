@@ -1,9 +1,9 @@
 import ProductSummary from '../component/ProductSummary'
 
-export default function cart({closeModal}){
+export default function cart({closeModal, design}){
     return(
-          <div className={`fixed top-0 left-0 h-full w-full bg-[rgba(0,0,0,0.5)] flex justify-center items-center z-50`}>
-        <div className={`grid justify-items-center center content-center items-center bg-white p-[15px] rounded-2xl w-[500px] text-center text-black`}>
+          <div className={`fixed top-0 left-0 h-full w-full bg-[rgba(0,0,0,0.5)] flex justify-center items-center z-50 transition-opacity duration-1000 ${design?'opacity-100':'opacity-0'}`}>
+        <div className={`grid justify-items-center center content-center items-center bg-white p-[15px] rounded-2xl w-[600px] text-center text-black duration-1000 ${design?'scale-100':'scale-0'}`}>
             <p className='text-2xl font-bold'>Cart Items ()</p>
                 <ProductSummary/>
 

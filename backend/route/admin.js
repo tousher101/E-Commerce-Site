@@ -11,13 +11,17 @@ const upload =require('../middle-wear/multar');
 
 //Add Product By Admin
 route.post('/addproduct',verification,roleAuthorize('ADMIN'),upload.array('photos',5),async(req,res)=>{
-const {name,description,price,stock,size,color, category}=req.body;
+const {name,description,price,stock,size,color, category,variant}=req.body;
 const photos=req.files
 
 try{
     if(!name||!description||!price||!stock||!category||!photos){return res.status(400).json({msg:'Add All Required Field'})}
     const addproduct=await prisma.product.create({
-        data:{name,description,price:parseFloat(price),stock:parseInt(stock,10),category, size, color}
+        data:{name,description,price:parseFloat(price),stock:parseInt(stock,10),category, 
+            size: Array.isArray(size)?size.join(' '):size, 
+            color:Array.isArray(color)?color.join(' '):color,
+            variant:Array.isArray(variant)?variant.join(' '):variant
+        }
     });
     for(const photo of photos){const result=await cloudinary.uploader.upload(photo.path,{
         folder:'E-Commerce/Product-Photos',

@@ -13,13 +13,20 @@ export default function navBar() {
         router.push('/signin')
     }
     const [openCartModal, setOpenCartModal]=useState(false);
-
+    const [animatedModal, setAnimatedModal]=useState(false)
     const openModal=()=>{
       setOpenCartModal(true)
+      setTimeout(()=>{
+    setAnimatedModal(true)
+      },10)
+
     }
 
     const closeModal=()=>{
       setOpenCartModal(false)
+         setTimeout(()=>{
+    setAnimatedModal(false)
+      },10)
     }
     return(
       <>
@@ -31,8 +38,8 @@ export default function navBar() {
               <input className="border border-gray-400 p-[5px]  rounded-xl" type="text" placeholder="Search Product"/>
               <button className="h-[35px] w-[100px] bg-blue-500 text-white cursor-pointer rounded-2xl shadow-sm">Search</button>
             </div>
-            <div onClick={openModal} className="flex justify-between items-center">
-                <div className="cursor-pointer">
+            <div  className="flex justify-between items-center">
+                <div onClick={openModal} className="cursor-pointer">
                  <img className="h-[50px] w-[50px]" src="/shopping-cart.gif" alt="shopping-cart"/>
                 </div>
                 <div className="cursor-pointer ml-[20px]">
@@ -81,7 +88,7 @@ export default function navBar() {
                 
             </div>
         </nav>
-      {openCartModal&&<Cart closeModal={closeModal}/>}
+      {openCartModal&&<Cart closeModal={closeModal} design={animatedModal}/>}
       </>
     )
 }

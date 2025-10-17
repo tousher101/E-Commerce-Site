@@ -532,6 +532,22 @@ route.get('/perfume',async(req,res)=>{
         }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
     });
 
+    //Delete Cart item
+    route.delete('/deletecartitem/:id',verification,roleAuthorize('USER'),async(req,res)=>{
+        try{
+            const {id}=req.params.id;
+            const userId= req.user.id;
+            const item= await prisma.cartItem.findFirst({
+                where:{id, cart:{userId, status:'PENDING'}}
+            });
+            if(!item){return res.status(404).json({msg:'Cart Item Not Founded'})}
+            await prisma.cartItem.delete({
+                where:{id:item.id}
+            });
+            res.status(200).json({msg:'Item Delete Successfully'})
+        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+    })
+
 
     //Create Order
     route.post('/checkout', verification, roleAuthorize('USER'), async(req,res)=>{
@@ -566,9 +582,36 @@ route.get('/perfume',async(req,res)=>{
                 totalPrice+=item.totlaPrice
             };
             const shippingFee = shippingRate.baseFee+(totalWeight*shippingRate.perKgFee);
+            const existingOrder= await prisma.order.findMany({
+                where:{id:userId}
+            });
+            const user= await prisma.user.findUnique({
+                where:{id:userId},
+                select:{referredBy:true}
+            });
 
+            
+            if(existingOrder.length===0 && user.referredBy){
+                const referredId= parseInt(user.referredBy)
+                let wallet=await prisma.refWallet.findUnique({
+                    where:{userId:referredId}
+                });
+                if(!wallet){wallet= await prisma.refWallet.create({
+                    data:{userId:referredId, amount:0}
+                })}
+                   const bonus=50;
+                await prisma.refWallet.update({
+                where:{id:wallet.id},
+                data:{amount:wallet.amount+bonus}
+            })
+            }
+            const bounsAmount= await prisma.refWallet.findFirst({
+                where:{userId:user.referredBy},
+                select:{amount:true}
+            });
+            const bonus= bounsAmount?bounsAmount.amount:0
             const order= await prisma.order.create({
-                data:{userId,totalPrice:totalPrice+shippingFee, status:'PENDING', addressId:address.id,
+                data:{userId,totalPrice:(totalPrice-bonus)+shippingFee, status:'PENDING', addressId:address.id,
                     paymentStatus:'UNPAID',paymentmethod,
                     items:{
                     create: cart.items.map((item)=>({
@@ -584,7 +627,12 @@ route.get('/perfume',async(req,res)=>{
                 where:{id:cart.id},
                 data:{status:'COMPLETED'}
             });
+            await prisma.refWallet.update({
+                where:{userId:user.referredBy},
+                data:{amount:0}
+            });
 
+            
             res.status(200).json({msg:'Order Placed Successfully', orderId:order.id, address, shippingFee, paymentmethod, order})
 
 
@@ -593,7 +641,7 @@ route.get('/perfume',async(req,res)=>{
 
 // Preview Checkout
 
-  route.get('/checkoutpreview', verification, roleAuthorize('USER'), async(req,res)=>{
+  route.get('/checkoutpreview/:location', verification, roleAuthorize('USER'), async(req,res)=>{
         try{
             const {location}=req.params
             const userId=req.user.id
@@ -624,27 +672,50 @@ route.get('/perfume',async(req,res)=>{
             const shippingRate= await prisma.shippingRate.findFirst({
                 where:{location}
             });
+            const user= await prisma.user.findUnique({
+                where:{id:userId},
+                select:{referredBy:true}
+            })
+            const bonusAount= await prisma.refWallet.findFirst({
+                where:{id:user.referredBy},
+                select:{amount:true}
+            });
+            const bonus= bonusAount?bonusAount.amount:0
            if(shippingRate){shippingFee = shippingRate.baseFee + (totalWeight * shippingRate.perKgFee)}
            else{res.status(400).json({msg:'Shipping Not Available for This Area'})}
 
-            res.status(200).json({items:cart.items, shippingFee, address, total:subtotal+shippingFee})
+            res.status(200).json({items:cart.items, bonusAount, shippingFee, address, total:(subtotal-bonus)+shippingFee})
 
 
         }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
     });
 
 
+// get referrel Account
+route.get('/referrel', verification, roleAuthorize('USER'),async(req,res)=>{
+    try{
+        const user= await prisma.user.findUnique({
+            where:{id:req.user.id},
+            select:{referredUser:{
+                select:{
+                    name:true,
+                    email:true,
+                    phone:true,
+                    createdAt:true
+                }
+            }
 
-
-
-
-
-
-
-
-
-
-
+            }
+        });
+        const totalRef= user.referredUser?user.referredUser.length:0
+        const walletAmount= await prisma.refWallet.findUnique({
+            where:{userId:req.user.id},
+            select:{amount:true}
+        });
+        const wallet= walletAmount?walletAmount.amount:0
+        res.status(200).json({user, totalRef, wallet})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+})
 
     //get All Shipping Fee
 route.get('/getshippingfee', verification, roleAuthorize('USER'),async(req,res)=>{

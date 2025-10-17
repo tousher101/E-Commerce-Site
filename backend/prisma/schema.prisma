@@ -23,7 +23,19 @@ model User {
   carts Cart[]
   address Address[]
   comment Comment[]
+  referralCode String
+  referredBy String?
+  referredUser User[] @relation("UserReferrals"),fields:[id], references:[referredBy]
+  wallet RefWallet
   createdAt DateTime  @default(now())
+}
+
+model RefWallet {
+  id Int @id @default(autoincrement())
+  amount Float
+  user User @relation(fields:[userId], references:[id])
+  userId Int
+
 }
 
 model Product {
@@ -39,6 +51,7 @@ model Product {
   photos ProductPhotos[]
   size  String?
   color String?
+  variant String?
   category Category
   comment Comment[]
   weight Float
@@ -109,6 +122,7 @@ model CartItem {
   product     Product        @relation(fields:[productId], references:[id], onDelete: Restrict)
   size  String?
   color String?
+  varitan String?
   quantity    Int            @default(1)
   // snapshot so price change later doesn't affect the cart
   unitPrice   Decimal        @db.Decimal(10,2)

@@ -13,11 +13,12 @@ export default function productSummary(){
                                 <h2>Quintity: 1</h2>
                                 <h2>Size: XL</h2>
                                 <h2>Color: Green</h2>
+                                <h2>Variant:Women</h2>
                             </div>
                             </div>
         
                             <div>
-                                <button className='h-[30px] w-[80px] rounded-xl bg-red-400 cursor-pointer text-white'>Delete</button>
+                              <img src="/bin.gif" className="h-[35px] w-[35px] cursor-pointer" alt="detele-icon"/>
                             </div>
                          
                         </div>
