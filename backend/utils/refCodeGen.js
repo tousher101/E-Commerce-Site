@@ -1,4 +1,4 @@
-export async function refCodeGen(prisma,name='') {
+async function refCodeGen(prisma,name='') {
     let code;
     let exists=true;
     while(exists){
@@ -12,3 +12,5 @@ export async function refCodeGen(prisma,name='') {
     }
     return code;
 }
+
+module.exports=refCodeGen

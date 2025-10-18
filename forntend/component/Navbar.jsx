@@ -6,30 +6,69 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 import Cart from '../component/Cart'
+import {useUserInfo} from '../context/userInfo'
+import UserInfo from '../component/UserInfo'
+import Alert from "../Utils/Alert";
 
 export default function navBar() {
+  const {userInfo,getAllUser}=useUserInfo()
     const router=useRouter()
     const goSingIn=()=>{
         router.push('/signin')
     }
+    const goHome=()=>{
+      router.push('/')
+    };
     const [openCartModal, setOpenCartModal]=useState(false);
     const [animatedModal, setAnimatedModal]=useState(false)
+    const [userModal, setUserModal]=useState(false);
+    const BaseURI=process.env.NEXT_PUBLIC_API_URI;
+    const [msg,setMsg]=useState(null);
+    const [type, setType]=useState(null);
+    const openUserModal=()=>{
+      setUserModal(true)
+        setTimeout(()=>{
+    setAnimatedModal(true)
+      },10)
+    };
+
+    const closeUserModal=()=>{
+      setUserModal(false)
+          setTimeout(()=>{
+    setAnimatedModal(false)
+      },10)
+    };
+
     const openModal=()=>{
       setOpenCartModal(true)
       setTimeout(()=>{
     setAnimatedModal(true)
       },10)
-
-    }
+    };
 
     const closeModal=()=>{
       setOpenCartModal(false)
          setTimeout(()=>{
     setAnimatedModal(false)
       },10)
+    };
+    const logOut=async()=>{
+      const res= await fetch(`${BaseURI}/api/auth/logout`,{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        }
+      });
+      const data= await res.json();
+      if(res.ok){getAllUser();
+      setMsg(data.msg);
+      setType('Success'); goHome(); localStorage.removeItem('token');setUserModal(false)}
     }
+
+ 
     return(
       <>
+      {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
         <nav className=" flex max-w-[1380px] h-[80px] items-center justify-between shadow-xl">
             <div className="h-[80px] w-[120px]  ml-[10px]">
             <Link href='/'><Image className="" src={logo} alt="logo" width={180} height={80}/></Link>
@@ -39,14 +78,14 @@ export default function navBar() {
               <button className="h-[35px] w-[100px] bg-blue-500 text-white cursor-pointer rounded-2xl shadow-sm">Search</button>
             </div>
             <div  className="flex justify-between items-center">
-                <div onClick={openModal} className="cursor-pointer">
+                {userInfo?.role==='USER'&&<div onClick={openModal} className="cursor-pointer">
                  <img className="h-[50px] w-[50px]" src="/shopping-cart.gif" alt="shopping-cart"/>
-                </div>
-                <div className="cursor-pointer ml-[20px]">
-                    <Image className="ml-[10px]" src={userIcon} alt="userIcon" height={30} width={30}/>
-                </div>
+                </div>}
+              
                 <div>
-                <button onClick={goSingIn} className="relative inline-flex items-center justify-center px-6 mx-[10px] py-2 overflow-hidden tracking-tighter text-white bg-gray-800 rounded-md group cursor-pointer">
+                {userInfo?.role==='USER'||userInfo?.role==='ADMIN'?  <div onClick={openUserModal} className="cursor-pointer mr-[20px] ml-[20px]">
+                    <Image className="ml-[10px]" src={userIcon} alt="userIcon" height={30} width={30}/>
+                </div>:<button onClick={goSingIn} className="relative inline-flex items-center justify-center px-6 mx-[10px] py-2 overflow-hidden tracking-tighter text-white bg-gray-800 rounded-md group cursor-pointer">
   <span
     className="absolute w-0 h-0 transition-all duration-500 ease-out bg-orange-600 rounded-full group-hover:w-56 group-hover:h-56"
   ></span>
@@ -82,13 +121,15 @@ export default function navBar() {
     className="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-gray-200"
   ></span>
   <span className="relative text-base font-semibold">Login</span>
-</button>
+</button>}
 
                 </div>
                 
             </div>
         </nav>
       {openCartModal&&<Cart closeModal={closeModal} design={animatedModal}/>}
+      {userModal&&<UserInfo photo={userInfo?.photo} design={animatedModal} closeModal={closeUserModal} name={userInfo.name}
+      email={userInfo.email} phone={userInfo.phone} role={userInfo.role} logout={()=>{logOut()}}/>}
       </>
     )
 }

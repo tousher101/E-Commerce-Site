@@ -7,7 +7,8 @@ const prisma=require('../utils/prisma')
 const ACCESS_TOKEN_SECRATE=process.env.JWT_ACCESS_SECRATE
 const REFRESH_TOKEN_SECRATE= process.env.JWT_REFRESH_SECRATE
 const verification=require('../middle-wear/verification')
-import {refCodeGen} from '../utils/refCodeGen'
+const refCodeGen = require('../utils/refCodeGen');
+const { none } = require('../middle-wear/multar');
 
 
 //Create User/SignUp
@@ -17,6 +18,7 @@ body('password', 'Enter Valid Password').isLength({min:5}), body('phone').isLeng
         if (!errors.isEmpty()) {
          return res.status(400).json({ msg: 'Something Went Wrong. Check Your Information', errors: errors.array() });}
          try{
+            console.log('Hit API')
             const {name,email,password,phone,referralCode}=req.body;
             const dupUser= await prisma.user.findUnique({
                 where:{email,phone}
@@ -32,7 +34,7 @@ body('password', 'Enter Valid Password').isLength({min:5}), body('phone').isLeng
                 const refUser= await prisma.user.findUnique({
                     where:{referralCode}
                 });
-                if(refUser) referredBy=refUser.referralCode
+                if(refUser){referredBy=refUser.referralCode}
             }
             const newUser=await prisma.user.create({
                 data:{name, email,password:secPass, phone, role:adminCount,referralCode:myReferralCode,
@@ -59,9 +61,10 @@ async(req,res)=>{
         const payload = {id:user.id, role:user.role};
         const accessToken=jwt.sign(payload,ACCESS_TOKEN_SECRATE,{expiresIn:'15m'});
         const refreshToken= jwt.sign(payload, REFRESH_TOKEN_SECRATE,{expiresIn:'7d'})
-        res.cookie('refreshToken',refreshToken,{httpOnly:true, secure: process.env.NODE_ENV==='production',sameSite:'strict',
-        path:'/', maxage: 7 * 24 * 60 * 60 * 1000})
-        res.status(200).json({msg:'Login Successfully', accessToken})
+        res.cookie('refreshToken',refreshToken,{httpOnly:true, secure: process.env.NODE_ENV==='production'?true:false
+            ,sameSite:process.env.NODE_ENV==='production'?'none':'none',
+        path:'/', maxAge: 7 * 24 * 60 * 60 * 1000})
+        res.status(200).json({accessToken, role:user.role})
 
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });

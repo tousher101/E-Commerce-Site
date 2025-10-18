@@ -1,7 +1,7 @@
 
 export async function fetchWithAuth(url, options = {}) {
-    const BASEURI=import.meta.NEXT_PUBLIC_API_URI
-  let accessToken = localStorage.getItem("accessToken");
+    const BASEURI=process.env.NEXT_PUBLIC_API_URI
+  let accessToken = localStorage.getItem('token')
 
   let response = await fetch(url, {
     ...options,
@@ -21,7 +21,7 @@ export async function fetchWithAuth(url, options = {}) {
     });
 
     if (!refreshRes.ok) {
-      localStorage.removeItem("accessToken");
+      localStorage.removeItem("token");
       throw new Error("Session expired, please login again");
     }
 

@@ -2,9 +2,10 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const compression = require('compression')
+const compression = require('compression');
+const cookieParser=require('cookie-parser');
 
-
+app.use(cookieParser());
 app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true
@@ -14,9 +15,10 @@ app.use(express.urlencoded({extended:true, limit: '50mb'}));
 app.use(compression());
 
 
+
 app.use('/api/auth',require('./route/auth'));
 app.use('/api/admin',require('./route/admin'));
-app.use('api/user',require('./route/user'))
+app.use('/api/user',require('./route/user'))
 
 const port = process.env.PORT||5000
 

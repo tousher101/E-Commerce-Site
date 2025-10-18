@@ -1,3 +1,4 @@
+
 import React,{useEffect, useState} from "react";
 const Alert = ({message, type,onClose })=>{
     const [show, setShow]=useState(true);

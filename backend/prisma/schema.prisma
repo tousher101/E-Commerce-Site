@@ -23,10 +23,11 @@ model User {
   carts Cart[]
   address Address[]
   comment Comment[]
-  referralCode String
+  referralCode String @unique
   referredBy String?
-  referredUser User[] @relation("UserReferrals"),fields:[id], references:[referredBy]
-  wallet RefWallet
+  referredUser User[] @relation("UserReferrals")
+  referredByUser User?       @relation("UserReferrals", fields: [referredBy], references: [referralCode])
+  wallet RefWallet?
   createdAt DateTime  @default(now())
 }
 
@@ -34,7 +35,7 @@ model RefWallet {
   id Int @id @default(autoincrement())
   amount Float
   user User @relation(fields:[userId], references:[id])
-  userId Int
+  userId Int @unique
 
 }
 
