@@ -6,6 +6,8 @@ const BaseURI=process.env.NEXT_PUBLIC_API_URI
 const UserInfoContext=createContext();
 export const UserProvider=({children})=>{
     const [userInfo, setUserInfo]=useState(null);
+   
+
     const getAllUser=async()=>{
         const res= await fetchWithAuth(`${BaseURI}/api/user/userinfo`)
         setUserInfo(res.userInfo)
@@ -13,6 +15,8 @@ export const UserProvider=({children})=>{
     useEffect(()=>{
     getAllUser()
 },[]);
+
+
 
 return (
     <UserInfoContext.Provider value={{userInfo, getAllUser, setUserInfo}}>{children}</UserInfoContext.Provider>

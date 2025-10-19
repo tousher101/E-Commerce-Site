@@ -5,7 +5,7 @@ import Alert from '../../Utils/Alert';
 import {fetchWithAuth} from '../../Utils/fetchWithAuth'
 
 
-export default function mensFashionPage(){
+export default function mensFashion(){
  const [currentpage, setCurrentPage]=useState(1);
    const [productData, setProductData]=useState([]);
    const [totalPage, setTotalPage]=useState(0);
@@ -15,7 +15,7 @@ export default function mensFashionPage(){
    const BaseURI=process.env.NEXT_PUBLIC_API_URI
   
    const getProduct=async(page)=>{
-    const res=await fetchWithAuth(`${BaseURI}/api/user/mensfashion?page=${page}&limit=${15}`)
+    const res=await fetchWithAuth(`${BaseURI}/api/user/mensfashion?page=${page}&limit=${16}`)
     setProductData(res.getMensProduct);
     setTotalPage(res.totalPage);
     setAllproduct(res.totalMensProduct)

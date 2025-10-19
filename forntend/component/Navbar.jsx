@@ -11,20 +11,22 @@ import UserInfo from '../component/UserInfo'
 import Alert from "../Utils/Alert";
 
 export default function navBar() {
-  const {userInfo,getAllUser}=useUserInfo()
+  const {userInfo,getAllUser}=useUserInfo();
+   const [msg, setMsg]=useState(null);
+      const [type,setType]=useState(null);
+  
+      const goHome=()=>{
+        router.push('/')
+      };
     const router=useRouter()
     const goSingIn=()=>{
         router.push('/signin')
     }
-    const goHome=()=>{
-      router.push('/')
-    };
+ 
     const [openCartModal, setOpenCartModal]=useState(false);
     const [animatedModal, setAnimatedModal]=useState(false)
     const [userModal, setUserModal]=useState(false);
     const BaseURI=process.env.NEXT_PUBLIC_API_URI;
-    const [msg,setMsg]=useState(null);
-    const [type, setType]=useState(null);
     const openUserModal=()=>{
       setUserModal(true)
         setTimeout(()=>{
@@ -52,7 +54,8 @@ export default function navBar() {
     setAnimatedModal(false)
       },10)
     };
-    const logOut=async()=>{
+   
+ const logOut=async()=>{
       const res= await fetch(`${BaseURI}/api/auth/logout`,{
         method:'POST',
         headers:{
@@ -62,8 +65,9 @@ export default function navBar() {
       const data= await res.json();
       if(res.ok){getAllUser();
       setMsg(data.msg);
-      setType('Success'); goHome(); localStorage.removeItem('token');setUserModal(false)}
+      setType('Success'); goHome(); localStorage.removeItem('token');setUserModal(false);}
     }
+
 
  
     return(
@@ -123,9 +127,9 @@ export default function navBar() {
   <span className="relative text-base font-semibold">Login</span>
 </button>}
 
-                </div>
+      </div>
                 
-            </div>
+      </div>
         </nav>
       {openCartModal&&<Cart closeModal={closeModal} design={animatedModal}/>}
       {userModal&&<UserInfo photo={userInfo?.photo} design={animatedModal} closeModal={closeUserModal} name={userInfo.name}

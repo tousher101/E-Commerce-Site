@@ -100,7 +100,7 @@ route.get('/mensfashion',async(req,res)=>{
             where:{category:'MENSFASHION'}
         });
         const page= Number(req.query.page)||1;
-        const limit=Number(req.query.limit)||15;
+        const limit=Number(req.query.limit)||16;
         const skip= (page-1)*limit
         const getMensProduct= await prisma.product.findMany({
             where:{category:'MENSFASHION'},
@@ -130,127 +130,154 @@ route.get('/mensfashion',async(req,res)=>{
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
-//category: Women Fashion
+//category: Women Fashion/card
 route.get('/womenfashion',async(req,res)=>{
     try{
-        const totalMensProduct= await prisma.product.count({
+        const totalWomensProduct= await prisma.product.count({
             where:{category:'WOMENFASHION'}
         });
         const page= Number(req.query.page)||1;
+        const limit=Number(req.query.limit)||16;
         const skip= (page-1)*limit
-        const limit=Number(req.query.limit)||15;
-        const getMensProduct= await prisma.product.findMany({
+        const getWomensProduct= await prisma.product.findMany({
             where:{category:'WOMENFASHION'},
-            select:{
+           select:{
+                id:true,
                 name:true,
                 description:true,
                 price:true,
                 stock:true,
-                createdAt:true,
-                updatedAt:true,
                 photos:true,
-                size:true,
-                color:true,
-                category:true
+                category:true,
+                _count:{
+                    select:{comment:true}
+                },
+                order:{
+                    select:{
+                         quantity:true
+                        }
+                    }
+                
             },
             skip:skip,
             take:limit,
             orderBy:{createdAt:'desc'}
         });
-        res.status(200).json({getMensProduct, totalMensProduct, totalPage:Math.ceil(totalMensProduct/limit)})
+        res.status(200).json({getWomensProduct, totalWomensProduct, totalPage:Math.ceil(totalWomensProduct/limit)})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
-//category: Kids Fashion
+//category: Kids Fashion/card
 route.get('/kidsfashion',async(req,res)=>{
     try{
-        const totalMensProduct= await prisma.product.count({
+        const totalKidsProduct= await prisma.product.count({
             where:{category:'KIDSFASHION'}
         });
         const page= Number(req.query.page)||1;
+         const limit=Number(req.query.limit)||16;
         const skip= (page-1)*limit
-        const limit=Number(req.query.limit)||15;
-        const getMensProduct= await prisma.product.findMany({
+       
+        const getKidsProduct= await prisma.product.findMany({
             where:{category:'KIDSFASHION'},
-            select:{
+             select:{
+                id:true,
                 name:true,
                 description:true,
                 price:true,
                 stock:true,
-                createdAt:true,
-                updatedAt:true,
                 photos:true,
-                size:true,
-                color:true,
-                category:true
+                category:true,
+                _count:{
+                    select:{comment:true}
+                },
+                order:{
+                    select:{
+                         quantity:true
+                        }
+                    }
+                
             },
             skip:skip,
             take:limit,
             orderBy:{createdAt:'desc'}
         });
-        res.status(200).json({getMensProduct, totalMensProduct, totalPage:Math.ceil(totalMensProduct/limit)})
+        res.status(200).json({getKidsProduct, totalKidsProduct, totalPage:Math.ceil(totalKidsProduct/limit)})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
-//category: Accessories
+//category: Accessories/card
 route.get('/accessories',async(req,res)=>{
     try{
-        const totalMensProduct= await prisma.product.count({
+        const totalAccessoriesProduct= await prisma.product.count({
             where:{category:'ACCESSORIES'}
         });
         const page= Number(req.query.page)||1;
+        const limit=Number(req.query.limit)||16;
         const skip= (page-1)*limit
-        const limit=Number(req.query.limit)||15;
-        const getMensProduct= await prisma.product.findMany({
+        
+        const getAccessoriesProduct= await prisma.product.findMany({
             where:{category:'ACCESSORIES'},
-            select:{
+                 select:{
+                id:true,
                 name:true,
                 description:true,
                 price:true,
                 stock:true,
-                createdAt:true,
-                updatedAt:true,
                 photos:true,
-                size:true,
-                color:true,
-                category:true
+                category:true,
+                _count:{
+                    select:{comment:true}
+                },
+                order:{
+                    select:{
+                         quantity:true
+                        }
+                    }
+                
             },
             skip:skip,
             take:limit,
             orderBy:{createdAt:'desc'}
         });
-        res.status(200).json({getMensProduct, totalMensProduct, totalPage:Math.ceil(totalMensProduct/limit)})
+        res.status(200).json({getAccessoriesProduct, totalAccessoriesProduct, totalPage:Math.ceil(totalAccessoriesProduct/limit)})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
-//category: Perfume
+//category: Perfume/card
 route.get('/perfume',async(req,res)=>{
     try{
-        const totalMensProduct= await prisma.product.count({
+        const totalPerfumeProduct= await prisma.product.count({
             where:{category:'PERFUME'}
         });
         const page= Number(req.query.page)||1;
+        const limit=Number(req.query.limit)||16;
         const skip= (page-1)*limit
-        const limit=Number(req.query.limit)||15;
-        const getMensProduct= await prisma.product.findMany({
+        
+        const getPerfumeProduct= await prisma.product.findMany({
             where:{category:'PERFUME'},
-            select:{
+               select:{
+                id:true,
                 name:true,
                 description:true,
                 price:true,
                 stock:true,
-                createdAt:true,
-                updatedAt:true,
                 photos:true,
-                size:true,
-                color:true,
-                category:true
+                category:true,
+                _count:{
+                    select:{comment:true}
+                },
+                order:{
+                    select:{
+                         quantity:true
+                        }
+                    }
+                
             },
             skip:skip,
             take:limit,
             orderBy:{createdAt:'desc'}
         });
-        res.status(200).json({getMensProduct, totalMensProduct, totalPage:Math.ceil(totalMensProduct/limit)})
+        res.status(200).json({getPerfumeProduct, totalPerfumeProduct, totalPage:Math.ceil(totalPerfumeProduct/limit)})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
@@ -276,7 +303,10 @@ route.get('/perfume',async(req,res)=>{
             const totalCancelOrder= await prisma.order.count({
                 where:{user:user.id, status:'CANCELLED'}
             });
-            res.status(200).json({totalPendingOrder,totalShippedOrder,totalCancelOrder, totalConfirmedOrder,totalDeliveredOrder})
+            const totalPaidOrder= await prisma.order.count({
+                where:{user:user.id,paymentStatus:'PAID'}
+            })
+            res.status(200).json({totalPendingOrder,totalShippedOrder,totalCancelOrder, totalConfirmedOrder,totalDeliveredOrder,totalPaidOrder})
         }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
     });
 

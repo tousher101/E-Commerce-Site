@@ -1,11 +1,50 @@
-
+"use client"
+import { useState,useEffect } from "react";
 import Product from "../../component/Product"
+import Alert from '../../Utils/Alert';
+import {fetchWithAuth} from '../../Utils/fetchWithAuth'
 
-export default async function() {
-return(
-    <div className="max-w-[1380px] mx-[10px] overflow-hidden">
-        <Product/>
-    </div>
+export default function accessories() {
+
+     const [currentpage, setCurrentPage]=useState(1);
+   const [productData, setProductData]=useState([]);
+   const [totalPage, setTotalPage]=useState(0);
+   const [allproduct, setAllproduct]=useState(0);
+   const [msg, setMsg]=useState(null);
+   const [type, setType]=useState(null);
+   const BaseURI=process.env.NEXT_PUBLIC_API_URI
+  
+   const getProduct=async(page)=>{
+    const res=await fetchWithAuth(`${BaseURI}/api/user/accessories?page=${page}&limit=${16}`)
+    setProductData(res.getAccessoriesProduct);
+    setTotalPage(res.totalPage);
+    setAllproduct(res.totalAccessoriesProduct)
+   };
+   useEffect(()=>{
+    getProduct(currentpage)
+   },[currentpage])
+  
+
+    const handleNext=()=>{
+        if(currentpage<totalPage){setCurrentPage((p)=>p+1)}else{setMsg('No More Product Available'); setType('Error')}
+    };
     
-)
+    return(
+        <>
+        {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
+        <div className='max-w-[1380px] mx-[10px] overflow-hidden'>
+            <h1 className="text-center font-semibold text-3xl mt-[50px]">Accessories Product ({allproduct})</h1>
+            {productData?.map((pro)=>(
+            <div key={pro.id}>
+            <Product name={pro.name} description={pro.description} price={pro.price} stock={pro.stock} photos={pro.photos[0]}
+            sold={pro.order.quantity} comment={pro._count.comment} />
+            </div>
+            ))}
+              {totalPage>1&&<div className='flex justify-between mb-[20px] mx-[10px]'>
+                <button onClick={()=>{setCurrentPage((p)=>p-1,1)}} disabled={totalPage<1}  className='h-[40px] w-[100px] bg-black text-white rounded-xl cursor-pointer'>Previous</button>
+                <button onClick={handleNext} className='h-[40px] w-[100px] bg-black text-white rounded-xl cursor-pointer'>Next</button>
+            </div>}
+        </div>
+        </>
+        )
 }
