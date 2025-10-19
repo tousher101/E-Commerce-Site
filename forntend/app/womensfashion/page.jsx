@@ -13,7 +13,7 @@ export default function womenFashion(){
    const BaseURI=process.env.NEXT_PUBLIC_API_URI
   
    const getProduct=async(page)=>{
-    const res=await fetchWithAuth(`${BaseURI}/api/use/womenfashion?page=${page}&limit=${16}`)
+    const res=await fetchWithAuth(`${BaseURI}/api/user/womenfashion?page=${page}&limit=${16}`)
     setProductData(res.getWomensProduct);
     setTotalPage(res.totalPage);
     setAllproduct(res.totalWomensProduct)

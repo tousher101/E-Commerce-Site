@@ -1,7 +1,7 @@
 export default function addProduct(){
     return(
         <div className="max-w-[1380px] mx-auto overflow-hidden">
-            <h1 className="text-center text-3xl font-semibold my-[20px]">Add Product</h1>
+            <h1 className="text-center text-gray-500 text-3xl font-semibold my-[20px]">Add Product</h1>
             <div className="grid grid-cols-1 gap-2 p-4 ">
                 <input className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Product Name"/>
                 <input className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Description"/>
@@ -35,7 +35,7 @@ export default function addProduct(){
                     </label>
             </div>
             </div>
-            <div className="flex justify-center items-center my-[50px]">
+            <div className="flex justify-center items-center my-[10px]">
                 <button className="bg-green-300 p-3 rounded-xl cursor-pointer font-semibold">Add Product</button>
             </div>
             

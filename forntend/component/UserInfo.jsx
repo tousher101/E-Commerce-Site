@@ -1,5 +1,5 @@
 import { useRouter } from 'next/navigation'
-import userIcon from '../public/account.png'
+import userIcon from '../public/User-2.gif'
 import Image from 'next/image'
 
 export default function userInfo({design,closeModal,photo, name, email,phone,role, logout}){
@@ -13,7 +13,7 @@ export default function userInfo({design,closeModal,photo, name, email,phone,rol
           <div className={`grid justify-items-center center content-center items-center bg-white p-[15px] rounded-2xl w-[400px] text-center text-black duration-1000 ${design?'scale-100':'scale-0'}`}>
               <p className='text-2xl font-bold'>User Profile</p>
                 <div className="flex justify-center rounded-4xl mt-[25px]">
-                  <Image src={photo||userIcon} height={60} width={60} alt='profile-photo'/>
+                  <Image src={photo||userIcon} height={80} width={80} alt='profile-photo'/>
                 </div>
                 <div className='text-m font-semibold mt-[20px]'>
                     <h1>{name}</h1>
