@@ -8,7 +8,6 @@ const ACCESS_TOKEN_SECRATE=process.env.JWT_ACCESS_SECRATE
 const REFRESH_TOKEN_SECRATE= process.env.JWT_REFRESH_SECRATE
 const verification=require('../middle-wear/verification')
 const refCodeGen = require('../utils/refCodeGen');
-const { none } = require('../middle-wear/multar');
 
 
 //Create User/SignUp

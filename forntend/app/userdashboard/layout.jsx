@@ -46,6 +46,12 @@ export default function layout({children}){
                         <Link href={'/userdashboard/paidorder'}><h1 className="p-2">Paid Order</h1></Link>
                     </div>
 
+                    
+                    <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/referral.gif"/>
+                        <Link href={'/userdashboard/referral'}><h1 className="p-2">Referral</h1></Link>
+                    </div>
+
                 </div>
             </div>
             <div className="flex-[80%]  justify-center shadow-xl">

@@ -5,6 +5,7 @@ const roleAuthorize=require('../middle-wear/roleAuth');
 const prisma=require('../utils/prisma');
 const cloudinary=require('../utils/cloudinary');
 const upload =require('../middle-wear/multar');
+const genTrxCode=require('../utils/genTrxCode')
 
 
 
@@ -52,6 +53,7 @@ route.get('/userinfo',verification, async(req,res)=>{
                 orders:true,
                 carts:true,
                 address:true,
+                referralCode:true
 
             }
         });
@@ -586,13 +588,13 @@ route.get('/perfume',async(req,res)=>{
     })
 
 
-    //Create Order
+    //Create Order/COD order
     route.post('/checkout', verification, roleAuthorize('USER'), async(req,res)=>{
         try{
-            const {location, paymentmethod}=req.body
+            const {location,label, name, phone, line1, line2,barangay,city,postalCode}=req.body
             const userId=req.user.id
             const shippingRate= await prisma.shippingRate.findFirst({
-                where:{location}
+                where:{location,}
             });
             if(!shippingRate){return res.status(400).json({msg:'Shipping Not Available of This Area'})}
 
@@ -601,12 +603,6 @@ route.get('/perfume',async(req,res)=>{
                 include:{items:true}
             });
             if(!cart || cart.items.length===0){return res.status(404).json({msg:'Cart Is Empty'})}
-
-            const address= await prisma.address.findFirst({
-                where:{userId}
-            });
-            if(!address){res.status(400).json({msg:'Please Add Shipping Address'})}
-            
 
             let totalWeight=0
             let totalPrice=0
@@ -619,37 +615,31 @@ route.get('/perfume',async(req,res)=>{
                 totalPrice+=item.totlaPrice
             };
             const shippingFee = shippingRate.baseFee+(totalWeight*shippingRate.perKgFee);
-            const existingOrder= await prisma.order.findMany({
-                where:{id:userId}
-            });
+            
+            const payment= await prisma.payment.create({
+                                data:{
+                                    orderId:order.id,
+                                    status:'UNPAID',
+                                    amount:amount,
+                                    currency:'PHP',
+                                    transactionId:genTrxCode(),
+                                    paymentmethod:'COD'
+                                }
+                            });
+
             const user= await prisma.user.findUnique({
                 where:{id:userId},
                 select:{referredBy:true}
             });
 
             
-            if(existingOrder.length===0 && user.referredBy){
-                const referredId= parseInt(user.referredBy)
-                let wallet=await prisma.refWallet.findUnique({
-                    where:{userId:referredId}
-                });
-                if(!wallet){wallet= await prisma.refWallet.create({
-                    data:{userId:referredId, amount:0}
-                })}
-                   const bonus=50;
-                await prisma.refWallet.update({
-                where:{id:wallet.id},
-                data:{amount:wallet.amount+bonus}
-            })
-            }
             const bounsAmount= await prisma.refWallet.findFirst({
                 where:{userId:user.referredBy},
                 select:{amount:true}
             });
             const bonus= bounsAmount?bounsAmount.amount:0
             const order= await prisma.order.create({
-                data:{userId,totalPrice:(totalPrice-bonus)+shippingFee, status:'PENDING', addressId:address.id,
-                    paymentStatus:'UNPAID',paymentmethod,
+                data:{userId,totalPrice:(totalPrice-bonus)+shippingFee, addressId:address.id, payment:payment.id,        
                     items:{
                     create: cart.items.map((item)=>({
                         productId: item.productId,
@@ -668,9 +658,13 @@ route.get('/perfume',async(req,res)=>{
                 where:{userId:user.referredBy},
                 data:{amount:0}
             });
-
-            
-            res.status(200).json({msg:'Order Placed Successfully', orderId:order.id, address, shippingFee, paymentmethod, order})
+            const address=await prisma.address.create({
+            data:{
+                label,name,phone,line1,line2,barangay,city,postalCode,user:userId,order:order.id
+                }
+                });
+        if(!address){res.status(400).json({msg:'Please Add Shipping Address'})}
+            res.status(200).json({msg:'Order Placed Successfully'})
 
 
         }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
@@ -753,7 +747,8 @@ route.get('/referrel', verification, roleAuthorize('USER'),async(req,res)=>{
         const wallet= walletAmount?walletAmount.amount:0
         res.status(200).json({user, totalRef, wallet})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
-})
+});
+
 
     //get All Shipping Fee
 route.get('/getshippingfee', verification, roleAuthorize('USER'),async(req,res)=>{
@@ -761,9 +756,10 @@ route.get('/getshippingfee', verification, roleAuthorize('USER'),async(req,res)=
         const rate= await prisma.shippingRate.findMany();
         res.status(200).json({rate})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
-})
+});
 
-    //payment intigration (Stripe)
+
+  
 
 
 module.exports=route

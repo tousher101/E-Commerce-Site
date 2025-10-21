@@ -18,7 +18,8 @@ app.use(compression());
 
 app.use('/api/auth',require('./route/auth'));
 app.use('/api/admin',require('./route/admin'));
-app.use('/api/user',require('./route/user'))
+app.use('/api/user',require('./route/user'));
+app.use('/api/payment',require('./route/payment'));
 
 const port = process.env.PORT||5000
 

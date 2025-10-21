@@ -2,7 +2,7 @@ import { useRouter } from 'next/navigation'
 import userIcon from '../public/User-2.gif'
 import Image from 'next/image'
 
-export default function userInfo({design,closeModal,photo, name, email,phone,role, logout}){
+export default function userInfo({design,closeModal,photo, name, email,phone,role, logout,}){
   const router= useRouter();
   const goUserDashboard=()=>{
     router.push('/userdashboard');
