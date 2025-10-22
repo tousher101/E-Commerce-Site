@@ -11,25 +11,27 @@ const upload =require('../middle-wear/multar');
 
 //Add Product By Admin
 route.post('/addproduct',verification,roleAuthorize('ADMIN'),upload.array('photos',5),async(req,res)=>{
-const {name,description,price,stock,size,color, category,variant}=req.body;
+
+const {name,description,price,stock,size,color, category,variant, weight, barcode}=req.body;
 const photos=req.files
 
 try{
-    if(!name||!description||!price||!stock||!category||!photos){return res.status(400).json({msg:'Add All Required Field'})}
+    if(!name||!description||!price||!stock||!category||!photos||!weight){return res.status(400).json({msg:'Add All Required Field'})}
     const addproduct=await prisma.product.create({
-        data:{name,description,price:parseFloat(price),stock:parseInt(stock,10),category, 
+        data:{name,description,price:parseFloat(price),stock:parseInt(stock,10),category, barcode,
             size: Array.isArray(size)?size.join(' '):size, 
             color:Array.isArray(color)?color.join(' '):color,
-            variant:Array.isArray(variant)?variant.join(' '):variant
+            variant:Array.isArray(variant)?variant.join(' '):variant,
+            weight: parseFloat(weight)
         }
     });
     for(const photo of photos){const result=await cloudinary.uploader.upload(photo.path,{
         folder:'E-Commerce/Product-Photos',
         width:300,
-        height:300,
+        height:180,
         crop:'fit'
     });
-    await prisma.productphotos.create({
+    await prisma.productPhotos.create({
         data:{url:result.secure_url, publicId:result.public_id,productId:addproduct.id}
     });
         const fs=require('fs/promises');
@@ -612,8 +614,10 @@ route.get('/chartdata',verification,roleAuthorize('ADMIN'), async(req,res)=>{
 
 //add Shipping Rate
 route.post('/addshippingrate', verification, roleAuthorize('ADMIN'), async(req,res)=>{
+    
     try{
         const {location,baseFee, perKgFee}=req.body
+        if(!location||!baseFee||!perKgFee){return res.status(400).json({msg:'All Field Required'})}
          await prisma.shippingRate.create({
             data:{location,baseFee,perKgFee}
         });
@@ -621,6 +625,221 @@ route.post('/addshippingrate', verification, roleAuthorize('ADMIN'), async(req,r
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
+
+    //get All Shipping Fee
+route.get('/getshippingfee', verification, roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const rate= await prisma.shippingRate.findMany({
+            select:{
+                id:true,
+                location:true,
+                baseFee:true,
+                perKgFee:true
+            }
+        });
+        res.status(200).json({rate})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+//Edit Shipping Fee Rate
+route.put('/editshippingfeerate/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const shippingFeeId= Number(req.params.id);
+        const {location,baseFee,perKgFee}=req.body;
+        const shippingFee= await prisma.shippingRate.findFirst({
+            where:{id:shippingFeeId}
+        });
+        if(!shippingFee){return res.status(404).json({msg:'Shipping Fee Not Found'})}
+        await prisma.shippingRate.update({
+            where:{id:shippingFeeId},
+            data:{
+                location, baseFee,perKgFee
+            }
+        });
+        res.status(200).json({msg:'Shipping Fee Update Successfully'})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+//Delete Shipping Fee Rate
+route.delete('/deleteshippingfeerate/:id', verification, roleAuthorize('ADMIN'),async(req,res)=>{
+   
+    try{
+        const shippingFeeId=Number(req.params.id);
+        const shippingFee= await prisma.shippingRate.findFirst({
+            where:{id:shippingFeeId}
+        });
+        if(!shippingFee){return res.status(404).json({msg:'Shipping Rate Not Found'})}
+        await prisma.shippingRate.delete({
+            where:{id:shippingFeeId}
+        });
+        res.status(200).json({msg:'Shipping Fee Rate Delete Successfully'})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+//get product by category(mens fashion)
+route.get('/adminmensfashion',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const page= Number(req.query.page)||1;
+        const limit=Number(req.query.limit)||20;
+        const skip= (page-1)*limit
+        const totalMensFashion= await prisma.product.count({
+            where:{category:'MENSFASHION'}
+        });
+        const getMensFashion= await prisma.product.findMany({
+            where:{category:'MENSFASHION'},
+            select:{
+                id:true,
+                name:true,
+                description:true,
+                price:true,
+                stock:true,
+                photos:true,
+                size:true,
+                color:true,
+                variant:true,
+                weight:true,
+                updatedAt: true,
+                createdAt:true
+            },
+            skip:skip,
+            take:limit,
+            orderBy:{createdAt:'desc'}
+        });
+        res.status(200).json({totalMensFashion, getMensFashion, totalPage:Math.ceil(totalMensFashion/limit)})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+//get product by category(womens fashion)
+route.get('/adminwomensfashion',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const page= Number(req.query.page)||1;
+        const limit=Number(req.query.limit)||20;
+        const skip= (page-1)*limit
+        const totalWomensFashion= await prisma.product.count({
+            where:{category:'WOMENFASHION'}
+        });
+        const getWomensFashion= await prisma.product.findMany({
+            where:{category:'WOMENFASHION'},
+            select:{
+                id:true,
+                name:true,
+                description:true,
+                price:true,
+                stock:true,
+                photos:true,
+                size:true,
+                color:true,
+                variant:true,
+                weight:true,
+                updatedAt: true,
+                createdAt:true
+            },
+            skip:skip,
+            take:limit,
+            orderBy:{createdAt:'desc'}
+        });
+        res.status(200).json({totalWomensFashion, getWomensFashion, totalPage:Math.ceil(totalWomensFashion/limit)})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+//get product by category(kids fashion)
+route.get('/adminkidsfashion',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const page= Number(req.query.page)||1;
+        const limit=Number(req.query.limit)||20;
+        const skip= (page-1)*limit
+        const totalKidsFashion= await prisma.product.count({
+            where:{category:'KIDSFASHION'}
+        });
+        const getKidsFashion= await prisma.product.findMany({
+            where:{category:'KIDSFASHION'},
+            select:{
+                id:true,
+                name:true,
+                description:true,
+                price:true,
+                stock:true,
+                photos:true,
+                size:true,
+                color:true,
+                variant:true,
+                weight:true,
+                updatedAt: true,
+                createdAt:true
+            },
+            skip:skip,
+            take:limit,
+            orderBy:{createdAt:'desc'}
+        });
+        res.status(200).json({totalKidsFashion, getKidsFashion, totalPage:Math.ceil(totalKidsFashion/limit)})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+//get product by category(Accessories)
+route.get('/adminaccessories',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const page= Number(req.query.page)||1;
+        const limit=Number(req.query.limit)||20;
+        const skip= (page-1)*limit
+        const totalAccessoriesFashion= await prisma.product.count({
+            where:{category:'ACCESSORIES'}
+        });
+        const getAccessoriesFashion= await prisma.product.findMany({
+            where:{category:'ACCESSORIES'},
+            select:{
+                id:true,
+                name:true,
+                description:true,
+                price:true,
+                stock:true,
+                photos:true,
+                size:true,
+                color:true,
+                variant:true,
+                weight:true,
+                updatedAt: true,
+                createdAt:true
+            },
+            skip:skip,
+            take:limit,
+            orderBy:{createdAt:'desc'}
+        });
+        res.status(200).json({totalAccessoriesFashion, getAccessoriesFashion, totalPage:Math.ceil(totalAccessoriesFashion/limit)})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+//get product by category(Perfume)
+route.get('/adminperfume',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const page= Number(req.query.page)||1;
+        const limit=Number(req.query.limit)||20;
+        const skip= (page-1)*limit
+        const totalPerfumeFashion= await prisma.product.count({
+            where:{category:'PERFUME'}
+        });
+        const getPerfumeFashion= await prisma.product.findMany({
+            where:{category:'PERFUME'},
+            select:{
+                id:true,
+                name:true,
+                description:true,
+                price:true,
+                stock:true,
+                photos:true,
+                size:true,
+                color:true,
+                variant:true,
+                weight:true,
+                updatedAt: true,
+                createdAt:true
+            },
+            skip:skip,
+            take:limit,
+            orderBy:{createdAt:'desc'}
+        });
+        res.status(200).json({totalPerfumeFashion, getPerfumeFashion, totalPage:Math.ceil(totalPerfumeFashion/limit)})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
 
 
 

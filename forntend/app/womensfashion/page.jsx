@@ -34,7 +34,7 @@ export default function womenFashion(){
             <h1 className="text-center font-semibold text-3xl mt-[50px]">Women's Product ({allproduct})</h1>
             {productData?.map((pro)=>(
             <div key={pro.id}>
-            <Product name={pro.name} description={pro.description} price={pro.price} stock={pro.stock} photos={pro.photos[0]}
+            <Product name={pro.name} description={pro.description} price={pro.price} stock={pro.stock} photos={pro?.photos[0]?.url}
             sold={pro.order.quantity} comment={pro._count.comment} />
             </div>
             ))}

@@ -48,7 +48,7 @@ else if(res.status===404 ||res.status===400||res.status===500){setMsg(data.msg);
         <div className="max-[1380px] mx-auto overflow-hidden shadow-xl my-[50px]">
             <div className="grid grid-cols-1 justify-items-center my-[30px]">
                 <div className="grid grid-cols-1 justify-items-center">
-                    <Image src={logo} height={50} width={120} alt="logo"/>
+                    <Image src={logo} height='auto' width='auto' priority className="h-[60px] w-[120px]" alt="logo"/>
                     <h1 className="text-gray-400 text-sm mb-[10px] mt-[5px] ">Hello! Welcome Back To Our Shop! Please Login Your Account Here!</h1>
                     <p className="text-gray-800 font-bold text-3xl">Login</p>
                 </div>

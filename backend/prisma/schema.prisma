@@ -56,6 +56,7 @@ model Product {
   category Category
   comment Comment[]
   weight Float
+  barcode String? @unique
 }
 
 model ProductPhotos{

@@ -9,7 +9,7 @@ export async function fetchWithAuth(url, options = {}) {
     headers: {
       ...(options.headers || {}),
       "Authorization": `Bearer ${accessToken}`,
-      "Content-Type": "application/json"
+      ...(options.body instanceof FormData ? {}: {"Content-Type": "application/json"})
     }
   });
 
@@ -36,7 +36,7 @@ export async function fetchWithAuth(url, options = {}) {
       headers: {
         ...(options.headers || {}),
         "Authorization": `Bearer ${accessToken}`,
-        "Content-Type": "application/json"
+       ...(options.body instanceof FormData ? {}: {"Content-Type": "application/json"})
       }
     });
   }

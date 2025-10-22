@@ -75,7 +75,7 @@ export default function navBar() {
       {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
         <nav className=" flex max-w-[1380px] h-[80px] items-center justify-between shadow-xl">
             <div className="h-[80px] w-[120px]  ml-[10px]">
-            <Link href='/'><Image className="" src={logo} alt="logo" width={180} height={80}/></Link>
+            <Link href='/'><Image className="" src={logo} alt="logo" width={180} height={80} priority/></Link>
             </div>
             <div className=" flex items-center gap-5 ">
               <input className="border border-gray-400 p-[5px]  rounded-xl" type="text" placeholder="Search Product"/>

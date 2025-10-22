@@ -17,11 +17,13 @@ const [type, setType]=useState(null);
 const getAllProducts=async(page)=>{
   const res= await fetchWithAuth(`${BaseURI}/api/user/allproduct?page=${page}&limit=${28}`)
   setProducts(res.getAllProduct);
-  setTotalPage(res.totalPage)
+  setTotalPage(res.totalPage);
+
 };
 
 useEffect(()=>{
   getAllProducts(page)
+  
 },[page])
 
 const handelNext=()=>{
@@ -33,10 +35,11 @@ const handelNext=()=>{
     <div className=' max-w-[1380] mx-auto overflow-hidden'>
       <Bannar/>
       <Category/>
+      <h1 className='text-center text-3xl text-gray-500 font-semibold'>All Products</h1>
       <div className='grid grid-cols-4 gap-1 '>
         {products.map((pro)=>(
           <div key={pro.id}>
-          <Products name={pro.name} description={pro.description} price={pro.price} photos={pro.photos[0]} stock={pro.stock}
+          <Products name={pro.name} description={pro.description} price={pro.price} photos={pro?.photos[0]?.url} stock={pro.stock}
           sold={pro.order.quantity} comment={pro._count.comment}/>
            </div> ))}
       </div>
