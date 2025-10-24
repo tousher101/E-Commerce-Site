@@ -1,5 +1,5 @@
 # Touch & Take - E-Commarce Site
-Single Vendor Multi Fuctional e-commarce site.
+Single Vendor Multi Functional e-commarce site.
 
 # Features
 - Email Verification.
