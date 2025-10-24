@@ -22,6 +22,7 @@ const [msg,setMsg]=useState(null);
 const [type,setType]=useState(null);
 const [selectedFile, setSelectedFile]=useState([]);
 const [loading, setLoading]=useState(false);
+const [originalPrice, setOriginalPrice]=useState('')
 
 const formData= new FormData();
 selectedFile.forEach((file)=>{formData.append('photos',file)});
@@ -29,6 +30,7 @@ formData.append('name',name);
 formData.append('description',description);
 formData.append('price',parseFloat(price));
 formData.append('stock',parseInt(stock));
+formData.append('originalPrice', parseFloat(originalPrice))
 formData.append('size',size);
 formData.append('color',color);
 formData.append('category',category);
@@ -47,7 +49,7 @@ const addProduct=async()=>{
         body: formData
     });
   setMsg(res.msg)
-  setName('');setDescription('');setPrice('');setColor('');setCategory(''); setSize('');setWeight('');setVariant('');setStock(''); setbarCode('');
+  setName('');setDescription('');setPrice('');setColor('');setCategory(''); setSize('');setWeight('');setVariant('');setStock(''); setbarCode(''); setOriginalPrice('');
   setLoading(false)
 };
 
@@ -60,7 +62,7 @@ const addProduct=async()=>{
        size={size} sizeOnCh={(e)=>{setSize(e.target.value)}} weight={weight} weightOnCh={(e)=>{setWeight(e.target.value)}}
        color={color} colorOnCh={(e)=>{setColor(e.target.value)}} variant={variant} variantOnCh={(e)=>{setVariant(e.target.value)}}
        category={category} categoryOnCh={(e)=>{setCategory(e.target.value)}} bardcode={barcode} barcodeOnCh={(e)=>{setbarCode(e.target.value)}}
-       submitAddProduct={()=>{addProduct()}} photosOnCh={handleChange}/>
+       submitAddProduct={()=>{addProduct()}} photosOnCh={handleChange} originalPrice={originalPrice} originlPriceOnCh={(e)=>{setOriginalPrice(e.target.value)}}/>
 
        {loading&&<Loading/>}
        </>

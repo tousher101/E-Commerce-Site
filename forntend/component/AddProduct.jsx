@@ -1,5 +1,6 @@
 export default function addProduct({name,nameOnCh,description,descriptionOnCh,price,priceOnCh,stock,stockOnCh,color,colorOnCh,
-    size,sizeOnCh,category,categoryOnCh,variant,variantOnCh,weight,weightOnCh, bardcode, barcodeOnCh, submitAddProduct, photosOnCh
+    size,sizeOnCh,category,categoryOnCh,variant,variantOnCh,weight,weightOnCh, bardcode, barcodeOnCh, submitAddProduct, photosOnCh,
+    originalPrice,originlPriceOnCh
 }){
     return(
         <div className="max-w-[1380px] mx-auto overflow-hidden">
@@ -11,12 +12,13 @@ export default function addProduct({name,nameOnCh,description,descriptionOnCh,pr
                 <input value={price} onChange={priceOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="number" placeholder="Price"/>
                 <input value={stock} onChange={stockOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="number" placeholder="Stock"/>
                 <input value={size} onChange={sizeOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Size"/>
-                <input value={weight} onChange={weightOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Weight"/>
+                <input value={weight} onChange={weightOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="number" placeholder="Weight"/>
                 </div> 
 
                 <div className="flex justify-between items-center">
                 <input value={color} onChange={colorOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Color"/>
                 <input value={variant} onChange={variantOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Veriant"/>
+                <input value={originalPrice} onChange={originlPriceOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="number" placeholder="Original Price"/>
                 <select value={category} onChange={categoryOnCh} className="border-1 border-gray-500 rounded-xl p-2 px-11">
                     <option value=''>Select Category</option>
                     <option value="MENSFASHION">Men's Fashion</option>

@@ -38,7 +38,8 @@ export default function perfume(){
            {productData?.map((pro)=>(
                  <div key={pro.id}>
                 <AdminProduct name={pro.name} description={pro.description} photos={pro?.photos[0]?.url} price={pro.price} stock={pro.stock}  
-                color={pro.color} size={pro.size} variant={pro.variant} weight={pro.weight} update={pro.updatedAt} create={pro.createdAt}  />
+                color={pro.color} size={pro.size} variant={pro.variant} weight={pro.weight} update={pro.updatedAt} create={pro.createdAt} productId={pro.id} getPerfum={()=>{getPerfumeProduct()}} mode={'Perfume'} 
+                selectedProduct={pro} productOriginalPrice={pro.originalPrice} />
             </div>
            ))}
             

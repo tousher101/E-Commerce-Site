@@ -4,6 +4,8 @@ import AdminProduct from '../../../../component/AdminProduct';
 import { fetchWithAuth } from '../../../../Utils/fetchWithAuth';
 import Alert from '../../../../Utils/Alert';
 
+
+
 export default function accessories(){
    const BaseURI=process.env.NEXT_PUBLIC_API_URI;
     const [productData, setProductData]=useState([]);
@@ -12,6 +14,7 @@ export default function accessories(){
     const [totalProduct, setTotalProduct]=useState(0);
     const [msg, setMsg]=useState(null);
     const [type, setType]=useState(null);
+  
 
     const getAccessoriesProduct=async(page)=>{
         const res=await fetchWithAuth(`${BaseURI}/api/admin/adminaccessories?page=${page}&limit=${20}`)
@@ -37,7 +40,9 @@ export default function accessories(){
            {productData?.map((pro)=>(
                  <div key={pro.id}>
                 <AdminProduct name={pro.name} description={pro.description} photos={pro?.photos[0]?.url} price={pro.price} stock={pro.stock}  
-                color={pro.color} size={pro.size} variant={pro.variant} weight={pro.weight} update={pro.updatedAt} create={pro.createdAt}  />
+                color={pro.color} size={pro.size} variant={pro.variant} weight={pro.weight} update={pro.updatedAt} create={pro.createdAt} productId={pro.id} getAccessories={()=>{getAccessoriesProduct()}} mode={'Accessories'} 
+                selectedProduct={pro} productOriginalPrice={pro.originalPrice}
+                />
             </div>
            ))}
             
@@ -45,8 +50,8 @@ export default function accessories(){
                 <button onClick={()=>{setPage((p)=>p-1, 1)}} disabled={page<=1} className="bg-black rounded-xl h-[40px] text-white cursor-pointer w-[100px]">Previous</button>
                 <button onClick={handleNext} className="bg-black rounded-xl h-[40px] text-white cursor-pointer w-[100px]">Next</button>
              </div>}
-
         </div>
+       
         </>
     )
 }

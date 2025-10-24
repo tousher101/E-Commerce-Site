@@ -12,14 +12,16 @@ import Alert from "../Utils/Alert";
 
 export default function navBar() {
   const {userInfo,getAllUser}=useUserInfo();
-   const [msg, setMsg]=useState(null);
-      const [type,setType]=useState(null);
-  
+  const [msg, setMsg]=useState(null);
+  const [type,setType]=useState(null);
+  const router=useRouter()
+
       const goHome=()=>{
-        router.push('/')
+        window.location.href=('/')
       };
-    const router=useRouter()
+    
     const goSingIn=()=>{
+        // window.location.href=('/signin')
         router.push('/signin')
     }
  

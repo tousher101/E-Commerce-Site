@@ -12,17 +12,18 @@ const upload =require('../middle-wear/multar');
 //Add Product By Admin
 route.post('/addproduct',verification,roleAuthorize('ADMIN'),upload.array('photos',5),async(req,res)=>{
 
-const {name,description,price,stock,size,color, category,variant, weight, barcode}=req.body;
+const {name,description,price,stock,size,color, category,variant, weight, barcode, originalPrice}=req.body;
 const photos=req.files
 
 try{
-    if(!name||!description||!price||!stock||!category||!photos||!weight){return res.status(400).json({msg:'Add All Required Field'})}
+    if(!name||!description||!price||!stock||!category||!photos||!weight||!originalPrice){return res.status(400).json({msg:'Add All Required Field'})}
     const addproduct=await prisma.product.create({
         data:{name,description,price:parseFloat(price),stock:parseInt(stock,10),category, barcode,
             size: Array.isArray(size)?size.join(' '):size, 
             color:Array.isArray(color)?color.join(' '):color,
             variant:Array.isArray(variant)?variant.join(' '):variant,
-            weight: parseFloat(weight)
+            weight: parseFloat(weight),
+            originalPrice:parseFloat(originalPrice)
         }
     });
     for(const photo of photos){const result=await cloudinary.uploader.upload(photo.path,{
@@ -47,20 +48,20 @@ try{
 //Delete Product
 route.delete('/deleteproduct/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
-        const productId= Number(req.params.id)
-        const product= await prisma.product.findUnique({
-            where:{id:productId}
+        const id= Number(req.params.id)
+        const product= await prisma.product.findFirst({
+            where:{id}
         });
         if(!product){return res.status(404).json({msg:'Product Not Found'})}
-        const photos= await prisma.productphotos.findUnique({
-            where:{productId}
+        const photos= await prisma.productPhotos.findMany({
+            where:{productId:id}
         });
         for(const photo of photos){await cloudinary.uploader.destroy(photo.publicId)};
-        await prisma.productphotos.deleteMany({
-            where:{productId}
+        await prisma.productPhotos.deleteMany({
+            where:{productId:id}
         });
         await prisma.product.delete({
-            where:{id:productId}
+            where:{id}
         });
         res.status(200).json({msg:'Product Deleted Sucessfully'})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
@@ -70,11 +71,17 @@ route.delete('/deleteproduct/:id',verification,roleAuthorize('ADMIN'),async(req,
 route.put('/editproduct/:id', verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
         const productId=Number(req.params.id)
-        const {name,description,price,stock,size,color}=req.body
+        const {name,description,price,stock,size,color, weight, variant, originalPrice}=req.body
         if(!productId){return res.status(404).json({msg:'Product Not Found'})}
         await prisma.product.update({
             where:{id:productId},
-            data:{name,description,price:parseFloat(price),stock:parseInt(stock,10),size,color}
+            data:{name,description,price,stock,
+                size:Array.isArray(size)?size.join(' '):size,
+                color:Array.isArray(color)?color.join(' '):color, 
+                weight,
+                variant:Array.isArray(variant)?variant.join(' '):variant,
+                originalPrice
+            }
         });
         res.status(200).json({msg:'Product Edit Successfully'})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
@@ -86,6 +93,9 @@ route.get('/countorderstatus',verification, roleAuthorize('ADMIN'),async(req,res
         const totalPendingOrder= await prisma.order.count({
             where:{status:'PENDING'}
         });
+           const totalConfirmedOrder= await prisma.order.count({
+            where:{status:'CONFIRMED'}
+        });
         const totalShippedOrder= await prisma.order.count({
             where:{status:'SHIPPED'}
         });
@@ -95,7 +105,13 @@ route.get('/countorderstatus',verification, roleAuthorize('ADMIN'),async(req,res
         const totalCancelOrder=await prisma.order.count({
             where:{status:'CANCELLED'}
         });
-        res.status(200).json({totalPendingOrder,totalShippedOrder,totalDeliveredOrder,totalCancelOrder})
+        const totalPaidOrder= await prisma.payment.count({
+            where:{status:'PAID'}
+        });
+        const totalCODOrder=await prisma.payment.count({
+            where:{paymentmethod:'COD'}
+        });
+        res.status(200).json({totalPendingOrder,totalShippedOrder,totalDeliveredOrder,totalCancelOrder, totalConfirmedOrder, totalCODOrder,totalPaidOrder})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
@@ -110,8 +126,6 @@ route.get('/requestorder', verification,roleAuthorize('ADMIN'), async(req,res)=>
                 id:true,
                 totalPrice:true,
                 status:true,
-                paymentStatus:true,
-                PaymentMethod:true,
                 createdAt:true,
                      user:{
                         select:{
@@ -121,6 +135,22 @@ route.get('/requestorder', verification,roleAuthorize('ADMIN'), async(req,res)=>
                             
                         }
                     },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                             status :true,
+                                paymentmethod:true,
+                                createdAt:true
+                        }
+                    }
             }
         });
         const totalOrder= await prisma.order.count({
@@ -231,7 +261,53 @@ route.put('/deliverdorder/:id',verification,roleAuthorize('ADMIN'),async(req,res
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
-//get all confirmed order
+
+
+//get all confirmed order/card
+route.get('/confirmedorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
+    try{
+        const getconfirmedorder= await prisma.order.findMany({
+            where:{status:'CONFIRMED'},
+            select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                             status :true,
+                                paymentmethod:true,
+                                createdAt:true
+                        }
+                    }
+            }
+        });
+        const totalConfirmedOrder= await prisma.order.count({
+            where:{status:'CONFIRMED'}
+        })
+        res.status(200).json({getconfirmedorder, totalConfirmedOrder})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+
+//get all confirmed order/details
 route.get('/getconfirmedorder',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
         const totalConOrder= await prisma.order.count({
@@ -268,7 +344,51 @@ route.get('/getconfirmedorder',verification,roleAuthorize('ADMIN'),async(req,res
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
-//get Shipped Order
+
+//get all shipped order/card
+route.get('/shippedorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
+    try{
+        const getShippedorder= await prisma.order.findMany({
+            where:{status:'SHIPPED'},
+            select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                             status :true,
+                                paymentmethod:true,
+                                createdAt:true
+                        }
+                    }
+            }
+        });
+        const totalShippedOrder= await prisma.order.count({
+            where:{status:'SHIPPED'}
+        })
+        res.status(200).json({getShippedorder, totalShippedOrder})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+//get Shipped Order/details
 route.get('/getshippedorder',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
         const totalShippedOrder= await prisma.order.count({
@@ -305,7 +425,62 @@ route.get('/getshippedorder',verification,roleAuthorize('ADMIN'),async(req,res)=
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
-//get all delivered order
+
+//get all deliverd order/card
+route.get('/deliverdorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
+    try{
+        const page= Number(req.query.page||1);
+        const limit=Number(req.query.limit||20);
+         const skip= (page-1)*limit;
+            const totalDeliveredOrder= await prisma.order.count({
+            where:{status:'DELIVERED'}
+        });
+        const getDeliveredOrder= await prisma.order.findMany({
+            where:{status:'DELIVERED'},
+            select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                             status :true,
+                                paymentmethod:true,
+                                createdAt:true
+                        }
+                    },
+                    
+            },
+            skip:skip,
+            take:limit,
+            orderBy:{createdAt:'desc'}
+        });
+
+        res.status(200).json({getDeliveredOrder, totalDeliveredOrder, totalPage:Math.ceil(totalDeliveredOrder/limit)})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+
+
+
+//get all delivered order/details
 route.get('/getdeliveredorder',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
         const totalDelOrder= await prisma.order.count({
@@ -342,7 +517,58 @@ route.get('/getdeliveredorder',verification,roleAuthorize('ADMIN'),async(req,res
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
-//get Cancel Order
+//get all cancelled order/card
+route.get('/cancelledorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
+    try{
+        const page= Number(req.query.page||1);
+        const limit=Number(req.query.limit||20);
+         const skip= (page-1)*limit;
+            const totalCancelledOrder= await prisma.order.count({
+            where:{status:'CANCELLED'}
+        });
+        const getCancelledOrder= await prisma.order.findMany({
+            where:{status:'CANCELLED'},
+            select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                             status :true,
+                                paymentmethod:true,
+                                createdAt:true
+                        }
+                    },
+                    
+            },
+            skip:skip,
+            take:limit,
+            orderBy:{createdAt:'desc'}
+        });
+
+        res.status(200).json({getCancelledOrder, totalCancelledOrder, totalPage:Math.ceil(totalCancelledOrder/limit)})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+//get Cancel Order/details
 route.get('/getcancelorder',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
         const totalCanOrder= await prisma.order.count({
@@ -483,19 +709,6 @@ route.get('/getmonthlydata', verification, roleAuthorize('ADMIN'), async(req,res
         const growth =  prev===0?100:((current-prev)/prev)*100;
 
 
-        const currentMonthOrder= await prisma.order.count({
-            where:{ createdAt:{currentStart, lt: currentEnd}}
-        });
-
-        const prevMonthOrder = await prisma.order.count({
-            where:{createdAt:{prevStart, lt:prevEnd}}
-        });
-
-        const currentOrder= currentMonthOrder ||0;
-        const prevOrder = prevMonthOrder || 0;
-        const orderGrowth = prevOrder==0?100:((currentOrder-prevOrder)/prevOrder)*100;
-
-
 
          const currentMonthPendingOrder= await prisma.order.count({
             where:{status:'PENDING', createdAt:{gte:currentStart, lt:currentEnd}}
@@ -563,7 +776,7 @@ route.get('/getmonthlydata', verification, roleAuthorize('ADMIN'), async(req,res
         const orderCancelledGrowth = prevCancelledOrder==0?100:((currentCancelledOrder-prevCancelledOrder)/prevCancelledOrder)*100;
 
 
-        res.status(200).json({growth:growth.toFixed(2), current, prev, orderGrowth:orderGrowth.toFixed(2), currentOrder, prevOrder,
+        res.status(200).json({growth:growth.toFixed(2), current, prev, 
             orderPendingGrowth:orderPendingGrowth.toFixed(2), currentMonthPendingOrder, prevMonthPendingOrder, orderConfirmedGrowth:orderConfirmedGrowth.toFixed(2),
             currentConfirmedOrder, prevConfirmedOrder, orderShippedGrowth:orderShippedGrowth.toFixed(2), currentMonthShippedOrder, prevShippedOrder,
             orderDeliverdGrowth:orderDeliverdGrowth.toFixed(2), currentDeliverdOrder, prevDeliverdOrder,
@@ -699,7 +912,8 @@ route.get('/adminmensfashion',verification,roleAuthorize('ADMIN'),async(req,res)
                 variant:true,
                 weight:true,
                 updatedAt: true,
-                createdAt:true
+                createdAt:true,
+                originalPrice:true
             },
             skip:skip,
             take:limit,
@@ -732,7 +946,8 @@ route.get('/adminwomensfashion',verification,roleAuthorize('ADMIN'),async(req,re
                 variant:true,
                 weight:true,
                 updatedAt: true,
-                createdAt:true
+                createdAt:true,
+                originalPrice:true
             },
             skip:skip,
             take:limit,
@@ -765,7 +980,8 @@ route.get('/adminkidsfashion',verification,roleAuthorize('ADMIN'),async(req,res)
                 variant:true,
                 weight:true,
                 updatedAt: true,
-                createdAt:true
+                createdAt:true,
+                originalPrice:true
             },
             skip:skip,
             take:limit,
@@ -798,7 +1014,8 @@ route.get('/adminaccessories',verification,roleAuthorize('ADMIN'),async(req,res)
                 variant:true,
                 weight:true,
                 updatedAt: true,
-                createdAt:true
+                createdAt:true,
+                originalPrice:true
             },
             skip:skip,
             take:limit,
@@ -831,7 +1048,8 @@ route.get('/adminperfume',verification,roleAuthorize('ADMIN'),async(req,res)=>{
                 variant:true,
                 weight:true,
                 updatedAt: true,
-                createdAt:true
+                createdAt:true,
+                originalPrice:true
             },
             skip:skip,
             take:limit,

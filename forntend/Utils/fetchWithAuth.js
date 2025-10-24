@@ -20,9 +20,11 @@ export async function fetchWithAuth(url, options = {}) {
       credentials: "include"
     });
 
-    if (!refreshRes.ok) {
+    if (!refreshRes.ok && !window.location.pathname.includes('/')) {
       localStorage.removeItem("token");
+      window.location.replace('/');
       throw new Error("Session expired, please login again");
+      
     }
 
     const refreshData = await refreshRes.json();

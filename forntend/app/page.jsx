@@ -40,7 +40,7 @@ const handelNext=()=>{
         {products.map((pro)=>(
           <div key={pro.id}>
           <Products name={pro.name} description={pro.description} price={pro.price} photos={pro?.photos[0]?.url} stock={pro.stock}
-          sold={pro.order.quantity} comment={pro._count.comment}/>
+          sold={pro.order.quantity} comment={pro._count.comment} originalPrice={pro.originalPrice} />
            </div> ))}
       </div>
         {totalPage>1&&<div className='flex justify-between mb-[20px] mx-[10px]'>

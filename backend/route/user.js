@@ -76,6 +76,7 @@ route.get('/allproduct', async(req,res)=>{
                 price:true,
                 stock:true,
                 photos:true,
+                originalPrice:true,
                 _count:{
                     select:{comment:true}
                 },
@@ -755,6 +756,46 @@ route.get('/getshippingfee', verification, roleAuthorize('USER'),async(req,res)=
     try{
         const rate= await prisma.shippingRate.findMany();
         res.status(200).json({rate})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+// get related Product/card
+route.get('/relatedproduct/:id',async(req,res)=>{
+    try{
+        const {id}=req.params.id
+        const mainProduct= await prisma.product.findUnique({
+            where:{id}
+        });
+        if(!mainProduct){return res.status(404).json({msg:'Product Not Found'})}
+        
+        const relatedProduct= await prisma.product.findMany({
+            where:{id:{not:mainProduct.id},
+        OR:[{
+            category:mainProduct.category
+        }]
+        },
+        select:{
+                id:true,
+                name:true,
+                description:true,
+                price:true,
+                stock:true,
+                photos:true,
+                category:true,
+                _count:{
+                    select:{comment:true}
+                },
+                order:{
+                    select:{
+                         quantity:true
+                        }
+                    }
+                
+            },
+        orderBy:{createdAt:'desc'},
+        take:8,
+        });
+        res.status(200).json({relatedProduct})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 

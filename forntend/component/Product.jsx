@@ -4,7 +4,7 @@ import Sold from '../public/sold.png'
 import Review from '../public/review.png'
 import NoImage from '../public/noimage.png'
 
-export default function Product({name, description,price,stock,sold,photos,comment}){
+export default function Product({name, description,price,stock,sold,photos,comment,originalPrice}){
   
     return(
         
@@ -17,7 +17,10 @@ export default function Product({name, description,price,stock,sold,photos,comme
                     <div className='mx-[5px] mt-[15px]'>
                     <h1 className='font-semibold text-m'>{name}</h1>
                     <h2 className='text-[12px]'>{description}</h2>
-                    <h2 className='font-bold'>₱{price} </h2>
+                    <div className='flex gap-2'>
+                        <h2 className='text-gray-500 line-through font-semibold'>₱{originalPrice}</h2>
+                        <h2 className='font-bold'>₱{price} </h2>
+                    </div>
                     <h2 className='text-sm'>Stock({stock})</h2>
                     </div>
                     <div className='flex justify-evenly'>

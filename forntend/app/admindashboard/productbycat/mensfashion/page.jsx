@@ -13,6 +13,7 @@ export default function mensFashion(){
     const [msg, setMsg]=useState(null);
     const [type, setType]=useState(null);
 
+
     const getMensProduct=async(page)=>{
         const res=await fetchWithAuth(`${BaseURI}/api/admin/adminmensfashion?page=${page}&limit=${20}`)
         setProductData(res.getMensFashion);
@@ -35,9 +36,10 @@ export default function mensFashion(){
         <div className="max-w-[1380px] mx-[10px] overflow-x-hidden">
             <h1 className='text-center text-3xl text-gray-400 font-semibold my-[30px]'>Men's Product ({totalProduct})</h1>
            {productData?.map((pro)=>(
-                 <div key={pro.id}>
-                <AdminProduct name={pro.name} description={pro.description} photos={pro?.photos[0]?.url} price={pro.price} stock={pro.stock}  
-                color={pro.color} size={pro.size} variant={pro.variant} weight={pro.weight} update={pro.updatedAt} create={pro.createdAt}  />
+                 <div key={pro.id} >
+                <AdminProduct productName={pro.name} productDescription={pro.description} productPhotos={pro?.photos[0]?.url} productPrice={pro.price} productStock={pro.stock}  
+                productColor={pro.color} productSize={pro.size} productVariant={pro.variant} productWeight={pro.weight} update={pro.updatedAt} create={pro.createdAt} productId={pro.id} getMens={()=>{getMensProduct()}} mode={'Men'} 
+                selectedProduct={pro} productOriginalPrice={pro.originalPrice}/>
             </div>
            ))}
             
