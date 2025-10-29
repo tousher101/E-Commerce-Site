@@ -58,10 +58,10 @@ async(req,res)=>{
         const isMatch=await bcrypt.compare(password,user.password);
         if(!isMatch){return res.status(400).json({msg:'Invalid Email or Password'})};
         const payload = {id:user.id, role:user.role};
-        const accessToken=jwt.sign(payload,ACCESS_TOKEN_SECRATE,{expiresIn:'15m'});
+        const accessToken=jwt.sign(payload,ACCESS_TOKEN_SECRATE,{expiresIn:'1h'});
         const refreshToken= jwt.sign(payload, REFRESH_TOKEN_SECRATE,{expiresIn:'7d'})
-        res.cookie('refreshToken',refreshToken,{httpOnly:true, secure: process.env.NODE_ENV==='production'?true:false
-            ,sameSite:process.env.NODE_ENV==='production'?'none':'lax',
+        res.cookie('refreshToken',refreshToken,{httpOnly:true, secure: false //true in Production
+            ,sameSite: 'lax', //'none' in production
         path:'/', maxAge: 7 * 24 * 60 * 60 * 1000})
         res.status(200).json({accessToken, role:user.role})
 

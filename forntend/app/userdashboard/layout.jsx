@@ -1,8 +1,8 @@
 import Link from "next/link"
 export default function layout({children}){
     return(
-        <div>
-             <div className="max-w-[1380px] mx-[10px] overflow-hidden mb-[80px]">
+        
+             <div className=" mx-[10px] overflow-hidden mb-[80px]">
             <div className="flex gap-3">
             <div className="flex flex-[20%] shadow-xl h-[500px] rounded-xl ">
                 <div className="grid grid-cols-1 gap-2 p-3">
@@ -61,6 +61,6 @@ export default function layout({children}){
             </div>
               
         </div>      
-        </div>
+        
     )
 }

@@ -59,7 +59,7 @@ export default function signUp(){
     return(
         <>
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-         <div className="max-[1380px] mx-auto overflow-hidden shadow-xl my-[50px]">
+         <div className=" mx-auto overflow-hidden shadow-xl my-[50px]">
             <div className="grid grid-cols-1 justify-items-center my-[30px]">
                 <div className="grid grid-cols-1 justify-items-center">
                     <Image src={logo} height='auto' width='auto' priority className="h-[60px] w-[120px]" alt="logo"/>

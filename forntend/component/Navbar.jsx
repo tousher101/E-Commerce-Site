@@ -4,16 +4,18 @@ import logo from '../public/logo.png'
 import userIcon from '../public/account.png'
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Cart from '../component/Cart'
 import {useUserInfo} from '../context/userInfo'
 import UserInfo from '../component/UserInfo'
 import Alert from "../Utils/Alert";
+import { fetchWithAuth } from "../Utils/fetchWithAuth";
 
 export default function navBar() {
-  const {userInfo,getAllUser}=useUserInfo();
+  const {userInfo,getAllUser, totalCartItmes,getTotalCartItems,cartData,getCartItems,}=useUserInfo();
   const [msg, setMsg]=useState(null);
   const [type,setType]=useState(null);
+  const [selectedArea, setSelectedArea]=useState('');
   const router=useRouter()
 
       const goHome=()=>{
@@ -24,6 +26,13 @@ export default function navBar() {
         // window.location.href=('/signin')
         router.push('/signin')
     }
+        const goCheckOut=()=>{
+          if(!selectedArea){setMsg('Please Selecte Shipping Area');setType('Error'); return}
+        router.push(`/checkout/${selectedArea}`);
+      setSelectedArea('');
+       closeModal();
+    };
+
  
     const [openCartModal, setOpenCartModal]=useState(false);
     const [animatedModal, setAnimatedModal]=useState(false)
@@ -34,6 +43,7 @@ export default function navBar() {
         setTimeout(()=>{
     setAnimatedModal(true)
       },10)
+      
     };
 
     const closeUserModal=()=>{
@@ -57,6 +67,9 @@ export default function navBar() {
       },10)
     };
    
+
+
+ 
  const logOut=async()=>{
       const res= await fetch(`${BaseURI}/api/auth/logout`,{
         method:'POST',
@@ -70,12 +83,26 @@ export default function navBar() {
       setType('Success'); goHome(); localStorage.removeItem('token');setUserModal(false);}
     }
 
+        const deleteCartItems=async(id)=>{
+      const res= await fetchWithAuth(`${BaseURI}/api/user/deletecartitem/${id}`,{
+        method:'DELETE'
+    });
+    setMsg(res.msg)
+    getCartItems();
+    getTotalCartItems();
+    };
+
+
+    useEffect(()=>{
+      getCartItems();
+    },[])
+
 
  
     return(
       <>
       {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-        <nav className=" flex max-w-[1380px] h-[80px] items-center justify-between shadow-xl">
+        <nav className=" flex h-[80px] items-center justify-between shadow-xl">
             <div className="h-[80px] w-[120px]  ml-[10px]">
             <Link href='/'><Image className="" src={logo} alt="logo" width={180} height={80} priority/></Link>
             </div>
@@ -86,6 +113,7 @@ export default function navBar() {
             <div  className="flex justify-between items-center">
                 {userInfo?.role==='USER'&&<div onClick={openModal} className="cursor-pointer">
                  <img className="h-[50px] w-[50px]" src="/shopping-cart.gif" alt="shopping-cart"/>
+                 <h1 className=" absolute top-5 right-20 bg-red-600 h-[20px] w-[20px] rounded-3xl text-center text-white text-sm ">{totalCartItmes}</h1>
                 </div>}
               
                 <div>
@@ -133,7 +161,7 @@ export default function navBar() {
                 
       </div>
         </nav>
-      {openCartModal&&<Cart closeModal={closeModal} design={animatedModal}/>}
+      {openCartModal&&<Cart closeModal={closeModal} design={animatedModal} data={cartData} totalItems={totalCartItmes} submitItemDelete={deleteCartItems} areaValue={selectedArea} areaOnCh={(e)=>{setSelectedArea(e.target.value)}} goCheckOut={goCheckOut}/>}
       {userModal&&<UserInfo photo={userInfo?.photo} design={animatedModal} closeModal={closeUserModal} name={userInfo.name}
       email={userInfo.email} phone={userInfo.phone} role={userInfo.role} logout={()=>{logOut()}}/>}
       </>

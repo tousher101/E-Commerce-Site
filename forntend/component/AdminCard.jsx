@@ -14,7 +14,7 @@ cancelledOrderGrowth
 
 }){
     return(
-        <div className=" mx-w-[1380px] mx-auto overflow-hidden  mt-[50px]">
+        <div className="  mx-auto overflow-hidden  mt-[50px]">
             <h2 className="text-xl font-bold mb-4 text-gray-700">Monthly Report</h2>
             <div className="  grid grid-cols-3 gap-5 ">
                 <div className="  p-3 bg-gradient-to-r from-[#8A2BE2] to-[#00FFFF] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">

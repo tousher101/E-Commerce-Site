@@ -43,5 +43,14 @@ export async function fetchWithAuth(url, options = {}) {
     });
   }
 
-  return response.json();
+ let data;
+  try {
+    data = await response.json();
+  } catch (err) {
+    const text = await response.text();
+    console.error("Response is not valid JSON:", text);
+    throw new Error("Response is not valid JSON");
+  }
+
+  return data;
 }

@@ -3,7 +3,7 @@ import Image from "next/image"
 import logo from '../../public/logo.png'
 import Link from "next/link"
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter,useSearchParams } from "next/navigation"
 import Alert from "../../Utils/Alert"
 import { useUserInfo } from "../../context/userInfo"
 
@@ -13,9 +13,11 @@ const [password, setPassword]=useState('');
 const BaseURI=process.env.NEXT_PUBLIC_API_URI;
 const [msg,setMsg]=useState(null);
 const [type,setType]=useState(null);
-const {getAllUser}=useUserInfo()
+const {getAllUser,getTotalCartItems,getCartItems}=useUserInfo()
 
 const router= useRouter();
+const searchParams=useSearchParams();
+const redirect=searchParams.get('redirect')
 
 const goAdminDashBoard=()=>{
     router.push('/admindashboard')
@@ -23,6 +25,10 @@ const goAdminDashBoard=()=>{
 
 const goUserHomePage=()=>{
     router.push('/')
+}
+
+const goRedirect=()=>{
+    router.push(redirect)
 }
 
 const submitLogin=async(e)=>{
@@ -36,8 +42,9 @@ const res=await fetch(`${BaseURI}/api/auth/signin`,{
 });
 const data= await res.json();
 if(res.ok){ localStorage.setItem('token', data.accessToken);
+    if(redirect){goRedirect();getTotalCartItems(); return}
     if(data.role==='ADMIN'){goAdminDashBoard(); getAllUser()}
-    if(data.role==='USER'){goUserHomePage();getAllUser()}
+    if(data.role==='USER'){goUserHomePage();getAllUser();getTotalCartItems(); getCartItems()}
 } 
 else if(res.status===404 ||res.status===400||res.status===500){setMsg(data.msg); setType('Error')}
 }
@@ -45,7 +52,7 @@ else if(res.status===404 ||res.status===400||res.status===500){setMsg(data.msg);
     return(
         <>
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-        <div className="max-[1380px] mx-auto overflow-hidden shadow-xl my-[50px]">
+        <div className=" mx-auto overflow-hidden shadow-xl my-[50px]">
             <div className="grid grid-cols-1 justify-items-center my-[30px]">
                 <div className="grid grid-cols-1 justify-items-center">
                     <Image src={logo} height='auto' width='auto' priority className="h-[60px] w-[120px]" alt="logo"/>

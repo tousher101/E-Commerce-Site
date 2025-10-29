@@ -16,7 +16,7 @@ import bank from '../public/Bank.png'
 
 export default function(){
     return(
-        <div className="max-w-[1380px] mx-[10px] overflow-hidden">
+        <div className=" mx-[10px] overflow-hidden">
             <div className="flex items-center justify-between">
                 <div className="text-gray-700">
                 <Image src={logo} height='auto' width='auto' priority className="h-[80px] w-[180px]" alt="store-logo"/>
@@ -30,7 +30,7 @@ export default function(){
                 </div>
             </div>
 
-            <div className="max-w-[1380px] overflow-hidden flex justify-between mt-[30px]  mb-[10px]">
+            <div className=" overflow-hidden flex justify-between mt-[30px]  mb-[10px] mx-[10px]">
                 <div className=" p-[10px]">
                 <h1 className="text-center text-xl font-semibold">Quick Links</h1>
                 <div className="grid grid-cols-1 text-sm text-gray-600 mt-[10px] gap-0.5">
@@ -82,7 +82,7 @@ export default function(){
                 </div>
                 </div>
             </div>
-        <div className="max-w-[1380] mx-[10px] overflow-hidden flex justify-between items-center mt-[20px] text-sm text-gray-400">
+        <div className=" mx-[10px] overflow-hidden flex justify-between items-center mt-[20px] text-sm text-gray-400">
             <p>Copyright © all rights reserved. Powerd by Touch&Take</p>
             <div className="flex items-center gap-2">
                 <Image src={visa} height={50} width={50} alt="visa-card-logo"/>

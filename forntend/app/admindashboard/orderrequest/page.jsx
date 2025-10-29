@@ -18,14 +18,14 @@ export default function orderRequest(){
    },[])
     
     return(
-        <div className="max-w-[1380px] mx-auto overflow-hidden">
+        <div className=" mx-auto overflow-hidden">
             <h1 className="text-center text-gray-500 my-[20px] text-2xl font-semibold">Order Request ({totalOrder})</h1>
             <div className='grid grid-cols-1 gap-1.5 items-center'>
                 {orderData?.length>0? orderData?.map((order)=>(
                     <div key={order.id}>
                     <OrderCard photo={order?.items?.product?.photos[0]?.url} orderId={order?.id} amount={order?.totalPrice} orderStatus={order?.status}
                     paymentStatus={order?.payment?.status} paymentMethod={order?.payment?.paymentmethod} paymentCreate={order?.payment?.createdAt} userName={order?.user?.name}
-                    userEmail={order?.user?.email} userPhone={order?.user?.phone} />
+                    userEmail={order?.user?.email} userPhone={order?.user?.phone} orderCreate={order?.createdAt} />
                 </div>
                 )) : <h1 className= 'text-center mt-50 text-4xl text-gray-500 font-semibold'> Order Request Not Available</h1>}
                 

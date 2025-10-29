@@ -3,12 +3,13 @@ import Image from 'next/image'
 import Sold from '../public/sold.png'
 import Review from '../public/review.png'
 import NoImage from '../public/noimage.png'
+import Link from 'next/link'
 
-export default function Product({name, description,price,stock,sold,photos,comment,originalPrice}){
+export default function Product({name, description,price,stock,sold,photos,comment,originalPrice, productId}){
   
     return(
         
-        <div className="max-w-[1380px] mx-[10px] overflow-hidden grid grid-cols-1 mt-[30px] ">
+        <div className=" mx-[10px] overflow-hidden grid grid-cols-1 mt-[30px] ">
             
                 <div className="h-[380px] w-[302px] border-1 border-gray-400 grid grid-cols-1 rounded-xl mb-[10px] hover:scale-102 duration-1000 ml-[5px] shadow-sm mt-[10px]">
                     <div className='h-[180px] w-[300px]  relative rounded-xl'>
@@ -40,16 +41,10 @@ export default function Product({name, description,price,stock,sold,photos,comme
                     </div>
                 
                     <div className='mx-[5px] flex justify-center mb-2'>
-                        <button className='bg-gray-700 mt-[10px] rounded-xl h-[40px] w-[120px] cursor-pointer shadow-xl text-white'>Details</button>
+                       <Link href={`/${productId}`}> <button className='bg-gray-700 mt-[10px] rounded-xl h-[40px] w-[120px] cursor-pointer shadow-xl text-white'>Details</button></Link>
                     </div>
 
                 </div>
-             
-
-            
-
-           
-
         </div>
     
     )

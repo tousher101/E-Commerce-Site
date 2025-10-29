@@ -11,25 +11,27 @@ const upload =require('../middle-wear/multar');
 
 //Add Product By Admin
 route.post('/addproduct',verification,roleAuthorize('ADMIN'),upload.array('photos',5),async(req,res)=>{
-
-const {name,description,price,stock,size,color, category,variant, weight, barcode, originalPrice}=req.body;
+const size=JSON.parse(req.body.size);
+const color=JSON.parse(req.body.color);
+const variant=JSON.parse(req.body.variant)
+const {name,description,price,stock, category, weight, barcode, originalPrice}=req.body;
 const photos=req.files
 
 try{
     if(!name||!description||!price||!stock||!category||!photos||!weight||!originalPrice){return res.status(400).json({msg:'Add All Required Field'})}
     const addproduct=await prisma.product.create({
         data:{name,description,price:parseFloat(price),stock:parseInt(stock,10),category, barcode,
-            size: Array.isArray(size)?size.join(' '):size, 
-            color:Array.isArray(color)?color.join(' '):color,
-            variant:Array.isArray(variant)?variant.join(' '):variant,
+            size, 
+            color,
+            variant,
             weight: parseFloat(weight),
             originalPrice:parseFloat(originalPrice)
         }
     });
     for(const photo of photos){const result=await cloudinary.uploader.upload(photo.path,{
         folder:'E-Commerce/Product-Photos',
-        width:300,
-        height:180,
+        width:1000,
+        height:1000,
         crop:'fit'
     });
     await prisma.productPhotos.create({
@@ -70,16 +72,17 @@ route.delete('/deleteproduct/:id',verification,roleAuthorize('ADMIN'),async(req,
 //Edit Product
 route.put('/editproduct/:id', verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
-        const productId=Number(req.params.id)
-        const {name,description,price,stock,size,color, weight, variant, originalPrice}=req.body
+        const productId=Number(req.params.id);
+     
+        const {name,description,price,stock, weight, originalPrice, size,color,variant}=req.body
         if(!productId){return res.status(404).json({msg:'Product Not Found'})}
         await prisma.product.update({
             where:{id:productId},
             data:{name,description,price,stock,
-                size:Array.isArray(size)?size.join(' '):size,
-                color:Array.isArray(color)?color.join(' '):color, 
+                size,
+                color,
                 weight,
-                variant:Array.isArray(variant)?variant.join(' '):variant,
+                variant,
                 originalPrice
             }
         });
@@ -604,6 +607,124 @@ route.get('/getcancelorder',verification,roleAuthorize('ADMIN'),async(req,res)=>
         res.status(200).json({canOrder, totalCanOrder})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
+
+//get Paid Order/card
+route.get('/paidorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
+    try{
+        const page= Number(req.query.page||1);
+        const limit=Number(req.query.limit||20);
+         const skip= (page-1)*limit;
+            const totalPaidOrder= await prisma.order.count({
+            where:{payment:{status:'PAID'}}
+        });
+        const getPaidOrder= await prisma.order.findMany({
+            where:{payment:{status:'PAID'}},
+            select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                                paymentmethod:true,
+                                transactionId:true,
+                                createdAt:true
+                        }
+                    },
+                    
+            },
+            skip:skip,
+            take:limit,
+            orderBy:{createdAt:'desc'}
+        });
+
+        res.status(200).json({getPaidOrder, totalPaidOrder, totalPage:Math.ceil(totalPaidOrder/limit), mode:'PAID'})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+//get Paid order/details
+
+
+
+
+
+
+
+
+//get COD order/ card
+route.get('/codorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
+    try{
+        const page= Number(req.query.page||1);
+        const limit=Number(req.query.limit||20);
+         const skip= (page-1)*limit;
+            const totalCodOrder= await prisma.order.count({
+            where:{payment:{paymentmethod:'COD'}}
+        });
+        const getCodOrder= await prisma.order.findMany({
+            where:{payment:{paymentmethod:'COD'}},
+            select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                                status:true,
+                                paymentmethod:true,
+                                createdAt:true
+                        }
+                    },
+                    
+            },
+            skip:skip,
+            take:limit,
+            orderBy:{createdAt:'desc'}
+        });
+
+        res.status(200).json({getCodOrder, totalCodOrder, totalPage:Math.ceil(totalCodOrder/limit), mode:'PAID'})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+
+
+
+
+
+
 
 // review product
 route.post('/reviewproduct/:id',verification, async(req,res)=>{

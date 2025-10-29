@@ -102,7 +102,7 @@ export default function manageShippingFee(){
     return(
         <>
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-        <div className="max-w-[1380px] mx-[10px] overflow-x-hidden">
+        <div className=" mx-auto overflow-x-hidden">
             <h1 className="text-center text-3xl font-semibold text-gray-400 my-[30px]">Manage Shipping Fee Rate</h1>
             <div className="grid grid-cols-1 gap-2 ">
                 <input value={location} onChange={(e)=>{setLocation(e.target.value)}} className="border-1 border-gray-300 p-2 rounded-xl" type="text" placeholder="Zone Name"/>

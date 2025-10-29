@@ -32,7 +32,7 @@ const handelNext=()=>{
   return (
     <>
     {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-    <div className=' max-w-[1380] mx-auto overflow-hidden'>
+    <div className=' mx-auto overflow-hidden'>
       <Bannar/>
       <Category/>
       <h1 className='text-center text-3xl text-gray-500 font-semibold'>All Products</h1>
@@ -40,7 +40,7 @@ const handelNext=()=>{
         {products.map((pro)=>(
           <div key={pro.id}>
           <Products name={pro.name} description={pro.description} price={pro.price} photos={pro?.photos[0]?.url} stock={pro.stock}
-          sold={pro.order.quantity} comment={pro._count.comment} originalPrice={pro.originalPrice} />
+          sold={pro.order.quantity} comment={pro._count.comment} originalPrice={pro.originalPrice} productId={pro.id} />
            </div> ))}
       </div>
         {totalPage>1&&<div className='flex justify-between mb-[20px] mx-[10px]'>

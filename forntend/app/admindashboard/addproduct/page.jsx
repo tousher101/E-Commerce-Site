@@ -24,6 +24,10 @@ const [selectedFile, setSelectedFile]=useState([]);
 const [loading, setLoading]=useState(false);
 const [originalPrice, setOriginalPrice]=useState('')
 
+const colorArray=color.split(/[\s,]+/).filter(Boolean);
+const sizeArray=size.split(/[\s,]+/).filter(Boolean);
+const variantArray=variant.split(/[\s,]+/).filter(Boolean);
+
 const formData= new FormData();
 selectedFile.forEach((file)=>{formData.append('photos',file)});
 formData.append('name',name);
@@ -31,10 +35,10 @@ formData.append('description',description);
 formData.append('price',parseFloat(price));
 formData.append('stock',parseInt(stock));
 formData.append('originalPrice', parseFloat(originalPrice))
-formData.append('size',size);
-formData.append('color',color);
+formData.append('size',JSON.stringify(sizeArray));
+formData.append('color',JSON.stringify(colorArray));
 formData.append('category',category);
-formData.append('variant',variant);
+formData.append('variant',JSON.stringify(variantArray));
 formData.append('weight',parseFloat(weight));
 formData.append('barcode',barcode);
 const handleChange=(e)=>{

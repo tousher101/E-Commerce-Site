@@ -50,9 +50,9 @@ model Product {
   order OrderItem[]
   cart CartItem[]
   photos ProductPhotos[]
-  size  String?
-  color String?
-  variant String?
+  size  Json
+  color Json
+  variant Json
   category Category
   comment Comment[]
   weight Float
@@ -76,8 +76,11 @@ model Order {
   totalPrice     Float
   status    OrderStatus @default(PENDING)
   payment Payment?
+  shippingRate ShippingRate @relation(fields:[shippingRateId],references:[id])
+  shippingRateId Int @unique
   address Address @relation(fields:[addressId], references:[id])
   addressId Int
+
   createdAt DateTime    @default(now())
 
 }
@@ -87,6 +90,7 @@ model ShippingRate {
   location String
   baseFee Float
   perKgFee Float
+  order Order?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -105,7 +109,7 @@ model OrderItem {
 
 model Cart {
   id        Int        @id @default(autoincrement())
-  userId    Int
+  userId    Int @unique
   user      User       @relation(fields:[userId], references:[id], onDelete: Cascade)
   items     CartItem[]
   status    CartStatus
@@ -123,7 +127,7 @@ model CartItem {
   product     Product        @relation(fields:[productId], references:[id], onDelete: Restrict)
   size  String?
   color String?
-  varitan String?
+  variant String?
   quantity    Int            @default(1)
   // snapshot so price change later doesn't affect the cart
   unitPrice   Decimal        @db.Decimal(10,2)
@@ -158,10 +162,10 @@ model Address {
   name       String
   phone      String
   line1      String
-  line2      String?
   barangay   String
   city        String?
   postalCode String?
+  province String?
 
   order         Order[]    
   createdAt  DateTime  @default(now())

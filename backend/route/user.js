@@ -95,6 +95,32 @@ route.get('/allproduct', async(req,res)=>{
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
+//get product/Details
+route.get('/productdetails/:id',async(req,res)=>{
+    try{
+        const productId=Number(req.params.id)
+        const productDetails= await prisma.product.findUnique({
+            where:{id:productId},
+            select:{
+                id:true,
+                name:true,
+                description:true,
+                price:true,
+                stock:true,
+                photos:true,
+                originalPrice:true,
+                size:true,
+                color:true,
+                variant:true,
+                weight:true
+            }
+        });
+
+   
+        res.status(200).json({productDetails})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
 //getproduct By Category
 //category: Mens Fashion/Card
 route.get('/mensfashion',async(req,res)=>{
@@ -132,6 +158,8 @@ route.get('/mensfashion',async(req,res)=>{
         res.status(200).json({getMensProduct, totalMensProduct, totalPage:Math.ceil(totalMensProduct/limit)})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
+
+
 
 //category: Women Fashion/card
 route.get('/womenfashion',async(req,res)=>{
@@ -292,42 +320,90 @@ route.get('/perfume',async(req,res)=>{
                 where:{id:Number(req.user.id)}
             });
             const totalPendingOrder= await prisma.order.count({
-                where:{user:user.id, status:'PENDING'}
+                where:{userId:user.id, status:'PENDING'}
             });
             const totalConfirmedOrder= await prisma.order.count({
-                where:{user:user.id, status:'CONFIRMED'}
+                where:{userId:user.id, status:'CONFIRMED'}
             });
             const totalShippedOrder= await prisma.order.count({
-                where:{user:user.id, status:'SHIPPED'}
+                where:{userId:user.id, status:'SHIPPED'}
             });
             const totalDeliveredOrder= await prisma.order.count({
-                where:{user:user.id, status:'DELIVERED'}
+                where:{userId:user.id, status:'DELIVERED'}
             });
             const totalCancelOrder= await prisma.order.count({
-                where:{user:user.id, status:'CANCELLED'}
+                where:{userId:user.id, status:'CANCELLED'}
             });
             const totalPaidOrder= await prisma.order.count({
-                where:{user:user.id,paymentStatus:'PAID'}
+                where:{userId:user.id, payment:{status:'PAID'}}
             })
             res.status(200).json({totalPendingOrder,totalShippedOrder,totalCancelOrder, totalConfirmedOrder,totalDeliveredOrder,totalPaidOrder})
         }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
     });
 
-    //get all pending order
-    route.get('/allpendingorder', verification,roleAuthorize('USER'),async(req,res)=>{
+    //get pending order/card
+     route.get('/allpendingorder', verification,roleAuthorize('USER'),async(req,res)=>{
         try{
               const user= await prisma.user.findUnique({
                 where:{id:Number(req.user.id)}
             });
             if(!user){return res.status(404).json({msg:'User Not Found'})}
             const totalPendingOrder=await prisma.order.count({
-                where:{user:user.id, status:'PENDING'}
+                where:{userId:user.id, status:'PENDING'}
             });
-            const page=Number(req.query.page) ||1;
-            const limit=Number(req.query.limit) ||15;
-            const skip=(page-1)*limit
+          
             const pendingOrder= await prisma.order.findMany({
-                where:{user:user.id, status:'PENDING'},
+                where:{userId:user.id, status:'PENDING'},
+                select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                             status :true,
+                             paymentmethod:true,
+                             createdAt:true
+                        }
+                    }
+            }
+           
+            });
+            res.status(200).json({totalPendingOrder, pendingOrder})
+
+        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+    });
+    
+    
+
+    //get all pending order/Details
+    route.get('/pendingorder/:id', verification,roleAuthorize('USER'),async(req,res)=>{
+        try{
+                const orderId=Number(req.params.id)
+              const user= await prisma.user.findUnique({
+                where:{id:Number(req.user.id)}
+            });
+            if(!user){return res.status(404).json({msg:'User Not Found'})}
+          
+            const pendingOrder= await prisma.order.findMany({
+                where:{userId:user.id,id:orderId, status:'PENDING'},
                 select:{
                     id:true,
                     items:true,
@@ -339,35 +415,84 @@ route.get('/perfume',async(req,res)=>{
                     payment:{
                         select:{
                             paymentmethod:true,
-                            status:true
+                            status:true,
+                            createdAt:true,
                         }
                     }
 
                 },
-                take:limit,
-                skip:skip,
-                orderBy:{createdAt:'desc'}
+           
             });
-            res.status(200).json({totalPendingOrder, pendingOrder, totalPage:Math.ceil(totalPendingOrder/limit)})
+            res.status(200).json({ pendingOrder})
 
         }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
     });
 
-    //get confirmd Order
-    route.get('/allconfirmedorder', verification,roleAuthorize('USER'),async(req,res)=>{
+
+    //get confirmed Order/card
+     route.get('/allconfirmedorder', verification,roleAuthorize('USER'),async(req,res)=>{
         try{
               const user= await prisma.user.findUnique({
                 where:{id:Number(req.user.id)}
             });
             if(!user){return res.status(404).json({msg:'User Not Found'})}
-            const totalconfirmedOrder=await prisma.order.count({
-                where:{user:user.id, status:'CONFIRMED'}
+            const totalConfirmedOrder=await prisma.order.count({
+                where:{userId:user.id, status:'CONFIRMED'}
             });
-            const page=Number(req.query.page) ||1;
-            const limit=Number(req.query.limit) ||15;
-            const skip=(page-1)*limit
+          
             const confirmedOrder= await prisma.order.findMany({
-                where:{user:user.id, status:'CONFIRMED'},
+                where:{userId:user.id, status:'CONFIRMED'},
+                select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                             status :true,
+                             paymentmethod:true,
+                             createdAt:true
+                        }
+                    }
+            }
+           
+            });
+            res.status(200).json({totalConfirmedOrder, confirmedOrder})
+
+        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+    });
+
+
+    
+    
+    //get confirmd Order/detais
+    route.get('/allconfirmedorder/:id', verification,roleAuthorize('USER'),async(req,res)=>{
+        try{
+            const orderId=Number(req.params.id)
+              const user= await prisma.user.findUnique({
+                where:{id:Number(req.user.id)}
+            });
+            if(!user){return res.status(404).json({msg:'User Not Found'})}
+          
+            const confirmedOrder= await prisma.order.findMany({
+                 where:{userId:user.id, id:orderId, status:'CONFIRMED'},
                 select:{
                     id:true,
                     items:true,
@@ -379,22 +504,73 @@ route.get('/perfume',async(req,res)=>{
                     payment:{
                         select:{
                             paymentmethod:true,
-                            status:true
+                            status:true,
+                            createdAt:true,
                         }
                     }
 
                 },
-                take:limit,
-                skip:skip,
-                orderBy:{createdAt:'desc'}
+              
             });
-            res.status(200).json({totalconfirmedOrder, confirmedOrder, totalPage:Math.ceil(totalConfirmedOrder/limit)})
+            res.status(200).json({confirmedOrder})
 
         }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
     });
 
-    //get Shipped order
-    route.get('/allshippedorder', verification,roleAuthorize('USER'),async(req,res)=>{
+     //get shipped Order/card
+     route.get('/allshippedorder', verification,roleAuthorize('USER'),async(req,res)=>{
+        try{
+              const user= await prisma.user.findUnique({
+                where:{id:Number(req.user.id)}
+            });
+            if(!user){return res.status(404).json({msg:'User Not Found'})}
+            const totalShippedOrder=await prisma.order.count({
+                where:{userId:user.id, status:'SHIPPED'}
+            });
+          
+            const shippedOrder= await prisma.order.findMany({
+                where:{userId:user.id, status:'SHIPPED'},
+                select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                             status :true,
+                             paymentmethod:true,
+                             createdAt:true
+                        }
+                    }
+            }
+           
+            });
+            res.status(200).json({totalShippedOrder, shippedOrder})
+
+        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+    });
+
+
+
+    //get Shipped order/details
+    route.get('/shippedorder/:id', verification,roleAuthorize('USER'),async(req,res)=>{
         try{
               const user= await prisma.user.findUnique({
                 where:{id:Number(req.user.id)}
@@ -433,8 +609,67 @@ route.get('/perfume',async(req,res)=>{
         }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
     });
 
-    //get Deliverd Order
-    route.get('/alldeliveredorder', verification,roleAuthorize('USER'),async(req,res)=>{
+     //get delivered Order/card
+     route.get('/alldeliveredorder', verification,roleAuthorize('USER'),async(req,res)=>{
+        try{
+              const user= await prisma.user.findUnique({
+                where:{id:Number(req.user.id)}
+            });
+            if(!user){return res.status(404).json({msg:'User Not Found'})}
+
+             const page=Number( req.query.page) || 1;
+            const limit=Number(req.query.limit) ||20;
+            const skip=(page-1)*limit;
+            const totalDeliveredOrder=await prisma.order.count({
+                where:{userId:user.id, status:'DELIVERED'}
+            });
+          
+            const deliveredOrder= await prisma.order.findMany({
+                where:{userId:user.id, status:'DELIVERED'},
+                select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                             status :true,
+                             paymentmethod:true,
+                             createdAt:true
+                        }
+                    }
+            },
+            skip:skip,
+            take:limit,
+            orderBy:{createdAt:'desc'}
+           
+            });
+            res.status(200).json({totalDeliveredOrder, deliveredOrder, totalPage:Math.ceil(totalDeliveredOrder/limit)})
+
+        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+    });
+
+    
+    
+    //get Deliverd Order/details
+    route.get('/deliveredorder', verification,roleAuthorize('USER'),async(req,res)=>{
         try{
               const user= await prisma.user.findUnique({
                 where:{id:Number(req.user.id)}
@@ -473,8 +708,126 @@ route.get('/perfume',async(req,res)=>{
         }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
     });
 
-    //get Cancelled Order
-      route.get('/allcancelledorder', verification,roleAuthorize('USER'),async(req,res)=>{
+    
+     //get cancelled Order/card
+     route.get('/allcancelledorder', verification,roleAuthorize('USER'),async(req,res)=>{
+        try{
+              const user= await prisma.user.findUnique({
+                where:{id:Number(req.user.id)}
+            });
+            if(!user){return res.status(404).json({msg:'User Not Found'})}
+             const page= Number(req.query.page) || 1;
+            const limit=Number(req.query.limit) ||20;
+            const skip=(page-1)*limit;
+            const totalCancelledOrder=await prisma.order.count({
+                where:{userId:user.id, status:'CANCELLED'}
+            });
+          
+            const cancelledOrder= await prisma.order.findMany({
+                where:{userId:user.id, status:'CANCELLED'},
+                select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                             status :true,
+                             paymentmethod:true,
+                             createdAt:true
+                        }
+                    }
+            },
+            skip:skip,
+            take:limit,
+            orderBy:{createdAt:'desc'}
+           
+            });
+            res.status(200).json({totalCancelledOrder,cancelledOrder, totalPage:Math.ceil(totalCancelledOrder/limit)})
+
+        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+    });
+
+
+        //get Paid Order/card
+     route.get('/allpaidorder', verification,roleAuthorize('USER'),async(req,res)=>{
+        try{
+              const user= await prisma.user.findUnique({
+                where:{id:Number(req.user.id)}
+            });
+            if(!user){return res.status(404).json({msg:'User Not Found'})}
+
+            const page=Number( req.query.page) || 1;
+            const limit=Number(req.query.limit) ||20;
+            const skip=(page-1)*limit;
+            const totalPaidOrder=await prisma.order.count({
+                where:{userId:user.id,payment:{status:'PAID'} }
+            });
+          
+            const paidOrder= await prisma.order.findMany({
+                where:{userId:user.id,payment:{status:'PAID'} },
+                select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                             transactionId :true,
+                             paymentmethod:true,
+                             createdAt:true
+                        }
+                    }
+            },
+            skip:skip,
+            take:limit,
+            orderBy:{createdAt:'desc'}
+           
+            });
+            res.status(200).json({totalPaidOrder,paidOrder, totalPage:Math.ceil(totalPaidOrder/limit), mode:'PAID'})
+
+        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+    });
+    
+    
+    
+
+    //get Cancelled Order/details
+      route.get('/cancelledorder', verification,roleAuthorize('USER'),async(req,res)=>{
         try{
               const user= await prisma.user.findUnique({
                 where:{id:Number(req.user.id)}
@@ -517,15 +870,18 @@ route.get('/perfume',async(req,res)=>{
     // Add to Cart Product
     route.post('/addtocart',verification,roleAuthorize('USER'),async(req,res)=>{
         try{
-            const {productId, userId, size, color, quantity}=req.body
+            const userId=Number(req.user.id)
+            const {productId, size, color, quantity,variant}=req.body
+            if(!quantity||!color||!size||!variant){return res.status(400).json({msg:'Please Add Quantity,Color, Size, Variant'})}
             let cart= await prisma.cart.findFirst({where:{userId, status:'PENDING'}});
-            if(!cart){cart=await prisma.cart.create({where:{userId, status:'PENDING'}})};
+            if(!cart){cart=await prisma.cart.create({data:{userId, status:'PENDING'}})};
             const existingItem = await prisma.cartItem.findFirst({
                 where:{
                     cartId:cart.id,
                     productId,
                     size,
-                    color
+                    color,
+                    variant
                 }
             });
             if(existingItem){await prisma.cartItem.update({
@@ -541,15 +897,14 @@ route.get('/perfume',async(req,res)=>{
                     size,
                     color,
                     quantity,
+                    variant,
                     unitPrice: product.price,
                     totalPrice: product.price*quantity
                 }
             });
         }
-        const totalCartItems= await prisma.cartItem.count({
-            where:{cartId:cart.id, status:'PENDING'}
-        })
-       res.status(200).json({msg:'Add to cart', totalCartItems})
+       
+       res.status(200).json({msg:'Add to cart'})
 
 
         }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
@@ -562,15 +917,45 @@ route.get('/perfume',async(req,res)=>{
                 where:{userId:req.user.id, status:'PENDING'},
                 select:{
                     id:true,
-                    items: true,
+                    items:{
+                        select:{
+                            size:true,
+                            color:true,
+                            variant:true,
+                            quantity:true,
+                            product:{
+                                select:{
+                                    photos:true,
+                                    name:true,
+                                    price:true
+                                }
+                            }
+                        }
+                    },
                     createdAt:true,
                     updatedAt:true,
                 }
             });
             if(!cartItems){return res.status(404).json({msg:'Cart Not Found'})}
-            res.status(200).json({cartItems})
+       
+            res.status(200).json({cartItems, mode:'Cart-Page'})
         }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
     });
+
+    //count cartItem
+    route.get('/totalcartitem',verification,roleAuthorize('USER'),async(req,res)=>{
+        const userCart = await prisma.cart.findUnique({
+         where: { userId: Number(req.user.id) },
+            });
+
+        if (!userCart) return res.status(404).json({ msg: 'Cart not found' });
+
+        const totalCartItems = await prisma.cartItem.count({
+         where: { cartId: userCart.id },
+            });
+            res.status(200).json({ totalCartItems });
+
+    })
 
     //Delete Cart item
     route.delete('/deletecartitem/:id',verification,roleAuthorize('USER'),async(req,res)=>{
@@ -584,7 +969,7 @@ route.get('/perfume',async(req,res)=>{
             await prisma.cartItem.delete({
                 where:{id:item.id}
             });
-            res.status(200).json({msg:'Item Delete Successfully'})
+            res.status(200).json({msg:'Cart Item Delete Successfully'})
         }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
     })
 
@@ -592,12 +977,13 @@ route.get('/perfume',async(req,res)=>{
     //Create Order/COD order
     route.post('/checkout', verification, roleAuthorize('USER'), async(req,res)=>{
         try{
-            const {location,label, name, phone, line1, line2,barangay,city,postalCode}=req.body
+            const {location,addressId}=req.body
             const userId=req.user.id
             const shippingRate= await prisma.shippingRate.findFirst({
                 where:{location,}
             });
             if(!shippingRate){return res.status(400).json({msg:'Shipping Not Available of This Area'})}
+            if(!addressId){return res.status(400).json({msg:'Please Add Address'})}
 
             const cart= await prisma.cart.findFirst({
                 where:{userId, status:'PENDING'},
@@ -628,19 +1014,13 @@ route.get('/perfume',async(req,res)=>{
                                 }
                             });
 
-            const user= await prisma.user.findUnique({
-                where:{id:userId},
-                select:{referredBy:true}
-            });
-
-            
             const bounsAmount= await prisma.refWallet.findFirst({
-                where:{userId:user.referredBy},
+                where:{id:userId},
                 select:{amount:true}
             });
             const bonus= bounsAmount?bounsAmount.amount:0
             const order= await prisma.order.create({
-                data:{userId,totalPrice:(totalPrice-bonus)+shippingFee, addressId:address.id, payment:payment.id,        
+                data:{userId,totalPrice:(totalPrice-bonus)+shippingFee, address:{connect:{addressId}}, payment:payment.id, user:user.id,      
                     items:{
                     create: cart.items.map((item)=>({
                         productId: item.productId,
@@ -656,15 +1036,10 @@ route.get('/perfume',async(req,res)=>{
                 data:{status:'COMPLETED'}
             });
             await prisma.refWallet.update({
-                where:{userId:user.referredBy},
+                where:{id:userId},
                 data:{amount:0}
             });
-            const address=await prisma.address.create({
-            data:{
-                label,name,phone,line1,line2,barangay,city,postalCode,user:userId,order:order.id
-                }
-                });
-        if(!address){res.status(400).json({msg:'Please Add Shipping Address'})}
+    
             res.status(200).json({msg:'Order Placed Successfully'})
 
 
@@ -680,61 +1055,73 @@ route.get('/perfume',async(req,res)=>{
 
             const cart= await prisma.cart.findFirst({
                 where:{userId, status:'PENDING'},
-                include:{items:true}
+                  select:{
+                    id:true,
+                    items:{
+                        select:{
+                            size:true,
+                            color:true,
+                            variant:true,
+                            quantity:true,
+                            product:{
+                                select:{
+                                    id:true,
+                                    photos:true,
+                                    name:true,
+                                    price:true
+                                }
+                            }
+                        }
+                    },
+                    
+                }
             });
             if(!cart || cart.items.length===0){return res.status(404).json({msg:'Cart Is Empty'})}
 
-            const address= await prisma.address.findFirst({
-                where:{userId}
-            });
-            if(!address){res.status(400).json({msg:'Please Add Shipping Address'})}
-            
-
             let totalWeight=0
             let subtotal=0
+         
             for(const item of cart.items){
                 const product =await prisma.product.findUnique({
-                    where:{id:item.productId}
+                    where:{id:item.product.id}
                 });
                 if(!product) continue;
                 totalWeight+= product.weight * item.quantity
                 subtotal+=product.price*item.quantity
+             
             };
             let shippingFee=0;
             const shippingRate= await prisma.shippingRate.findFirst({
                 where:{location}
             });
-            const user= await prisma.user.findUnique({
-                where:{id:userId},
-                select:{referredBy:true}
-            })
+
             const bonusAount= await prisma.refWallet.findFirst({
-                where:{id:user.referredBy},
+                where:{id:userId},
                 select:{amount:true}
             });
             const bonus= bonusAount?bonusAount.amount:0
            if(shippingRate){shippingFee = shippingRate.baseFee + (totalWeight * shippingRate.perKgFee)}
            else{res.status(400).json({msg:'Shipping Not Available for This Area'})}
 
-            res.status(200).json({items:cart.items, bonusAount, shippingFee, address, total:(subtotal-bonus)+shippingFee})
+            res.status(200).json({items:cart, bonus, shippingFee, itemPrice:subtotal, subtotal:(subtotal-bonus), total:(subtotal-bonus)+shippingFee, mode:'CheckOut'})
 
 
         }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
     });
 
 
-// get referrel Account
-route.get('/referrel', verification, roleAuthorize('USER'),async(req,res)=>{
+// get referral Account
+route.get('/referral', verification, roleAuthorize('USER'),async(req,res)=>{
     try{
         const user= await prisma.user.findUnique({
             where:{id:req.user.id},
             select:{referredUser:{
                 select:{
+                    id:true,
                     name:true,
                     email:true,
                     phone:true,
                     createdAt:true,
-                    referralCode:true
                 }
             }
 
@@ -762,18 +1149,17 @@ route.get('/getshippingfee', verification, roleAuthorize('USER'),async(req,res)=
 // get related Product/card
 route.get('/relatedproduct/:id',async(req,res)=>{
     try{
-        const {id}=req.params.id
+        const id=Number(req.params.id)
         const mainProduct= await prisma.product.findUnique({
             where:{id}
         });
         if(!mainProduct){return res.status(404).json({msg:'Product Not Found'})}
         
         const relatedProduct= await prisma.product.findMany({
-            where:{id:{not:mainProduct.id},
-        OR:[{
-            category:mainProduct.category
-        }]
-        },
+          where: {
+            category: mainProduct.category,
+             NOT: { id: mainProduct.id },
+                },
         select:{
                 id:true,
                 name:true,
@@ -782,6 +1168,7 @@ route.get('/relatedproduct/:id',async(req,res)=>{
                 stock:true,
                 photos:true,
                 category:true,
+                originalPrice:true,
                 _count:{
                     select:{comment:true}
                 },
@@ -798,6 +1185,37 @@ route.get('/relatedproduct/:id',async(req,res)=>{
         res.status(200).json({relatedProduct})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
+
+//add address by user
+route.post('/addaddress', verification, roleAuthorize('USER'),async(req,res)=>{
+    try{
+        const {label,name,phone,line1,barangay,city,province,postalCode}=req.body;
+        const userId=req.user.id
+         if (!label||!name||!phone||!line1||!barangay||!city||!province||!postalCode){return res.status(400).json({msg:'All Field Required'})}
+         await prisma.address.create({
+            data:{
+                userId,
+                label,name,phone,line1,barangay,city,province,postalCode
+            }
+         });
+         res.status(200).json({msg:'Address Add Successfully'})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+//Get All Address by user
+route.get('/getalladdress',verification,roleAuthorize('USER'),async(req,res)=>{
+    try{
+        const userId=req.user.id
+        const address= await prisma.address.findMany({
+            where:{userId},
+            select:{
+              id:true, label:true,  name:true,phone:true,line1:true,barangay:true,city:true,province:true,postalCode:true
+            }
+        });
+        res.status(200).json({address})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+})
+
 
 
   

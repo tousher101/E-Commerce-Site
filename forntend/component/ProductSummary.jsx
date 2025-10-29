@@ -1,25 +1,33 @@
-import Image from "next/image"
-import testPhoto from'../public/glass.jpg'
 
-export default function productSummary(){
+
+import Image from "next/image"
+
+
+export default function productSummary({photo, name, price, quantity, size, color, variant, cartId,submitItemDelete, mode}){
+   
+   
     return(
-            <div className='grid grid-cols-1 content-center w-full'>
-                        <div className='flex items-center justify-around  shadow-sm my-[20px] p-2'>
-                            <Image src={testPhoto} height={40} width={60} alt='cart-product'/>
-                            <div className='grid grid-cols-1'>
-                                <h1 className='text-[15px]'>Women Styles Glass Brand New </h1>
+            <div className='grid grid-cols-1 content-center w-full rounded-xl'>
+                        <div className='flex items-center justify-around rounded-xl  shadow-sm my-[20px] p-2'>
+                            <Image src={photo} height={40} width={60} className="h-[40] w-[60]" alt='cart-product'/>
+                            <div className='grid grid-cols-1 justify-items-center mx-[10px]'>
+                                <h1 className='text-[15px]'>{name} </h1>
                                 <div className='flex justify-around items-center  gap-2 text-xs'>
-                                <h2>Price: ₱800</h2>
-                                <h2>Quintity: 1</h2>
-                                <h2>Size: XL</h2>
-                                <h2>Color: Green</h2>
-                                <h2>Variant:Women</h2>
+                                <h2>Price : ₱{price}</h2>
+                                <h2>||</h2>
+                                <h2>Quantity : {quantity}</h2>
+                                <h2>||</h2>
+                                <h2>Size : {size}</h2>
+                                <h2>||</h2>
+                                <h2>Color : {color}</h2>
+                                <h2>||</h2>
+                                <h2>Variant : {variant}</h2>
                             </div>
                             </div>
         
-                            <div>
-                              <img src="/bin.gif" className="h-[35px] w-[35px] cursor-pointer" alt="detele-icon"/>
-                            </div>
+                            {mode==='CheckOut'?'': <div>
+                              <button onClick={()=>{submitItemDelete(cartId)}}   className="h-[45px] w-[45px] rounded-xl border-1 border-gray-400 flex justify-center items-center"><img src="/bin.gif" className="h-[35px] w-[35px] cursor-pointer" alt="detele-icon"/></button>
+                            </div>}
                          
                         </div>
                        

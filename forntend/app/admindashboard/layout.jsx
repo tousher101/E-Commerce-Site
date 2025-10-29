@@ -16,7 +16,7 @@ export default function layout({children}){
     },[])
 
     return(
-               <div className="max-w-[1380px] mx-[10px] overflow-hidden mb-[80px]">
+               <div className=" mx-[10px] overflow-hidden mb-[80px]">
             <div className="flex gap-3">
             <div className="flex flex-[20%] shadow-xl h-[750px] rounded-xl ">
                 <div className="grid grid-cols-1 gap-2 p-3">

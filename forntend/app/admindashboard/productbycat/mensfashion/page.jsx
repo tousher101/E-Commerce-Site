@@ -33,7 +33,7 @@ export default function mensFashion(){
     return(
         <>
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-        <div className="max-w-[1380px] mx-[10px] overflow-x-hidden">
+        <div className=" mx-[10px] overflow-x-hidden">
             <h1 className='text-center text-3xl text-gray-400 font-semibold my-[30px]'>Men's Product ({totalProduct})</h1>
            {productData?.map((pro)=>(
                  <div key={pro.id} >

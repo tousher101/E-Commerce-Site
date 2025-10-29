@@ -35,14 +35,14 @@ export default function accessories(){
     return(
         <>
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-        <div className="max-w-[1380px] mx-[10px] overflow-x-hidden">
+        <div className=" mx-[10px] overflow-x-hidden">
             <h1 className='text-center text-3xl text-gray-400 font-semibold my-[30px]'>Accessories Product ({totalProduct})</h1>
            {productData?.map((pro)=>(
                  <div key={pro.id}>
-                <AdminProduct name={pro.name} description={pro.description} photos={pro?.photos[0]?.url} price={pro.price} stock={pro.stock}  
-                color={pro.color} size={pro.size} variant={pro.variant} weight={pro.weight} update={pro.updatedAt} create={pro.createdAt} productId={pro.id} getAccessories={()=>{getAccessoriesProduct()}} mode={'Accessories'} 
-                selectedProduct={pro} productOriginalPrice={pro.originalPrice}
-                />
+                <AdminProduct productName={pro.name} productDescription={pro.description} productPhotos={pro?.photos[0]?.url} productPrice={pro.price} productStock={pro.stock}  
+                productColor={pro.color} productSize={pro.size} productVariant={pro.variant} productWeight={pro.weight} update={pro.updatedAt} create={pro.createdAt} productId={pro.id} getMens={()=>{getMensProduct()}} mode={'Accessories'} 
+                selectedProduct={pro} productOriginalPrice={pro.originalPrice}/>
+                
             </div>
            ))}
             

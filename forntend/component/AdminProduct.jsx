@@ -18,6 +18,7 @@ export default function adminProduct({productPhotos, productName, productDescrip
        const [type, setType]=useState(null);
        const [loading, setLoading]=useState(false);
        const [selectProduct, setSelectProduct]=useState(selectedProduct);
+ 
 
 
        const openDeleteModal=()=>{
@@ -63,6 +64,17 @@ export default function adminProduct({productPhotos, productName, productDescrip
       else if (mode==='Accessories'){getAccessories()}
       else if (mode==='Perfume'){getPerfum()}
    };
+const colorArray = Array.isArray(selectProduct.color)
+  ? selectProduct.color
+  : selectProduct.color?.split(/[\s,]+/).filter(Boolean) || [];
+
+const sizeArray = Array.isArray(selectProduct.size)
+  ? selectProduct.size
+  : selectProduct.size?.split(/[\s,]+/).filter(Boolean) || [];
+
+const variantArray = Array.isArray(selectProduct.variant)
+  ? selectProduct.variant
+  : selectProduct.variant?.split(/[\s,]+/).filter(Boolean) || [];
 
    const editProduct=async(id)=>{
       const res=await fetchWithAuth(`${BASEURI}/api/admin/editproduct/${id}`,{
@@ -70,9 +82,9 @@ export default function adminProduct({productPhotos, productName, productDescrip
          body: JSON.stringify({
             name:selectProduct.name,
             description:selectProduct.description,
-            size:selectProduct.size,
-            variant:selectProduct.variant,
-            color:selectProduct.color,
+            size:sizeArray,
+            variant:variantArray,
+            color:colorArray,
             price:parseFloat(selectProduct.price),
             stock:parseInt(selectProduct.stock),
             originalPrice:parseFloat(selectProduct.originalPrice),
@@ -96,7 +108,7 @@ export default function adminProduct({productPhotos, productName, productDescrip
       <>
       {loading&&<Loading/>}
       {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-        <div className="max-w-[1380px] overflow-hidden  mx-[10px] rounded-xl shadow-sm flex items-center justify-evenly my-[30px] p-1">
+        <div className=" overflow-hidden  mx-[10px] rounded-xl shadow-sm flex items-center justify-evenly my-[30px] p-1">
             <div className="h-[90px] w-[150px] rounded-xl">
                      <Image src={productPhotos||NoImage} height={90} width={150} priority className="rounded-xl w-full h-full object-cover"  alt="product-photo"/>
             </div>
@@ -109,9 +121,9 @@ export default function adminProduct({productPhotos, productName, productDescrip
              </div>
 
              <div className="grid grid-cols-1 items-center p-2 text-[13px]">
-                <h2>Size : {productSize}</h2>
-                <h2>Color : {productColor} </h2>
-                <h2> Variant : {productVariant} </h2>
+               <h1 className="flex gap-2">Size : {productSize.map((pro,i)=>(<span key={i}>{pro}</span>))}</h1>
+                <h1 className="flex gap-2">Color : {productColor.map((col,i)=>(<span key={i}>{col}</span>))} </h1>
+                <h1 className="flex gap-2"> Variant : {productVariant.map((ver,i)=>(<span key={i}>{ver}</span>))} </h1>
                 <h2> weight : {productWeight}</h2>
              </div>
                <div className="grid grid-cols-1 items-center p-2 text-[13px]">
@@ -131,7 +143,7 @@ export default function adminProduct({productPhotos, productName, productDescrip
         {selectProduct&&editModal&&<ProductEditModal design={animatedModal} closeModal={closeEditModal} nameValue={selectProduct.name} nameOnCh={(e)=>{setSelectProduct({...selectedProduct, name:e.target.value})}}
          descriptionValue={selectProduct.description} descriptionOnCh={(e)=>{setSelectProduct({...selectProduct, description:e.target.value})}} priceValue={selectProduct.price} priceOnCh={(e)=>{setSelectProduct({...selectProduct, price:e.target.value})}}
          stockValue={selectProduct.stock} stockOnCh={(e)=>{setSelectProduct({...selectProduct, stock:e.target.value})}}
-         sizeValue={selectProduct.size} sizeOnCh={(e)=>{setSelectProduct({...selectProduct, size: e.target.value})}}
+         sizeValue={selectProduct.size} sizeOnCh={(e)=>{setSelectProduct({...selectProduct, size:e.target.value})}}
          variantValue={selectProduct.variant} variantOnCh={(e)=>{setSelectProduct({...selectProduct, variant:e.target.value})}}
          colorValue={selectProduct.color} colorOnCh={(e)=>{setSelectProduct({...selectProduct, color:e.target.value})}}
          weightValue={selectProduct.weight} weightOnCh={(e)=>{setSelectProduct({...selectProduct, weight:e.target.value})}}
