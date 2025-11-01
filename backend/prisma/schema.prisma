@@ -75,11 +75,10 @@ model Order {
   items     OrderItem[]
   totalPrice     Float
   status    OrderStatus @default(PENDING)
-  payment Payment?
-  shippingRate ShippingRate @relation(fields:[shippingRateId],references:[id])
-  shippingRateId Int @unique
-  address Address @relation(fields:[addressId], references:[id])
-  addressId Int
+  payment Payment?  @relation(fields:[paymentId],references:[id])
+  paymentId Int? @unique
+  address Address? @relation(fields:[addressId], references:[id])
+  addressId Int? @unique
 
   createdAt DateTime    @default(now())
 
@@ -90,7 +89,6 @@ model ShippingRate {
   location String
   baseFee Float
   perKgFee Float
-  order Order?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -104,12 +102,15 @@ model OrderItem {
   quantity  Int
   unitPrice     Float 
   totalPrice Float
+  size  String?
+  color String?
+  variant String?
  
 }
 
 model Cart {
   id        Int        @id @default(autoincrement())
-  userId    Int @unique
+  userId    Int 
   user      User       @relation(fields:[userId], references:[id], onDelete: Cascade)
   items     CartItem[]
   status    CartStatus
@@ -139,8 +140,8 @@ model CartItem {
 
 model Payment {
   id            Int            @id @default(autoincrement())
-  orderId       Int            @unique
-  order         Order          @relation(fields:[orderId], references:[id])
+
+  order         Order?    
 
   status        PaymentStatus 
   amount        Decimal        @db.Decimal(10,2)
@@ -167,7 +168,7 @@ model Address {
   postalCode String?
   province String?
 
-  order         Order[]    
+  order         Order?   
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 }

@@ -10,6 +10,7 @@ export default function confirmedOrder(){
 
    const getOrderData=async()=>{
     const res=await fetchWithAuth(`${BaseURI}/api/admin/confirmedorder`)
+   
     setOrderData(res.getconfirmedorder);
     setTotalOrder(res.totalConfirmedOrder)
    };
@@ -22,7 +23,7 @@ export default function confirmedOrder(){
                     <div className='grid grid-cols-1 gap-1.5 items-center'>
                         {orderData?.length>0? orderData?.map((order)=>(
                             <div key={order.id}>
-                            <OrderCard photo={order?.items?.product?.photos[0]?.url} orderId={order?.id} amount={order?.totalPrice} orderStatus={order?.status}
+                            <OrderCard photo={order?.items[0]?.product?.photos[0]?.url} orderId={order?.id} amount={order?.totalPrice} orderStatus={order?.status}
                             paymentStatus={order?.payment?.status} paymentMethod={order?.payment?.paymentmethod} paymentCreate={order?.payment?.createdAt} userName={order?.user?.name}
                             userEmail={order?.user?.email} userPhone={order?.user?.phone} orderCreate={order?.createdAt} />
                         </div>

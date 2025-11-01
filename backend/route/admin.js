@@ -1,7 +1,7 @@
 const express=require('express');
 const route=express.Router();
 const verification=require('../middle-wear/verification');
-const roleAuthorize=require('../middle-wear/roleAuth');
+const roleAuthorize=require('../middle-wear/roleAuthorize');
 const prisma=require('../utils/prisma');
 const cloudinary=require('../utils/cloudinary');
 const upload =require('../middle-wear/multar');
@@ -129,6 +129,7 @@ route.get('/requestorder', verification,roleAuthorize('ADMIN'), async(req,res)=>
                 id:true,
                 totalPrice:true,
                 status:true,
+              
                 createdAt:true,
                      user:{
                         select:{
@@ -140,8 +141,10 @@ route.get('/requestorder', verification,roleAuthorize('ADMIN'), async(req,res)=>
                     },
                     items:{
                         select:{
+                           
                             product:{
                                 select:{
+
                                     photos:true
                                 }
                             }
@@ -151,7 +154,8 @@ route.get('/requestorder', verification,roleAuthorize('ADMIN'), async(req,res)=>
                         select:{
                              status :true,
                                 paymentmethod:true,
-                                createdAt:true
+                                createdAt:true,
+                               
                         }
                     }
             }
@@ -165,19 +169,17 @@ route.get('/requestorder', verification,roleAuthorize('ADMIN'), async(req,res)=>
 
 
 //get order Request/details
-route.get('/getorderrequest/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+route.get('/getorderrequestdetails/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
-        const {orderId}=req.params;
+        const orderId=Number(req.params.id);
 
-        const orderReq= await prisma.order.findMany({
+        const orderReq= await prisma.order.findUnique({
             where:{id:orderId, status:'PENDING'},
-            select:{
+                    select:{
                 id:true,
-                address:true,
                 createdAt:true,
-                items:true,
-                total:true,
-                    user:{
+                address:true,
+                     user:{
                         select:{
                             name:true,
                             email:true,
@@ -185,18 +187,38 @@ route.get('/getorderrequest/:id',verification,roleAuthorize('ADMIN'),async(req,r
                             
                         }
                     },
-                    payment:{
+                    items:{
                         select:{
                             id:true,
-                            status:true,
-                            amount:true,
-                            paymentmethod:true
+                         quantity:true,
+                        unitPrice:true,
+                        size:true,
+                        variant:true,
+                        color:true,
+                            product:{
+                                select:{
+                                    name:true,
+                                    photos:true,
+                                    
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                             status :true,
+                             paymentmethod:true,
+                             createdAt:true,
+                             transactionId:true,
+                             currency:true,
+                             amount:true
+                            
                         }
                     }
-                }
+                 }
             
         });
-        res.status(200).json({orderReq})
+        res.status(200).json({orderReq,mode:'ReqOrder'})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
@@ -209,7 +231,7 @@ route.put('/acceptorder/:id',verification,roleAuthorize('ADMIN'),async(req,res)=
         });
         if(!order){return res.status(404).json({msg:'Order Not Found'})}
         await prisma.order.update({
-            where:{id:order, status:'PENDING'},
+            where:{id:order.id, status:'PENDING'},
             data:{status:'CONFIRMED'}
         });
         res.status(200).json({msg:'Order Confirmed Successfully'})

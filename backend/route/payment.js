@@ -3,7 +3,7 @@ const route=express.Router();
 const stripe=require('stripe')
 (process.env.STRIPE_SECRATE_KEY);
 const verification=require('../middle-wear/verification');
-const roleAuthorize=require('../middle-wear/roleAuth');
+const roleAuthorize=require('../middle-wear/roleAuthorize');
 const prisma=require('../utils/prisma');
 
 const genTrxCode=require('../utils/genTrxCode')

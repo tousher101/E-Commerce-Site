@@ -51,7 +51,7 @@ export default function productDetailsPage(){
         getCartItems();
     }
     const handleAddToCart=()=>{
-        if(!user){router.push(`/signin?redirect=/${id}`); return}
+        if(!user){setMsg('Please Loging First');setType('Error'); router.push('/signin')}
         addToCart();
         
     }

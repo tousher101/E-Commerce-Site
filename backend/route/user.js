@@ -1,7 +1,7 @@
 const express=require('express');
 const route=express.Router();
 const verification=require('../middle-wear/verification');
-const roleAuthorize=require('../middle-wear/roleAuth');
+const roleAuthorize=require('../middle-wear/roleAuthorize');;
 const prisma=require('../utils/prisma');
 const cloudinary=require('../utils/cloudinary');
 const upload =require('../middle-wear/multar');
@@ -30,8 +30,8 @@ try{
     });
     const fs=require('fs');
     fs.unlink(req.file.path, (err)=>{if(err)console.error(err);})
-    res.status(200).json({msg:'Profile photo uploaded successfuly'})
-}catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+  return  res.status(200).json({msg:'Profile photo uploaded successfuly'})
+}catch(err){console.error(err);return res.status(500).json({msg: 'Server Error'})}
 });
 
 
@@ -57,8 +57,8 @@ route.get('/userinfo',verification, async(req,res)=>{
 
             }
         });
-        res.status(200).json({userInfo})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+     return   res.status(200).json({userInfo})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
 
 //get all Product/ use on card
@@ -91,8 +91,8 @@ route.get('/allproduct', async(req,res)=>{
             orderBy:{createdAt:'desc'}
 
         });
-        res.status(200).json({getAllProduct, totalPage:Math.ceil(totalProduct/limit)})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+      return  res.status(200).json({getAllProduct, totalPage:Math.ceil(totalProduct/limit)})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
 
 //get product/Details
@@ -117,8 +117,8 @@ route.get('/productdetails/:id',async(req,res)=>{
         });
 
    
-        res.status(200).json({productDetails})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+      return  res.status(200).json({productDetails})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
 
 //getproduct By Category
@@ -155,8 +155,8 @@ route.get('/mensfashion',async(req,res)=>{
             take:limit,
             orderBy:{createdAt:'desc'}
         });
-        res.status(200).json({getMensProduct, totalMensProduct, totalPage:Math.ceil(totalMensProduct/limit)})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+     return   res.status(200).json({getMensProduct, totalMensProduct, totalPage:Math.ceil(totalMensProduct/limit)})
+    }catch(err){console.error(err);return res.status(500).json({msg: 'Server Error'})}
 });
 
 
@@ -194,8 +194,8 @@ route.get('/womenfashion',async(req,res)=>{
             take:limit,
             orderBy:{createdAt:'desc'}
         });
-        res.status(200).json({getWomensProduct, totalWomensProduct, totalPage:Math.ceil(totalWomensProduct/limit)})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+      return  res.status(200).json({getWomensProduct, totalWomensProduct, totalPage:Math.ceil(totalWomensProduct/limit)})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
 
 //category: Kids Fashion/card
@@ -232,8 +232,8 @@ route.get('/kidsfashion',async(req,res)=>{
             take:limit,
             orderBy:{createdAt:'desc'}
         });
-        res.status(200).json({getKidsProduct, totalKidsProduct, totalPage:Math.ceil(totalKidsProduct/limit)})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+     return   res.status(200).json({getKidsProduct, totalKidsProduct, totalPage:Math.ceil(totalKidsProduct/limit)})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
 
 //category: Accessories/card
@@ -270,8 +270,8 @@ route.get('/accessories',async(req,res)=>{
             take:limit,
             orderBy:{createdAt:'desc'}
         });
-        res.status(200).json({getAccessoriesProduct, totalAccessoriesProduct, totalPage:Math.ceil(totalAccessoriesProduct/limit)})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+      return  res.status(200).json({getAccessoriesProduct, totalAccessoriesProduct, totalPage:Math.ceil(totalAccessoriesProduct/limit)})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
 
 //category: Perfume/card
@@ -308,8 +308,8 @@ route.get('/perfume',async(req,res)=>{
             take:limit,
             orderBy:{createdAt:'desc'}
         });
-        res.status(200).json({getPerfumeProduct, totalPerfumeProduct, totalPage:Math.ceil(totalPerfumeProduct/limit)})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+       return res.status(200).json({getPerfumeProduct, totalPerfumeProduct, totalPage:Math.ceil(totalPerfumeProduct/limit)})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
 
 //DeshBoard (user)
@@ -337,8 +337,8 @@ route.get('/perfume',async(req,res)=>{
             const totalPaidOrder= await prisma.order.count({
                 where:{userId:user.id, payment:{status:'PAID'}}
             })
-            res.status(200).json({totalPendingOrder,totalShippedOrder,totalCancelOrder, totalConfirmedOrder,totalDeliveredOrder,totalPaidOrder})
-        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+          return  res.status(200).json({totalPendingOrder,totalShippedOrder,totalCancelOrder, totalConfirmedOrder,totalDeliveredOrder,totalPaidOrder})
+        }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
     });
 
     //get pending order/card
@@ -380,21 +380,22 @@ route.get('/perfume',async(req,res)=>{
                         select:{
                              status :true,
                              paymentmethod:true,
-                             createdAt:true
+                             createdAt:true,
+                            
                         }
                     }
             }
            
             });
-            res.status(200).json({totalPendingOrder, pendingOrder})
+          return  res.status(200).json({totalPendingOrder, pendingOrder})
 
-        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+        }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
     });
     
     
 
     //get all pending order/Details
-    route.get('/pendingorder/:id', verification,roleAuthorize('USER'),async(req,res)=>{
+    route.get('/pendingorderdetails/:id', verification,roleAuthorize('USER'),async(req,res)=>{
         try{
                 const orderId=Number(req.params.id)
               const user= await prisma.user.findUnique({
@@ -402,30 +403,55 @@ route.get('/perfume',async(req,res)=>{
             });
             if(!user){return res.status(404).json({msg:'User Not Found'})}
           
-            const pendingOrder= await prisma.order.findMany({
+            const pendingOrderDetails= await prisma.order.findUnique({
                 where:{userId:user.id,id:orderId, status:'PENDING'},
-                select:{
-                    id:true,
-                    items:true,
-                    total:true,
-                    status:true,
-                    address:true,
-                    createdAt:true,
-                    shippingFee:true,
+                     select:{
+                id:true,
+                createdAt:true,
+                address:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            id:true,
+                         quantity:true,
+                        unitPrice:true,
+                        size:true,
+                        variant:true,
+                        color:true,
+                            product:{
+                                select:{
+                                    name:true,
+                                    photos:true,
+                                    
+                                }
+                            }
+                        }
+                    },
                     payment:{
                         select:{
-                            paymentmethod:true,
-                            status:true,
-                            createdAt:true,
+                             status :true,
+                             paymentmethod:true,
+                             createdAt:true,
+                             transactionId:true,
+                             currency:true,
+                             amount:true
+                            
                         }
                     }
-
-                },
+            }
            
             });
-            res.status(200).json({ pendingOrder})
+           
+          return  res.status(200).json({ pendingOrderDetails, mode:'CheckOut'})
 
-        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+        }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
     });
 
 
@@ -474,16 +500,16 @@ route.get('/perfume',async(req,res)=>{
             }
            
             });
-            res.status(200).json({totalConfirmedOrder, confirmedOrder})
+           return res.status(200).json({totalConfirmedOrder, confirmedOrder})
 
-        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+        }catch(err){console.error(err);return res.status(500).json({msg: 'Server Error'})}
     });
 
 
     
     
     //get confirmd Order/detais
-    route.get('/allconfirmedorder/:id', verification,roleAuthorize('USER'),async(req,res)=>{
+    route.get('/confirmedorderdetails/:id', verification,roleAuthorize('USER'),async(req,res)=>{
         try{
             const orderId=Number(req.params.id)
               const user= await prisma.user.findUnique({
@@ -491,30 +517,54 @@ route.get('/perfume',async(req,res)=>{
             });
             if(!user){return res.status(404).json({msg:'User Not Found'})}
           
-            const confirmedOrder= await prisma.order.findMany({
-                 where:{userId:user.id, id:orderId, status:'CONFIRMED'},
-                select:{
-                    id:true,
-                    items:true,
-                    total:true,
-                    status:true,
-                    address:true,
-                    createdAt:true,
-                    shippingFee:true,
+            const confirmedOrder= await prisma.order.findUnique({
+                  where:{userId:user.id,id:orderId, status:'CONFIRMED'},
+                     select:{
+                id:true,
+                createdAt:true,
+                address:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            id:true,
+                         quantity:true,
+                        unitPrice:true,
+                        size:true,
+                        variant:true,
+                        color:true,
+                            product:{
+                                select:{
+                                    name:true,
+                                    photos:true,
+                                    
+                                }
+                            }
+                        }
+                    },
                     payment:{
                         select:{
-                            paymentmethod:true,
-                            status:true,
-                            createdAt:true,
+                             status :true,
+                             paymentmethod:true,
+                             createdAt:true,
+                             transactionId:true,
+                             currency:true,
+                             amount:true
+                            
                         }
                     }
-
-                },
+                 }
               
             });
-            res.status(200).json({confirmedOrder})
+          return  res.status(200).json({confirmedOrder})
 
-        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+        }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
     });
 
      //get shipped Order/card
@@ -562,9 +612,9 @@ route.get('/perfume',async(req,res)=>{
             }
            
             });
-            res.status(200).json({totalShippedOrder, shippedOrder})
+          return  res.status(200).json({totalShippedOrder, shippedOrder})
 
-        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+        }catch(err){console.error(err);return res.status(500).json({msg: 'Server Error'})}
     });
 
 
@@ -604,9 +654,9 @@ route.get('/perfume',async(req,res)=>{
                 skip:skip,
                 orderBy:{createdAt:'desc'}
             });
-            res.status(200).json({totalShippedOrder, shippedOrder, totalPage:Math.ceil(totalShippedOrder/limit)})
+           return res.status(200).json({totalShippedOrder, shippedOrder, totalPage:Math.ceil(totalShippedOrder/limit)})
 
-        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+        }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
     });
 
      //get delivered Order/card
@@ -661,9 +711,9 @@ route.get('/perfume',async(req,res)=>{
             orderBy:{createdAt:'desc'}
            
             });
-            res.status(200).json({totalDeliveredOrder, deliveredOrder, totalPage:Math.ceil(totalDeliveredOrder/limit)})
+           return res.status(200).json({totalDeliveredOrder, deliveredOrder, totalPage:Math.ceil(totalDeliveredOrder/limit)})
 
-        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+        }catch(err){console.error(err);return res.status(500).json({msg: 'Server Error'})}
     });
 
     
@@ -703,9 +753,9 @@ route.get('/perfume',async(req,res)=>{
                 skip:skip,
                 orderBy:{createdAt:'desc'}
             });
-            res.status(200).json({totalDeliveredOrder, deliveredOrder, totalPage:Math.ceil(totalDeliveredOrder/limit)})
+           return res.status(200).json({totalDeliveredOrder, deliveredOrder, totalPage:Math.ceil(totalDeliveredOrder/limit)})
 
-        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+        }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
     });
 
     
@@ -760,9 +810,9 @@ route.get('/perfume',async(req,res)=>{
             orderBy:{createdAt:'desc'}
            
             });
-            res.status(200).json({totalCancelledOrder,cancelledOrder, totalPage:Math.ceil(totalCancelledOrder/limit)})
+           return res.status(200).json({totalCancelledOrder,cancelledOrder, totalPage:Math.ceil(totalCancelledOrder/limit)})
 
-        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+        }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
     });
 
 
@@ -818,9 +868,9 @@ route.get('/perfume',async(req,res)=>{
             orderBy:{createdAt:'desc'}
            
             });
-            res.status(200).json({totalPaidOrder,paidOrder, totalPage:Math.ceil(totalPaidOrder/limit), mode:'PAID'})
+           return res.status(200).json({totalPaidOrder,paidOrder, totalPage:Math.ceil(totalPaidOrder/limit), mode:'PAID'})
 
-        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+        }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
     });
     
     
@@ -861,9 +911,9 @@ route.get('/perfume',async(req,res)=>{
                 skip:skip,
                 orderBy:{createdAt:'desc'}
             });
-            res.status(200).json({totalCancelledOrder, cancelleddOrder, totalPage:Math.ceil(totalCancelledOrder/limit)})
+           return res.status(200).json({totalCancelledOrder, cancelleddOrder, totalPage:Math.ceil(totalCancelledOrder/limit)})
 
-        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+        }catch(err){console.error(err);return res.status(500).json({msg: 'Server Error'})}
     });
 
 
@@ -904,10 +954,10 @@ route.get('/perfume',async(req,res)=>{
             });
         }
        
-       res.status(200).json({msg:'Add to cart'})
+     return  res.status(200).json({msg:'Add to cart'})
 
 
-        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+        }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
     });
 
     //get all cart items
@@ -938,14 +988,14 @@ route.get('/perfume',async(req,res)=>{
             });
             if(!cartItems){return res.status(404).json({msg:'Cart Not Found'})}
        
-            res.status(200).json({cartItems, mode:'Cart-Page'})
-        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+           return res.status(200).json({cartItems, mode:'CheckOut'})
+        }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
     });
 
     //count cartItem
     route.get('/totalcartitem',verification,roleAuthorize('USER'),async(req,res)=>{
-        const userCart = await prisma.cart.findUnique({
-         where: { userId: Number(req.user.id) },
+        const userCart = await prisma.cart.findFirst({
+         where: { userId: req.user.id, status:'PENDING' },
             });
 
         if (!userCart) return res.status(404).json({ msg: 'Cart not found' });
@@ -976,11 +1026,13 @@ route.get('/perfume',async(req,res)=>{
 
     //Create Order/COD order
     route.post('/checkout', verification, roleAuthorize('USER'), async(req,res)=>{
+        
         try{
-            const {location,addressId}=req.body
+            const {location,addressId}=req.body;
+            
             const userId=req.user.id
             const shippingRate= await prisma.shippingRate.findFirst({
-                where:{location,}
+                where:{location}
             });
             if(!shippingRate){return res.status(400).json({msg:'Shipping Not Available of This Area'})}
             if(!addressId){return res.status(400).json({msg:'Please Add Address'})}
@@ -999,51 +1051,57 @@ route.get('/perfume',async(req,res)=>{
                 });
                 if(!product) continue;
                 totalWeight+= product.weight * item.quantity
-                totalPrice+=item.totlaPrice
+                totalPrice+=product.price*item.quantity
             };
             const shippingFee = shippingRate.baseFee+(totalWeight*shippingRate.perKgFee);
-            
-            const payment= await prisma.payment.create({
-                                data:{
-                                    orderId:order.id,
-                                    status:'UNPAID',
-                                    amount:amount,
-                                    currency:'PHP',
-                                    transactionId:genTrxCode(),
-                                    paymentmethod:'COD'
-                                }
-                            });
-
             const bounsAmount= await prisma.refWallet.findFirst({
-                where:{id:userId},
+                where:{userId},
                 select:{amount:true}
             });
             const bonus= bounsAmount?bounsAmount.amount:0
+              const payment=await prisma.payment.create({
+                                data:{
+                                status:'UNPAID',
+                                amount:(totalPrice-bonus)+shippingFee,
+                                currency:'PHP',
+                                transactionId:(await genTrxCode()).toString(),
+                                paymentmethod:'COD'
+                                }
+                            });
+
+            
             const order= await prisma.order.create({
-                data:{userId,totalPrice:(totalPrice-bonus)+shippingFee, address:{connect:{addressId}}, payment:payment.id, user:user.id,      
+                data:{totalPrice:(totalPrice-bonus)+shippingFee, address:{connect:{id:Number(addressId)}},  user:{connect:{id:Number(userId)}}, payment:{connect:{id:Number(payment.id)}}, 
                     items:{
                     create: cart.items.map((item)=>({
-                        productId: item.productId,
+                        product:{connect:{id:item.productId}} ,
                         quantity:item.quantity,
                         unitPrice:item.unitPrice,
-                        totalPrice:item.totalPrice
+                        totalPrice:parseFloat(item.quantity*item.unitPrice),
+                        size:item.size,
+                        color:item.color,
+                        variant:item.variant
                     }))
                 }},
                 include:{items:true}
             });
+               
+
             await prisma.cart.update({
                 where:{id:cart.id},
                 data:{status:'COMPLETED'}
             });
-            await prisma.refWallet.update({
-                where:{id:userId},
-                data:{amount:0}
+            const existingWallet= await prisma.refWallet.findFirst({
+                where:{userId}
             });
-    
-            res.status(200).json({msg:'Order Placed Successfully'})
 
-
-        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+            if(existingWallet){
+                await prisma.refWallet.update({
+                where:{userId},
+                data:{amount:0}
+            });};
+        res.status(200).json({msg:'Order Placed Successfully'})
+        }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
     });
 
 // Preview Checkout
@@ -1076,7 +1134,6 @@ route.get('/perfume',async(req,res)=>{
                     
                 }
             });
-            if(!cart || cart.items.length===0){return res.status(404).json({msg:'Cart Is Empty'})}
 
             let totalWeight=0
             let subtotal=0
@@ -1096,18 +1153,36 @@ route.get('/perfume',async(req,res)=>{
             });
 
             const bonusAount= await prisma.refWallet.findFirst({
-                where:{id:userId},
+                where:{userId},
                 select:{amount:true}
             });
             const bonus= bonusAount?bonusAount.amount:0
            if(shippingRate){shippingFee = shippingRate.baseFee + (totalWeight * shippingRate.perKgFee)}
-           else{res.status(400).json({msg:'Shipping Not Available for This Area'})}
+           else{ return res.status(400).json({msg:'Shipping Not Available for This Area'})}
 
-            res.status(200).json({items:cart, bonus, shippingFee, itemPrice:subtotal, subtotal:(subtotal-bonus), total:(subtotal-bonus)+shippingFee, mode:'CheckOut'})
+            res.status(200).json({items:cart, bonus, shippingFee:Math.ceil(shippingFee), itemPrice:subtotal, subtotal:(subtotal-bonus), total:(subtotal-bonus)+shippingFee,})
 
 
-        }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+        }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
     });
+
+//cancel Order By User
+route.put('/cancelorder/:id',verification,roleAuthorize('USER'),async(req,res)=>{
+    try{
+        const orderId=Number(req.params.id);
+        const userId=Number(req.user.id);
+        if(!userId){return res.status(404).json({msg:'User Not Found'})}
+        if(!orderId){return res.status(404).json({msg:'Order Not Found'})}
+       const cancel= await prisma.order.update({
+            where:{id:orderId,userId,status:'PENDING'},
+            data:{status:'CANCELLED'}
+        });
+
+        if(!cancel){return res.status(400).json({msg:'Order Cancel Not Possible. Order On Processing'})}
+
+        return res.status(200).json({msg:'Order Cancel Successfully'})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+})
 
 
 // get referral Account
@@ -1141,9 +1216,11 @@ route.get('/referral', verification, roleAuthorize('USER'),async(req,res)=>{
     //get All Shipping Fee
 route.get('/getshippingfee', verification, roleAuthorize('USER'),async(req,res)=>{
     try{
-        const rate= await prisma.shippingRate.findMany();
-        res.status(200).json({rate})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+        const rate= await prisma.shippingRate.findMany({
+            select:{location:true, id:true}
+        });
+        return res.status(200).json({rate})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
 
 // get related Product/card
@@ -1182,8 +1259,8 @@ route.get('/relatedproduct/:id',async(req,res)=>{
         orderBy:{createdAt:'desc'},
         take:8,
         });
-        res.status(200).json({relatedProduct})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+    return    res.status(200).json({relatedProduct})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
 
 //add address by user
@@ -1198,8 +1275,8 @@ route.post('/addaddress', verification, roleAuthorize('USER'),async(req,res)=>{
                 label,name,phone,line1,barangay,city,province,postalCode
             }
          });
-         res.status(200).json({msg:'Address Add Successfully'})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+       return  res.status(200).json({msg:'Address Add Successfully'})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
 
 //Get All Address by user
@@ -1212,8 +1289,8 @@ route.get('/getalladdress',verification,roleAuthorize('USER'),async(req,res)=>{
               id:true, label:true,  name:true,phone:true,line1:true,barangay:true,city:true,province:true,postalCode:true
             }
         });
-        res.status(200).json({address})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+      return  res.status(200).json({address})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 })
 
 

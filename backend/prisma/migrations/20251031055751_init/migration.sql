@@ -8,10 +8,23 @@ CREATE TABLE `User` (
     `photo` VARCHAR(191) NULL,
     `publicId` VARCHAR(191) NULL,
     `role` ENUM('USER', 'ADMIN') NOT NULL DEFAULT 'USER',
+    `referralCode` VARCHAR(191) NOT NULL,
+    `referredBy` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     UNIQUE INDEX `User_email_key`(`email`),
     UNIQUE INDEX `User_phone_key`(`phone`),
+    UNIQUE INDEX `User_referralCode_key`(`referralCode`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `RefWallet` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `amount` DOUBLE NOT NULL,
+    `userId` INTEGER NOT NULL,
+
+    UNIQUE INDEX `RefWallet_userId_key`(`userId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -24,10 +37,15 @@ CREATE TABLE `Product` (
     `stock` INTEGER NOT NULL DEFAULT 0,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
-    `size` VARCHAR(191) NULL,
-    `color` VARCHAR(191) NULL,
+    `size` JSON NOT NULL,
+    `color` JSON NOT NULL,
+    `variant` JSON NOT NULL,
     `category` ENUM('MENSFASHION', 'WOMENFASHION', 'KIDSFASHION', 'ACCESSORIES', 'PERFUME') NOT NULL,
+    `weight` DOUBLE NOT NULL,
+    `barcode` VARCHAR(191) NULL,
+    `originalPrice` DOUBLE NOT NULL,
 
+    UNIQUE INDEX `Product_barcode_key`(`barcode`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -45,9 +63,25 @@ CREATE TABLE `ProductPhotos` (
 CREATE TABLE `Order` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` INTEGER NOT NULL,
-    `total` DOUBLE NOT NULL,
-    `status` ENUM('PENDING', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCELLED') NOT NULL DEFAULT 'PENDING',
+    `totalPrice` DOUBLE NOT NULL,
+    `status` ENUM('PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED') NOT NULL DEFAULT 'PENDING',
+    `paymentId` INTEGER NULL,
+    `addressId` INTEGER NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    UNIQUE INDEX `Order_paymentId_key`(`paymentId`),
+    UNIQUE INDEX `Order_addressId_key`(`addressId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `ShippingRate` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `location` VARCHAR(191) NOT NULL,
+    `baseFee` DOUBLE NOT NULL,
+    `perKgFee` DOUBLE NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -58,7 +92,11 @@ CREATE TABLE `OrderItem` (
     `orderId` INTEGER NOT NULL,
     `productId` INTEGER NOT NULL,
     `quantity` INTEGER NOT NULL,
-    `price` DOUBLE NOT NULL,
+    `unitPrice` DOUBLE NOT NULL,
+    `totalPrice` DOUBLE NOT NULL,
+    `size` VARCHAR(191) NULL,
+    `color` VARCHAR(191) NULL,
+    `variant` VARCHAR(191) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -67,6 +105,7 @@ CREATE TABLE `OrderItem` (
 CREATE TABLE `Cart` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` INTEGER NOT NULL,
+    `status` ENUM('PENDING', 'COMPLETED') NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -81,8 +120,10 @@ CREATE TABLE `CartItem` (
     `productId` INTEGER NOT NULL,
     `size` VARCHAR(191) NULL,
     `color` VARCHAR(191) NULL,
+    `variant` VARCHAR(191) NULL,
     `quantity` INTEGER NOT NULL DEFAULT 1,
     `unitPrice` DECIMAL(10, 2) NOT NULL,
+    `totalPrice` DECIMAL(10, 2) NOT NULL,
 
     INDEX `CartItem_cartId_idx`(`cartId`),
     INDEX `CartItem_productId_idx`(`productId`),
@@ -92,16 +133,15 @@ CREATE TABLE `CartItem` (
 -- CreateTable
 CREATE TABLE `Payment` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `orderId` INTEGER NOT NULL,
-    `status` ENUM('PAID', 'PROCESSING', 'CANCELLED', 'COD') NOT NULL DEFAULT 'PROCESSING',
+    `status` ENUM('PAID', 'UNPAID', 'CANCELLED') NOT NULL,
     `amount` DECIMAL(10, 2) NOT NULL,
     `currency` VARCHAR(191) NOT NULL DEFAULT 'BDT',
     `transactionId` VARCHAR(191) NULL,
     `rawPayload` JSON NULL,
+    `paymentmethod` ENUM('COD', 'CARD') NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `Payment_orderId_key`(`orderId`),
     UNIQUE INDEX `Payment_transactionId_key`(`transactionId`),
     INDEX `Payment_status_idx`(`status`),
     PRIMARY KEY (`id`)
@@ -115,11 +155,10 @@ CREATE TABLE `Address` (
     `name` VARCHAR(191) NOT NULL,
     `phone` VARCHAR(191) NOT NULL,
     `line1` VARCHAR(191) NOT NULL,
-    `line2` VARCHAR(191) NULL,
-    `city` VARCHAR(191) NOT NULL,
-    `state` VARCHAR(191) NULL,
+    `barangay` VARCHAR(191) NOT NULL,
+    `city` VARCHAR(191) NULL,
     `postalCode` VARCHAR(191) NULL,
-    `country` VARCHAR(191) NOT NULL DEFAULT 'BD',
+    `province` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -127,19 +166,33 @@ CREATE TABLE `Address` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `_AddressToOrder` (
-    `A` INTEGER NOT NULL,
-    `B` INTEGER NOT NULL,
+CREATE TABLE `Comment` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `comment` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `userId` INTEGER NOT NULL,
+    `productId` INTEGER NOT NULL,
 
-    UNIQUE INDEX `_AddressToOrder_AB_unique`(`A`, `B`),
-    INDEX `_AddressToOrder_B_index`(`B`)
+    PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `User` ADD CONSTRAINT `User_referredBy_fkey` FOREIGN KEY (`referredBy`) REFERENCES `User`(`referralCode`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `RefWallet` ADD CONSTRAINT `RefWallet_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `ProductPhotos` ADD CONSTRAINT `ProductPhotos_productId_fkey` FOREIGN KEY (`productId`) REFERENCES `Product`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Order` ADD CONSTRAINT `Order_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Order` ADD CONSTRAINT `Order_paymentId_fkey` FOREIGN KEY (`paymentId`) REFERENCES `Payment`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Order` ADD CONSTRAINT `Order_addressId_fkey` FOREIGN KEY (`addressId`) REFERENCES `Address`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `OrderItem` ADD CONSTRAINT `OrderItem_orderId_fkey` FOREIGN KEY (`orderId`) REFERENCES `Order`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -157,13 +210,10 @@ ALTER TABLE `CartItem` ADD CONSTRAINT `CartItem_cartId_fkey` FOREIGN KEY (`cartI
 ALTER TABLE `CartItem` ADD CONSTRAINT `CartItem_productId_fkey` FOREIGN KEY (`productId`) REFERENCES `Product`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Payment` ADD CONSTRAINT `Payment_orderId_fkey` FOREIGN KEY (`orderId`) REFERENCES `Order`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE `Address` ADD CONSTRAINT `Address_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `_AddressToOrder` ADD CONSTRAINT `_AddressToOrder_A_fkey` FOREIGN KEY (`A`) REFERENCES `Address`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Comment` ADD CONSTRAINT `Comment_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `_AddressToOrder` ADD CONSTRAINT `_AddressToOrder_B_fkey` FOREIGN KEY (`B`) REFERENCES `Order`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Comment` ADD CONSTRAINT `Comment_productId_fkey` FOREIGN KEY (`productId`) REFERENCES `Product`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

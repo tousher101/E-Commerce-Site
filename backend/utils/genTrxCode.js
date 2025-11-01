@@ -1,13 +1,9 @@
 async function genTrxCode() {
-   const prefix="T&Tpayment"
-    let code;
-    let exists=true;
-    while(exists){
-      
-        const randomNum= Math.floor(1000+Math.random()*9000);
-        code=`${prefix}${randomNum}`;
-    }
-    return code;
+  const prefix = "TRX";
+  const date = new Date().toISOString().slice(0,10).replace(/-/g,"");
+  const random = Math.random().toString(36).substring(2,8).toUpperCase();
+  return `${prefix}${date}${random}`;
 }
 
-module.exports=genTrxCode
+module.exports = genTrxCode;
+

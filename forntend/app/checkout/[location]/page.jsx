@@ -7,6 +7,10 @@ import { useParams } from "next/navigation"
 import { fetchWithAuth } from '../../../Utils/fetchWithAuth'
 import PaymentSummary from "../../../component/paymentSummary"
 import Alert from "../../../Utils/Alert"
+import { useRouter } from "next/navigation"
+import { useUserInfo } from "../../../context/userInfo"
+import AOS from 'aos';
+import 'aos/dist/aos.css'
 
 export default function checkOut() {
     const BaseURI=process.env.NEXT_PUBLIC_API_URI;
@@ -30,21 +34,14 @@ export default function checkOut() {
     const [postalCode, setPostalCode]=useState('');
     const [msg, setMsg]=useState(null);
     const [type,setType]=useState(null);
+    const [selectedAddressId, setSelectedAddressId]=useState(null);
     const params=useParams();
     const {location}=params;
+    const router=useRouter();
+    const {getCartItems,getTotalCartItems}=useUserInfo();
 
 
-    const getCheckOutdata=async()=>{
-        const res= await fetchWithAuth(`${BaseURI}/api/user/checkoutpreview/${location}`)
-        setCheckOutDate(res);
-        setMode(res.mode);
-        
-    };
-
-    const getAllAddress=async()=>{
-        const res= await fetchWithAuth(`${BaseURI}/api/user/getalladdress`)
-        setAddressData(res.address)
-    };
+    
 
     const addShippingAddress=async()=>{
         const res=await fetchWithAuth(`${BaseURI}/api/user/addaddress`,{
@@ -57,7 +54,22 @@ export default function checkOut() {
         setLabel('');setName('');setPhone('');setProvinces('');setCities('');setBarangays('');setLine1('');setPostalCode('');setAddAddress(false);
         setMsg(res.msg);
         setType('Success');
-    }
+    };
+
+    const submitCODOrder=async()=>{
+        const res= await fetchWithAuth(`${BaseURI}/api/user/checkout`,{
+            method:'POST',
+            body:JSON.stringify({location,addressId:selectedAddressId})
+        })
+        
+        setMsg(res.msg);
+        setType('Success');
+        getCartItems();
+        getTotalCartItems();
+        setTimeout(()=>{
+            router.push('/')
+        },3000)
+    };
 
     const provinceOnChange=(e)=>{
        const code= e.target.value
@@ -113,7 +125,25 @@ export default function checkOut() {
             if(res.ok){setBarangays(data)}
     };
 
+
+    const getCheckOutdata=async()=>{
+        const res= await fetchWithAuth(`${BaseURI}/api/user/checkoutpreview/${location}`)
+        setCheckOutDate(res);
+        setMode(res.mode);
+        
+    };
+
+    const getAllAddress=async()=>{
+        const res= await fetchWithAuth(`${BaseURI}/api/user/getalladdress`)
+        setAddressData(res.address)
+    };
+
     useEffect(()=>{
+          AOS.init({
+                    duration:1000,once:false,mirror:false
+                  });
+                  AOS.refresh();
+        
         getProvinces();
         getCities();
         getBarangay();
@@ -141,13 +171,14 @@ return(
             <div className=" mx-[10px]">
                 <h1 className=" text-center text-xl text-gray-400 font-semibold mb-[15px]">Shipping Address</h1>
                 <p className="font-semibold text-xs text-gray-500 text-center mb-[15px]">Note: Please Make Sure! Your Selected Shipping Area & Your Shipping Address Is Same Area!</p>
-                <input type="radio" id="address-card" className="hidden"/>
+                
                 <div className=" grid grid-cols-3 gap-3 w-full">
                     {addressData?.map((add)=>(
-                        
-                        <label key={add.id} htmlFor="address-card" className="cursor-pointer">
+                        <label key={add?.id} htmlFor={`address-${add.id}`} className={`cursor-pointer block mb-[25px] border-1 rounded-md ${selectedAddressId===add.id?'border-blue-500 bg-blue-50 border-2': 'border-gray-400'}`}>
+                             <input type="radio" name="address" value={add?.id} checked={selectedAddressId===add?.id} onChange={()=>{setSelectedAddressId(add?.id)}} id={`address-${add.id}`} className=" h-[20px] w-[20px] hidden"/>
                             <AddressCard name={add?.name} phone={add?.phone} line1={add.line1} barangay={add?.barangay} city={add?.city} province={add?.province} postalCode={add?.postalCode} label={add?.label}/>
                         </label>
+                       
                     ))}
                     
                    
@@ -178,7 +209,7 @@ return(
         </div>
     </div>
            <div className="flex mx-[10px] justify-center gap-6 my-[30px] mb-[50px]">
-            <button className="border-1 bg-blue-500 rounded-sm cursor-pointer p-2 text-white">COD Order</button>
+            <button onClick={submitCODOrder} className="border-1 bg-blue-500 rounded-sm cursor-pointer p-2 text-white">COD Order</button>
             <button className="border-1 bg-green-500 rounded-sm cursor-pointer p-2 text-white">Payment</button>
         </div>
         </>

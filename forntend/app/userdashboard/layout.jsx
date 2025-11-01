@@ -4,7 +4,7 @@ export default function layout({children}){
         
              <div className=" mx-[10px] overflow-hidden mb-[80px]">
             <div className="flex gap-3">
-            <div className="flex flex-[20%] shadow-xl h-[500px] rounded-xl ">
+            <div data-aos='slide-up' className="flex flex-[20%] shadow-xl h-[500px] rounded-xl ">
                 <div className="grid grid-cols-1 gap-2 p-3">
                     <div className="flex items-center gap-1">
                         <img className="w-[40px] h-[40px]" src="/task-management.gif"/>

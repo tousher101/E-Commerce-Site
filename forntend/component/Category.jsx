@@ -4,7 +4,7 @@ import Link from "next/link"
 export default function category(){
   
     return(
-        <div className=" mx-[10px]  my-[15px]">
+        <div data-aos='zoom-in'  className=" mx-[10px]  my-[60px] ">
             <h1 className=" text-center text-gray-500 text-3xl font-semibold">Category</h1>
              <div className=" grid lg:grid-cols-5 sm:grid-cols-2 grid-cols-1 gap-5 my-[30px]">
               

@@ -1,19 +1,8 @@
 "use client"
 import Link from "next/link"
-import { fetchWithAuth } from "../../Utils/fetchWithAuth"
-import { useEffect, useState } from "react"
-
-
+import { useGlobalContext } from "../../context/globalContext"
 export default function layout({children}){
-    const BaseURI=process.env.NEXT_PUBLIC_API_URI;
-    const [data,setDate]=useState();
-    const getAllCount=async()=>{
-        const res= await fetchWithAuth(`${BaseURI}/api/admin/countorderstatus`)
-        setDate(res)
-    };
-    useEffect(()=>{
-        getAllCount()
-    },[])
+ const{adminDashboardCount}=useGlobalContext();
 
     return(
                <div className=" mx-[10px] overflow-hidden mb-[80px]">
@@ -40,37 +29,37 @@ export default function layout({children}){
 
                      <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
                         <img className="w-[30px] h-[30px]" src="/rfp.gif"/>
-                         <Link href={'/admindashboard/orderrequest'}><h1 className="p-2 ">Order Request ({data?.totalPendingOrder})</h1></Link>
+                         <Link href={'/admindashboard/orderrequest'}><h1 className="p-2 ">Order Request ({adminDashboardCount?.totalPendingOrder})</h1></Link>
                     </div>
 
                     <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
                         <img className="w-[30px] h-[30px]" src="/hand-paper-check.gif"/>
-                        <Link href={'/admindashboard/confirmedorder'}><h1 className="p-2">Confirmed Order ({data?.totalConfirmedOrder})</h1></Link>
+                        <Link href={'/admindashboard/confirmedorder'}><h1 className="p-2">Confirmed Order ({adminDashboardCount?.totalConfirmedOrder})</h1></Link>
                     </div>
 
                     <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
                         <img className="w-[30px] h-[30px]" src="/warehouse.gif"/>
-                        <Link href={'/admindashboard/shippedorder'}><h1 className="p-2">Shipped Order ({data?.totalShippedOrder})</h1></Link>
+                        <Link href={'/admindashboard/shippedorder'}><h1 className="p-2">Shipped Order ({adminDashboardCount?.totalShippedOrder})</h1></Link>
                     </div>
 
                      <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
                         <img className="w-[30px] h-[30px]" src="/shippe.gif"/>
-                        <Link href={'/admindashboard/deliveredorder'}><h1 className="p-2 ">Delivered Order ({data?.totalDeliveredOrder})</h1></Link>
+                        <Link href={'/admindashboard/deliveredorder'}><h1 className="p-2 ">Delivered Order ({adminDashboardCount?.totalDeliveredOrder})</h1></Link>
                     </div>
 
                      <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
                         <img className="w-[30px] h-[30px]" src="/delivery.gif"/>
-                        <Link href={'/admindashboard/cancelledorder'}><h1 className="p-2">Cancel Order ({data?.totalCancelOrder})</h1></Link>
+                        <Link href={'/admindashboard/cancelledorder'}><h1 className="p-2">Cancel Order ({adminDashboardCount?.totalCancelOrder})</h1></Link>
                     </div>
 
                     <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
                         <img className="w-[30px] h-[30px]" src="/receipt.gif"/>
-                        <Link href={'/admindashboard/paidorder'}><h1 className="p-2">Paid Order ({data?.totalPaidOrder})</h1></Link>
+                        <Link href={'/admindashboard/paidorder'}><h1 className="p-2">Paid Order ({adminDashboardCount?.totalPaidOrder})</h1></Link>
                     </div>
 
                     <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
                         <img className="w-[30px] h-[30px]" src="/cash-on-delivery.png"/>
-                         <Link href={'/admindashboard/codorder'}><h1 className="p-2">COD Order ({data?.totalCODOrder})</h1></Link>
+                         <Link href={'/admindashboard/codorder'}><h1 className="p-2">COD Order ({adminDashboardCount?.totalCODOrder})</h1></Link>
                     </div>
                        <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
                         <img className="w-[30px] h-[30px]" src="/ship.gif"/>

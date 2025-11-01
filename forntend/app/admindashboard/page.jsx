@@ -20,6 +20,7 @@ const getChartData=async()=>{
     setChartData(res?.salesData)
 }
 useEffect(()=>{
+
     getChartData();
     getCardData();
 },[]);

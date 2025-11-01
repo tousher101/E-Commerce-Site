@@ -1,7 +1,10 @@
 
 export async function fetchWithAuth(url, options = {}) {
     const BASEURI=process.env.NEXT_PUBLIC_API_URI
-  let accessToken = localStorage.getItem('token')
+  let accessToken 
+  if (typeof window !== "undefined") {
+    accessToken = sessionStorage.getItem("token");
+  }
 
   let response = await fetch(url, {
     ...options,
@@ -20,16 +23,15 @@ export async function fetchWithAuth(url, options = {}) {
       credentials: "include"
     });
 
-    if (!refreshRes.ok && !window.location.pathname.includes('/')) {
-      localStorage.removeItem("token");
-      window.location.replace('/');
+    if (!refreshRes.ok) {
+      sessionStorage.removeItem('token');
       throw new Error("Session expired, please login again");
       
     }
 
     const refreshData = await refreshRes.json();
     accessToken = refreshData.accessToken;
-    localStorage.setItem("token", accessToken);
+    sessionStorage.setItem("token", accessToken);
 
     // Retry main API
     response = await fetch(url, {
@@ -54,3 +56,8 @@ export async function fetchWithAuth(url, options = {}) {
 
   return data;
 }
+
+
+
+
+

@@ -9,6 +9,8 @@ export const UserProvider=({children})=>{
     const [user,setUser]=useState(null);
     const [totalCartItmes, setTotalCartItems]=useState(0);
     const [cartData, setCartData]=useState(null);
+    const [shippingAreaData, setShippingAreaData]=useState([]);
+    const [mode, setMode]=useState(null)
   
 
    
@@ -16,6 +18,7 @@ export const UserProvider=({children})=>{
     const getAllUser=async()=>{
         const res= await fetchWithAuth(`${BaseURI}/api/user/userinfo`)
         setUserInfo(res.userInfo)
+
     };
 
       const getTotalCartItems=async()=>{
@@ -26,7 +29,13 @@ export const UserProvider=({children})=>{
      const getCartItems=async()=>{
       const res= await fetchWithAuth(`${BaseURI}/api/user/getallcartitems`)
       setCartData(res.cartItems)
+      setMode(res.mode)
      
+    };
+
+       const getShippingArea=async()=>{
+      const res=await fetchWithAuth(`${BaseURI}/api/user/getshippingfee`)
+      setShippingAreaData(res.rate)
     }
 
 
@@ -34,15 +43,17 @@ export const UserProvider=({children})=>{
     useEffect(()=>{
     getAllUser();
     getTotalCartItems();
+    getShippingArea();
     
-    const storedUser= localStorage.getItem('token')
-    if(storedUser){setUser(storedUser)}
+    const storedUser= sessionStorage.getItem('token')
+    const storeRole=sessionStorage.getItem('role')
+    if(storedUser&&storeRole){setUser(storedUser)}
 },[]);
 
 
 
 return (
-    <UserInfoContext.Provider value={{userInfo, getAllUser, setUserInfo, user, totalCartItmes, getTotalCartItems, cartData,getCartItems}}>{children}</UserInfoContext.Provider>
+    <UserInfoContext.Provider value={{userInfo, getAllUser, setUserInfo, user, totalCartItmes, getTotalCartItems, cartData,getCartItems, shippingAreaData, getShippingArea, mode}}>{children}</UserInfoContext.Provider>
 )
 };
 export const useUserInfo=()=>useContext(UserInfoContext)

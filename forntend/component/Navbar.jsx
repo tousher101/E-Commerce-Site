@@ -12,10 +12,11 @@ import Alert from "../Utils/Alert";
 import { fetchWithAuth } from "../Utils/fetchWithAuth";
 
 export default function navBar() {
-  const {userInfo,getAllUser, totalCartItmes,getTotalCartItems,cartData,getCartItems,}=useUserInfo();
+  const {userInfo,getAllUser, totalCartItmes,getTotalCartItems,cartData,getCartItems, shippingAreaData,mode}=useUserInfo();
   const [msg, setMsg]=useState(null);
   const [type,setType]=useState(null);
   const [selectedArea, setSelectedArea]=useState('');
+  
   const router=useRouter()
 
       const goHome=()=>{
@@ -27,6 +28,7 @@ export default function navBar() {
         router.push('/signin')
     }
         const goCheckOut=()=>{
+          if(!cartData||cartData.length===0){setMsg('Cart Is Empty'); setType('Error'); return}
           if(!selectedArea){setMsg('Please Selecte Shipping Area');setType('Error'); return}
         router.push(`/checkout/${selectedArea}`);
       setSelectedArea('');
@@ -73,6 +75,7 @@ export default function navBar() {
  const logOut=async()=>{
       const res= await fetch(`${BaseURI}/api/auth/logout`,{
         method:'POST',
+        credentials:'include',
         headers:{
           'Content-Type':'application/json'
         }
@@ -80,7 +83,7 @@ export default function navBar() {
       const data= await res.json();
       if(res.ok){getAllUser();
       setMsg(data.msg);
-      setType('Success'); goHome(); localStorage.removeItem('token');setUserModal(false);}
+      setType('Success'); goHome(); sessionStorage.removeItem('token'); sessionStorage.removeItem('role');setUserModal(false);}
     }
 
         const deleteCartItems=async(id)=>{
@@ -92,9 +95,12 @@ export default function navBar() {
     getTotalCartItems();
     };
 
+ 
+
 
     useEffect(()=>{
       getCartItems();
+      
     },[])
 
 
@@ -113,7 +119,7 @@ export default function navBar() {
             <div  className="flex justify-between items-center">
                 {userInfo?.role==='USER'&&<div onClick={openModal} className="cursor-pointer">
                  <img className="h-[50px] w-[50px]" src="/shopping-cart.gif" alt="shopping-cart"/>
-                 <h1 className=" absolute top-5 right-20 bg-red-600 h-[20px] w-[20px] rounded-3xl text-center text-white text-sm ">{totalCartItmes}</h1>
+                 <h1 className=" absolute top-5 right-20 bg-red-600 h-[20px] w-[20px] rounded-3xl text-center text-white text-sm ">{totalCartItmes||0}</h1>
                 </div>}
               
                 <div>
@@ -161,7 +167,8 @@ export default function navBar() {
                 
       </div>
         </nav>
-      {openCartModal&&<Cart closeModal={closeModal} design={animatedModal} data={cartData} totalItems={totalCartItmes} submitItemDelete={deleteCartItems} areaValue={selectedArea} areaOnCh={(e)=>{setSelectedArea(e.target.value)}} goCheckOut={goCheckOut}/>}
+      {openCartModal&&<Cart closeModal={closeModal} design={animatedModal} data={cartData} totalItems={totalCartItmes} submitItemDelete={deleteCartItems} areaValue={selectedArea} areaOnCh={(e)=>{setSelectedArea(e.target.value)}} goCheckOut={goCheckOut}
+        shippingArea={shippingAreaData} mode={mode}/>}
       {userModal&&<UserInfo photo={userInfo?.photo} design={animatedModal} closeModal={closeUserModal} name={userInfo.name}
       email={userInfo.email} phone={userInfo.phone} role={userInfo.role} logout={()=>{logOut()}}/>}
       </>

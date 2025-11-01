@@ -2,13 +2,12 @@ import Image from "next/image"
 import paymentIcon from '../public/invoice.png'
 import orderIcone from '../public/document.png'
 import customerIcon from '../public/business-card.png'
-import Link from "next/link"
 import NoImage from '../public/noimage.png'
 
-export default function orderCard({photo,orderId, amount, orderStatus, paymentStatus, paymentMethod, paymentCreate, userName, userEmail, userPhone, mode, trxId, orderCreate}){
+export default function orderCard({photo,orderId, amount, orderStatus, paymentStatus, paymentMethod, paymentCreate, userName, userEmail, userPhone, mode, trxId, orderCreate, goDetails}){
     return(
         <div className=" overflow-hidden my-[10px] mx-[10px] rounded-xl shadow-sm flex items-center justify-evenly text-sm ">
-             <Image src={photo||NoImage} height={70} width={100} alt="Product-photo"/>
+             <Image src={photo||NoImage} height={70} width={100} className="h-[70px] w-[100px] rounded-sm" alt="Product-photo"/>
              <div className="grid grid-cols-1 items-center p-2">
                 <div className="flex items-center gap-1">
                 <Image src={orderIcone} height={20} width={20} alt="order-icon"/>
@@ -42,7 +41,7 @@ export default function orderCard({photo,orderId, amount, orderStatus, paymentSt
                 <h2> Phone : {userPhone}</h2>
              </div>
              <div className="flex">
-                <Link href={`orderrequest/${orderId}`}><button className="h-[40px] w-[90px] bg-blue-500 rounded-xl cursor-pointer text-white hover:bg-gray-600 duration-500">Details</button></Link>
+                <button onClick={goDetails} className="h-[40px] w-[90px] bg-blue-500 rounded-xl cursor-pointer text-white hover:bg-gray-600 duration-500">Details</button>
              </div>
              
         </div>

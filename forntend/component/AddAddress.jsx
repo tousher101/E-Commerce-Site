@@ -2,7 +2,7 @@ export default function addAddress({cancel, provinces, cities, citiesOnCh, baran
     labelValue,labelOnCh,nameValue,nameOnCh,phoneValue,phoneOnCh,line1Value,line1OnCh,postalCodeValue,postalCodeOnCh, submitAddress
 }){
     return(
-        <div className="mx-auto overflow-hidden border-1 border-gray-400 rounded-xl my-[15px]">
+        <div data-aos='fade-left' className="mx-[25px] overflow-hidden border-1 border-gray-400 rounded-xl my-[15px]">
             <div className="grid grid-cols-1 gap-2 p-2 justify-center">
                 <select value={labelValue} onChange={labelOnCh} className="p-2 rounded-xl border-1 border-gray-400">
                     <option value=''>Select Lebel</option>

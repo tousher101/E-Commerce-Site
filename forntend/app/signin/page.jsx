@@ -3,9 +3,9 @@ import Image from "next/image"
 import logo from '../../public/logo.png'
 import Link from "next/link"
 import { useState } from "react"
-import { useRouter,useSearchParams } from "next/navigation"
 import Alert from "../../Utils/Alert"
 import { useUserInfo } from "../../context/userInfo"
+
 
 export default function signIn(){
 const [email,setEmail]=useState('');
@@ -13,38 +13,31 @@ const [password, setPassword]=useState('');
 const BaseURI=process.env.NEXT_PUBLIC_API_URI;
 const [msg,setMsg]=useState(null);
 const [type,setType]=useState(null);
-const {getAllUser,getTotalCartItems,getCartItems}=useUserInfo()
+const {getAllUser,getTotalCartItems,getCartItems, getShippingArea}=useUserInfo();
 
-const router= useRouter();
-const searchParams=useSearchParams();
-const redirect=searchParams.get('redirect')
 
-const goAdminDashBoard=()=>{
-    router.push('/admindashboard')
-};
 
-const goUserHomePage=()=>{
-    router.push('/')
-}
 
-const goRedirect=()=>{
-    router.push(redirect)
-}
+
 
 const submitLogin=async(e)=>{
 e.preventDefault();
 const res=await fetch(`${BaseURI}/api/auth/signin`,{
     method:'POST',
+    credentials:'include',
     headers:{
         'Content-Type':'application/json'
     },
     body: JSON.stringify({email,password})
 });
 const data= await res.json();
-if(res.ok){ localStorage.setItem('token', data.accessToken);
-    if(redirect){goRedirect();getTotalCartItems(); return}
-    if(data.role==='ADMIN'){goAdminDashBoard(); getAllUser()}
-    if(data.role==='USER'){goUserHomePage();getAllUser();getTotalCartItems(); getCartItems()}
+if(res.ok){ sessionStorage.setItem('token', data.accessToken);
+    sessionStorage.setItem('role',data.role)
+    setTimeout(()=>{
+        if(data.role==='ADMIN'){window.location.href=('/admindashboard'); getAllUser()}
+    if(data.role==='USER'){window.location.href=('/');getAllUser();getTotalCartItems(); getCartItems();getShippingArea();}
+    },1000)
+    
 } 
 else if(res.status===404 ||res.status===400||res.status===500){setMsg(data.msg); setType('Error')}
 }
@@ -52,8 +45,8 @@ else if(res.status===404 ||res.status===400||res.status===500){setMsg(data.msg);
     return(
         <>
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-        <div className=" mx-auto overflow-hidden shadow-xl my-[50px]">
-            <div className="grid grid-cols-1 justify-items-center my-[30px]">
+        <div    className=" mx-auto overflow-hidden shadow-xl my-[50px]">
+            <div data-aos='zoom-in' className="grid grid-cols-1 justify-items-center my-[30px]">
                 <div className="grid grid-cols-1 justify-items-center">
                     <Image src={logo} height='auto' width='auto' priority className="h-[60px] w-[120px]" alt="logo"/>
                     <h1 className="text-gray-400 text-sm mb-[10px] mt-[5px] ">Hello! Welcome Back To Our Shop! Please Login Your Account Here!</h1>
@@ -77,6 +70,7 @@ else if(res.status===404 ||res.status===400||res.status===500){setMsg(data.msg);
             </div>
 
         </div>
+        
         </>
     )
 }

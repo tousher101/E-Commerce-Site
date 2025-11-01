@@ -2,20 +2,20 @@ import ProductSummary from '../component/ProductSummary'
 
 
 
-export default function cart({closeModal, design, data, totalItems,submitItemDelete, areaValue, areaOnCh, goCheckOut, mode}){
+export default function cart({closeModal, design, data, totalItems,submitItemDelete, areaValue, areaOnCh, goCheckOut, shippingArea, mode}){
 
    
     return(
      
           <div className={`fixed top-0 left-0 h-full w-full bg-[rgba(0,0,0,0.5)] flex justify-center items-center z-50 transition-opacity duration-1000 ${design?'opacity-100':'opacity-0'}`}>
         <div className={`grid justify-items-center center content-center items-center bg-white p-[15px] rounded-2xl w-[620px] text-center text-black duration-1000 ${design?'scale-100':'scale-0'}`}>
-            <p className='text-2xl font-bold'>Cart Items ({totalItems})</p>
+            <p className='text-2xl font-bold'>Cart Items ({totalItems||0})</p>
             <div className='grid grid-cols-1 gap-1'>
-                {data?.items<0?data?.items?.map((item,index)=>(
+                { data?.items?.map((item,index)=>(
                     <div key={index}>
-                    <ProductSummary photo={item?.product?.photos[0]?.url} name={item?.product?.name} price={item?.product?.price} size={item?.size} quantity={item?.quantity} color={item?.color} variant={item?.variant} cartId={item?.id} submitItemDelete={submitItemDelete}    />
+                    <ProductSummary photo={item?.product?.photos[0]?.url} name={item?.product?.name} price={item?.product?.price} size={item?.size} quantity={item?.quantity} color={item?.color} variant={item?.variant} cartId={item?.id} submitItemDelete={submitItemDelete} mode={mode}    />
                      </div>
-                )):<h1 className='text-center text-gray-400 mt-[30px] text-xl'>The cart is Empty </h1>}
+                ))||<h1 className='text-center text-gray-400 mt-[30px] text-xl'>Cart Is Empty </h1>}
                   
             </div>
                 
@@ -27,10 +27,9 @@ export default function cart({closeModal, design, data, totalItems,submitItemDel
                     <div>
                         <select value={areaValue} onChange={areaOnCh}  className='border-1 border-gray-400 p-2 rounded-xl my-[25px]'>
                             <option value=''>Select Shipping Area</option>
-                            <option value='Luzon'>Luzon</option>
-                            <option value='Metro Manila'>Metro Manila</option>
-                            <option value='Visaya'>Visaya</option>
-                            <option value='Mindanao'>Mindanao</option>
+                            {shippingArea?.map((area)=>(
+                                <option key={area.id} value={area?.location}>{area?.location}</option>
+                            ))}
                         </select>
                     </div>
          

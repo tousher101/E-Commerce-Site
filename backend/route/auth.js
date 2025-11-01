@@ -17,7 +17,7 @@ body('password', 'Enter Valid Password').isLength({min:5}), body('phone').isLeng
         if (!errors.isEmpty()) {
          return res.status(400).json({ msg: 'Something Went Wrong. Check Your Information', errors: errors.array() });}
          try{
-            console.log('Hit API')
+          
             const {name,email,password,phone,referralCode}=req.body;
             const dupUser= await prisma.user.findUnique({
                 where:{email,phone}
@@ -41,8 +41,8 @@ body('password', 'Enter Valid Password').isLength({min:5}), body('phone').isLeng
                 }
             });
         
-            res.status(200).json({msg:'Account Create Successfully'})
-         }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+          return  res.status(200).json({msg:'Account Create Successfully'})
+         }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
 
 
@@ -58,14 +58,14 @@ async(req,res)=>{
         const isMatch=await bcrypt.compare(password,user.password);
         if(!isMatch){return res.status(400).json({msg:'Invalid Email or Password'})};
         const payload = {id:user.id, role:user.role};
-        const accessToken=jwt.sign(payload,ACCESS_TOKEN_SECRATE,{expiresIn:'1h'});
+        const accessToken=jwt.sign(payload,ACCESS_TOKEN_SECRATE,{expiresIn:'15m'});
         const refreshToken= jwt.sign(payload, REFRESH_TOKEN_SECRATE,{expiresIn:'7d'})
         res.cookie('refreshToken',refreshToken,{httpOnly:true, secure: false //true in Production
             ,sameSite: 'lax', //'none' in production
         path:'/', maxAge: 7 * 24 * 60 * 60 * 1000})
-        res.status(200).json({accessToken, role:user.role})
+       return res.status(200).json({accessToken, role:user.role})
 
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
 
 //Refresh Token Route
@@ -78,17 +78,22 @@ route.post('/refresh', async(req,res)=>{
             
         
         const accessToken=jwt.sign(payload,ACCESS_TOKEN_SECRATE,{expiresIn:'15m'});
-        res.status(200).json({accessToken})
+      return  res.status(200).json({accessToken})
 
-    }catch(err){console.error(err); res.status(403).json({msg: 'Invalid Refresh Token'})}
+    }catch(err){console.error(err); return res.status(403).json({msg: 'Invalid Refresh Token'})}
 });
 
 // LogOut for valid user
 route.post('/logout', async(req,res)=>{
     try{
-        res.clearCookie("refreshToken");
-        res.status(200).json({msg:'Logout Successfully'})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+        res.clearCookie("refreshToken",{
+            httpOnly:true,
+             secure: false, //true in Production
+            sameSite: 'lax', //'none' in production
+            path:'/'
+        });
+      return  res.status(200).json({msg:'Logout Successfully'})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 })
 
 //Secrate add admin
@@ -104,7 +109,7 @@ route.put('/addadmin', async(res,req)=>{
                 const secPass=await bcrypt.hash(password,salt)
                 const createUser= await prisma.user.create({ data:{
                     name, email,password:secPass, role:'ADMIN' }});
-                res.status(201).json({createUser,msg:'Admin create success fully'})
+              return  res.status(201).json({createUser,msg:'Admin create success fully'})
    
 });
 
@@ -122,8 +127,8 @@ route.put('/changepassword',verification,async(req,res)=>{
         where:{id:user.id},
         data:{passowrd:secPass}
     });
-    res.status(200).json({msg:'Password changed Successfully'})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+   return res.status(200).json({msg:'Password changed Successfully'})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
 
 
