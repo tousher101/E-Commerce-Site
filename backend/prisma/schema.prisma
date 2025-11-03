@@ -78,7 +78,7 @@ model Order {
   payment Payment?  @relation(fields:[paymentId],references:[id])
   paymentId Int? @unique
   address Address? @relation(fields:[addressId], references:[id])
-  addressId Int? @unique
+  addressId Int?
 
   createdAt DateTime    @default(now())
 
@@ -168,7 +168,7 @@ model Address {
   postalCode String?
   province String?
 
-  order         Order?   
+  order         Order[] 
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 }
@@ -188,6 +188,7 @@ model Comment {
 enum Role {
   USER
   ADMIN
+ 
 }
 
 enum CartStatus {

@@ -7,6 +7,8 @@ import { fetchWithAuth } from "../../Utils/fetchWithAuth";
 import Alert from "../../Utils/Alert";
 import { useRouter } from "next/navigation";
 import { useUserInfo } from "../../context/userInfo";
+import Review from '../../component/Review'
+
 export default function productDetailsPage(){
     const {id}=useParams();
     const BaseURI=process.env.NEXT_PUBLIC_API_URI;
@@ -69,6 +71,9 @@ export default function productDetailsPage(){
             selectedVariant={variant} selectedVariantOnCh={(e)=>{setVariant(e.target.value)}} selectedQuantity={quantity} selectedQuantityOnCh={(e)=>{setQuantity(e.target.value)}}
             submitAddToCart={handleAddToCart} />
             </div>
+
+            <Review productId={id}/>
+            
 
             <div>
                 <h1 className="text-center text-3xl text-gray-400 font-semibold">Related Product</h1>

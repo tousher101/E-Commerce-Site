@@ -26,7 +26,6 @@ export default function orderCard({photo,orderId, amount, orderStatus, paymentSt
                 </div>
                 
                 <h2>Payment Status : {paymentStatus}</h2>
-                {mode==='PAID'&&<h2>TrxId : {trxId} </h2>}
                 
                 <h2>Payment Method : {paymentMethod}</h2>
                 <h2>Created At : {new Date(paymentCreate).toDateString() || <h1>N/A</h1>} </h2>

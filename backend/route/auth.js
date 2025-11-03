@@ -19,8 +19,8 @@ body('password', 'Enter Valid Password').isLength({min:5}), body('phone').isLeng
          try{
           
             const {name,email,password,phone,referralCode}=req.body;
-            const dupUser= await prisma.user.findUnique({
-                where:{email,phone}
+            const dupUser= await prisma.user.findFirst({
+                where:{OR:[{email},{phone}]}
             });
             if(dupUser){return res.status(400).json({msg:'User Already Exisit'})};
             const salt= await bcrypt.genSalt(8);
@@ -97,35 +97,41 @@ route.post('/logout', async(req,res)=>{
 })
 
 //Secrate add admin
-route.put('/addadmin', async(res,req)=>{
-    const {name,email,password,secretCode}=req.body
+route.put('/addadmin', async(req,res)=>{
+    const {name,email,password,secretCode,phone}=req.body
       if (secretCode !== process.env.ADMIN_SECRET_CODE) {
     return res.status(401).json({ msg: "❌ Invalid admin secret code!" });}
-    const existing = await prisma.user.findUnique({ where: { email } });
+   
+    const existing = await prisma.user.findFirst({ where: {OR:[ {email}, {phone} ]} });
   if (existing) {
-    return res.status(400).json({ msg: "⚠️ User with this email already exists." });}
-
+    return res.status(401).json({ msg: "⚠️ User with this email or phone already exists." });}
+     const myReferralCode= await refCodeGen(prisma,name);
     const salt= await bcrypt.genSalt(10)
                 const secPass=await bcrypt.hash(password,salt)
-                const createUser= await prisma.user.create({ data:{
-                    name, email,password:secPass, role:'ADMIN' }});
-              return  res.status(201).json({createUser,msg:'Admin create success fully'})
+                    await prisma.user.create({ data:{
+                    name, email, phone,password:secPass, role:'ADMIN', referralCode:myReferralCode }});
+              return  res.status(201).json({msg:'Admin create success fully'})
    
 });
 
 //change password
 route.put('/changepassword',verification,async(req,res)=>{
+   
     try{
-    const passowrd=req.body
+    const {newPassword,currentPassword}=req.body
+    
     const user = await prisma.user.findUnique({
         where:{id: req.user.id},
     });
+  
+    const decodePassword= await bcrypt.compare(currentPassword,user.password)
+    if(!decodePassword){return res.status(400).json({msg:'Current Password Not Match'})}
     if(!user){return res.status(404).json({msg:'User not found'})}
     const salt= await bcrypt.genSalt(8);
-    const secPass= await bcrypt.hash(passowrd,salt)
+    const secPass= await bcrypt.hash(newPassword,salt)
     await prisma.user.update({
         where:{id:user.id},
-        data:{passowrd:secPass}
+        data:{password:secPass}
     });
    return res.status(200).json({msg:'Password changed Successfully'})
     }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}

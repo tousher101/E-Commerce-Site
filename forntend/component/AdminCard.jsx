@@ -8,9 +8,10 @@ import pendingIcone from '../public/file.png'
 import shippedIcone from '../public/cargo-ship.png'
 import deliveredIcone from '../public/package-delivered.png'
 import cancelledIcone from '../public/bag.png'
-export default function adminCard({prevSales, currSales, salesGrowth, prevOrder, currOrder, orderGrowth,prevPendingOrder, currPendingOrder, pendingOrderGrowth,
-prevShippedOrder, currShippendOrder, shippedOrderGrowth, prevDeliveredOrder, currDeliveredOrder, deliveredOrderGrwoth, prevCancelledOrder, currCancelledOrder,
-cancelledOrderGrowth
+import confIcone from '../public/sold.png'
+export default function adminCard({prevSales, currSales, salesGrowth, prevOrder, currOrder, orderGrowth,currPendingOrder, 
+ currShippendOrder,  prevDeliveredOrder, currDeliveredOrder, deliveredOrderGrwoth, prevCancelledOrder, currCancelledOrder,
+cancelledOrderGrowth,confOrder
 
 }){
     return(
@@ -26,15 +27,15 @@ cancelledOrderGrowth
                     <div className="grid grid-cols-1 gap-3 mt-[15px] ">
                         <div className="flex items-center gap-1">
                             <Image src={presentIcon} height={25} width={25} alt="present-icone"/>
-                            <h1>Present -₱{currSales}  </h1>
+                            <h1>Present : ₱{currSales}  </h1>
                         </div>
                           <div className="flex items-center gap-1">
                             <Image src={previousIcone} height={25} width={25} alt="previous-icone"/>
-                             <h1>Previous - ₱{prevSales}</h1>
+                             <h1>Previous : ₱{prevSales}</h1>
                         </div>
                         <div className="flex items-center gap-1">
                             <Image src={growthIcon} height={25} width={25} alt="growth-icone"/>
-                            <h1 className="font-semibold">Growth - {salesGrowth} %</h1>
+                            <h1 className="font-semibold">Growth : {salesGrowth} %</h1>
                         </div>
                     </div>
                 </div>
@@ -59,53 +60,7 @@ cancelledOrderGrowth
                         </div>
                     </div>
                 </div>
-
-                 
-                 <div className=" p-3 bg-gradient-to-r from-[#FFFF00] to-[#FF69B4] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
-                     <div className="flex items-center justify-center gap-1">
-                        <Image src={pendingIcone} height={30} width={30} alt="pending-order-Icone"/>
-                        <h1 className="grid text-center text-xl font-semibold">Pending Order (Monthly)</h1>
-                    </div>
-                  <div className="grid grid-cols-1 gap-3 mt-[15px] ">
-                        <div className="flex items-center gap-1">
-                            <Image src={presentIcon} height={25} width={25} alt="present-icone"/>
-                            <h1>Present : {currPendingOrder} Orders  </h1>
-                        </div>
-                          <div className="flex items-center gap-1">
-                            <Image src={previousIcone} height={25} width={25} alt="previous-icone"/>
-                             <h1>Previous : {prevPendingOrder} Orders</h1>
-                        </div>
-                        <div className="flex items-center gap-1">
-                            <Image src={growthIcon} height={25} width={25} alt="growth-icone"/>
-                            <h1 className="font-semibold">Growth : {pendingOrderGrowth} %</h1>
-                        </div>
-                    </div>
-                </div>
-
-
-                 <div className=" p-3 bg-gradient-to-r from-[#39e45e] to-[#82ce95] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
-                      <div className="flex items-center justify-center gap-1">
-                        <Image src={shippedIcone} height={30} width={30} alt="shipped-order-Icone"/>
-                        <h1 className="grid text-center text-xl font-semibold">Shipped Order (Monthly)</h1>
-                    </div>
-                       <div className="grid grid-cols-1 gap-3 mt-[15px] ">
-                        <div className="flex items-center gap-1">
-                            <Image src={presentIcon} height={25} width={25} alt="present-icone"/>
-                            <h1>Present : {currShippendOrder} Orders  </h1>
-                        </div>
-                          <div className="flex items-center gap-1">
-                            <Image src={previousIcone} height={25} width={25} alt="previous-icone"/>
-                             <h1>Previous : {prevShippedOrder} Orders</h1>
-                        </div>
-                        <div className="flex items-center gap-1">
-                            <Image src={growthIcon} height={25} width={25} alt="growth-icone"/>
-                            <h1 className="font-semibold">Growth : {shippedOrderGrowth} %</h1>
-                        </div>
-                    </div>
-                </div>
-
-
-                   <div className=" p-3 bg-gradient-to-r from-[#da7939] to-[#82ce95] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
+                              <div className=" p-3 bg-gradient-to-r from-[#da7939] to-[#82ce95] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
                       <div className="flex items-center justify-center gap-1">
                         <Image src={deliveredIcone} height={30} width={30} alt="delivered-order-Icone"/>
                         <h1 className="grid text-center text-xl font-semibold">Delivered Order (Monthly)</h1>
@@ -124,8 +79,9 @@ cancelledOrderGrowth
                             <h1 className="font-semibold">Growth : {deliveredOrderGrwoth} %</h1>
                         </div>
                     </div>
-                </div>
-                   <div className=" p-3 bg-gradient-to-r from-[#d10909] to-[#6d5ec2] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
+                </div>              
+
+                                <div className=" p-3 bg-gradient-to-r from-[#d10909] to-[#6d5ec2] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
                       <div className="flex items-center justify-center gap-1">
                         <Image src={cancelledIcone} height={30} width={30} alt="cancelled-order-Icone"/>
                         <h1 className="grid text-center text-xl font-semibold">Cancelled Order (Monthly)</h1>
@@ -145,10 +101,46 @@ cancelledOrderGrowth
                         </div>
                     </div>
                 </div>
-            </div>
-            
-              
 
+
+
+
+                 
+                 <div className=" p-3 bg-gradient-to-r from-[#FFFF00] to-[#FF69B4] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
+                     <div className="flex items-center justify-center gap-1">
+                        <Image src={pendingIcone} height={30} width={30} alt="pending-order-Icone"/>
+                        <h1 className="grid text-center text-xl font-semibold">Pending Order (Current)</h1>
+                    </div>
+                  <div className="grid justify-items-center grid-cols-1 gap-3 mt-[15px] ">
+                      <h1 className="text-2xl font-semibold">{currPendingOrder}</h1>
+                    </div>
+                </div>
+
+                <div className=" p-3 bg-gradient-to-r from-[#4a634f] to-[#71da8b] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
+                      <div className="flex items-center justify-center gap-1">
+                        <Image src={confIcone} height={30} width={30} alt="shipped-order-Icone"/>
+                        <h1 className="grid text-center text-xl font-semibold">Confirmed Order (Current)</h1>
+                    </div>
+                       <div className="grid grid-cols-1 justify-items-center gap-3 mt-[15px] ">
+                     <h1 className="font-semibold text-2xl">{confOrder}</h1>
+                </div>
+ 
+            </div>
+        </div>
+             <div className="flex justify-center mt-[20px]">
+                          <div className=" p-3 bg-gradient-to-r from-[#39e45e] to-[#82ce95] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
+                      <div className="flex items-center justify-center gap-1">
+                        <Image src={shippedIcone} height={30} width={30} alt="shipped-order-Icone"/>
+                        <h1 className="grid text-center text-xl font-semibold">Shipped Order (Current)</h1>
+                    </div>
+                       <div className="grid grid-cols-1 justify-items-center gap-3 mt-[15px] ">
+                        
+                                <h1 className="text-2xl font-semibold">{currShippendOrder}</h1>
+                    
+                </div>
+                </div>
+
+                    </div>
         </div>
     )
 }

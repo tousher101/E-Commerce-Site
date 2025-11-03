@@ -158,7 +158,8 @@ route.get('/requestorder', verification,roleAuthorize('ADMIN'), async(req,res)=>
                                
                         }
                     }
-            }
+            },
+            orderBy:{createdAt:'desc'}
         });
         const totalOrder= await prisma.order.count({
             where:{status:'PENDING'}
@@ -178,7 +179,18 @@ route.get('/getorderrequestdetails/:id',verification,roleAuthorize('ADMIN'),asyn
                     select:{
                 id:true,
                 createdAt:true,
-                address:true,
+                address:{
+                     select:{
+                        label:true,
+                        name:true,
+                        phone:true,
+                        line1:true,
+                        province:true,
+                        city:true,
+                        barangay:true,
+                        postalCode:true,
+                    }
+                },
                      user:{
                         select:{
                             name:true,
@@ -247,42 +259,59 @@ route.put('/cancelorder/:id',verification,roleAuthorize('ADMIN'),async(req,res)=
         });
         if(!order){return res.status(404).json({msg:'Order Not Found'})}
         await prisma.order.update({
-            where:{id:order, status:'PENDING'},
+            where:{id:order.id, status:'PENDING'},
             data:{status:'CANCELLED'}
         });
         res.status(200).json({msg:'Order Cancel Successfully'})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
-//Shipped Order
-route.put('/shippedorder/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+// Make Shipped Order
+route.put('/makeshippedorder/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
         const orderId=Number(req.params.id);
         const order=await prisma.order.findUnique({
-            where:{id:orderId}
+            where:{id:orderId,status:'CONFIRMED'}
         });
         if(!order){return res.status(404).json({msg:'Order Not Found'})}
          await prisma.order.update({
-            where:{id:order, status:'PENDING'},
+            where:{id:order.id, status:'CONFIRMED'},
             data:{status:'SHIPPED'}
         });
         res.status(200).json({msg:'Order Shipped Successfully'})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
-//Delivered Order
-route.put('/deliverdorder/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+//Make Delivered Order
+route.put('/makedeliverdorder/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
         const orderId=Number(req.params.id);
         const order=await prisma.order.findUnique({
-            where:{id:orderId}
+            where:{id:orderId,status:'SHIPPED'},
+            select:{
+                items:{
+                    select:{
+                        quantity:true,
+                        productId:true
+                    }
+                }
+            }
         });
         if(!order){return res.status(404).json({msg:'Order Not Found'})}
         await prisma.order.update({
-            where:{id:order, status:'PENDING'},
+            where:{id:orderId, status:'SHIPPED'},
             data:{status:'DELIVERED'}
         });
-        res.status(200).json({msg:'Order Delivered Successfully'})
+        for(let item of order.items){
+            await prisma.product.update({
+                where:{id:item.productId},
+                data:{stock:{decrement:item.quantity}}
+            })
+        }
+
+     
+
+        res.status(200).json({msg:'Order Delivered Successfully & Stock Updated'})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
@@ -322,7 +351,8 @@ route.get('/confirmedorder', verification,roleAuthorize('ADMIN'), async(req,res)
                                 createdAt:true
                         }
                     }
-            }
+            },
+            orderBy:{createdAt:'desc'}
         });
         const totalConfirmedOrder= await prisma.order.count({
             where:{status:'CONFIRMED'}
@@ -332,21 +362,28 @@ route.get('/confirmedorder', verification,roleAuthorize('ADMIN'), async(req,res)
 });
 
 
-//get all confirmed order/details
-route.get('/getconfirmedorder',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+//get  confirmed order/details
+route.get('/getconfirmedorderdetails/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
-        const totalConOrder= await prisma.order.count({
-            where:{status:'CONFIRMED'}
-        });
-        const conOrder= await prisma.order.findMany({
-            where:{status:'CONFIRMED'},
+     const orderId=Number(req.params.id)
+        const conOrder= await prisma.order.findUnique({
+            where:{status:'CONFIRMED',id:orderId},
             select:{
                 id:true,
-                address:true,
                 createdAt:true,
-                items:true,
-                total:true,
-                    user:{
+                address:{
+                     select:{
+                        label:true,
+                        name:true,
+                        phone:true,
+                        line1:true,
+                        province:true,
+                        city:true,
+                        barangay:true,
+                        postalCode:true,
+                    }
+                },
+                     user:{
                         select:{
                             name:true,
                             email:true,
@@ -354,18 +391,38 @@ route.get('/getconfirmedorder',verification,roleAuthorize('ADMIN'),async(req,res
                             
                         }
                     },
-                    payment:{
+                    items:{
                         select:{
                             id:true,
-                            status:true,
-                            amount:true,
-                            paymentmethod:true
+                         quantity:true,
+                        unitPrice:true,
+                        size:true,
+                        variant:true,
+                        color:true,
+                            product:{
+                                select:{
+                                    name:true,
+                                    photos:true,
+                                    
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                             status :true,
+                             paymentmethod:true,
+                             createdAt:true,
+                             transactionId:true,
+                             currency:true,
+                             amount:true
+                            
                         }
                     }
-                }
+                 }
             
         });
-        res.status(200).json({totalConOrder, conOrder})
+        res.status(200).json({ conOrder})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
@@ -404,7 +461,8 @@ route.get('/shippedorder', verification,roleAuthorize('ADMIN'), async(req,res)=>
                                 createdAt:true
                         }
                     }
-            }
+            },
+            orderBy:{createdAt:'desc'}
         });
         const totalShippedOrder= await prisma.order.count({
             where:{status:'SHIPPED'}
@@ -414,20 +472,27 @@ route.get('/shippedorder', verification,roleAuthorize('ADMIN'), async(req,res)=>
 });
 
 //get Shipped Order/details
-route.get('/getshippedorder',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+route.get('/getshippedorderdetails/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
-        const totalShippedOrder= await prisma.order.count({
-            where:{status:'SHIPPED'}
-        });
-        const shippedOrder= await prisma.order.findMany({
-            where:{status:'SHIPPED'},
-            select:{
+       const orderId=Number(req.params.id)
+        const shippedOrder= await prisma.order.findUnique({
+            where:{status:'SHIPPED',id:orderId},
+           select:{
                 id:true,
-                address:true,
                 createdAt:true,
-                items:true,
-                total:true,
-                    user:{
+                address:{
+                     select:{
+                        label:true,
+                        name:true,
+                        phone:true,
+                        line1:true,
+                        province:true,
+                        city:true,
+                        barangay:true,
+                        postalCode:true,
+                    }
+                },
+                     user:{
                         select:{
                             name:true,
                             email:true,
@@ -435,33 +500,131 @@ route.get('/getshippedorder',verification,roleAuthorize('ADMIN'),async(req,res)=
                             
                         }
                     },
-                    payment:{
+                    items:{
                         select:{
                             id:true,
-                            status:true,
-                            amount:true,
-                            paymentmethod:true
+                         quantity:true,
+                        unitPrice:true,
+                        size:true,
+                        variant:true,
+                        color:true,
+                            product:{
+                                select:{
+                                    name:true,
+                                    photos:true,
+                                    
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                             status :true,
+                             paymentmethod:true,
+                             createdAt:true,
+                             transactionId:true,
+                             currency:true,
+                             amount:true
+                            
                         }
                     }
-                }
+                 }
             
         });
-        res.status(200).json({totalShippedOrder, shippedOrder})
+        res.status(200).json({shippedOrder})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
 
-//get all deliverd order/card
-route.get('/deliverdorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
+//get all deliverd order/card/currentMonth
+route.get('/currentmonthdeliverdorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
     try{
+          const today= new Date();
+        const currentMonth= today.getMonth()+1;
+        const currentYear = today.getFullYear();
+
+        let prevMonth= currentMonth -1;
+        let prevYear= currentYear
+        if(prevMonth===0){prevMonth= 12; prevYear= currentYear-1}
+
+        const currentStart= new Date(currentYear, currentMonth -1, 1);
+        const currentEnd = new Date(currentYear, currentMonth,1);
+
         const page= Number(req.query.page||1);
         const limit=Number(req.query.limit||20);
          const skip= (page-1)*limit;
             const totalDeliveredOrder= await prisma.order.count({
-            where:{status:'DELIVERED'}
+            where:{status:'DELIVERED',
+            createdAt:{gte:currentStart, lt: currentEnd}
+            }
         });
         const getDeliveredOrder= await prisma.order.findMany({
-            where:{status:'DELIVERED'},
+            where:{status:'DELIVERED',createdAt:{gte:currentStart, lt: currentEnd}},
+            select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                             status :true,
+                                paymentmethod:true,
+                                createdAt:true
+                        }
+                    },
+                    
+            },
+            skip:skip,
+            take:limit,
+            orderBy:{createdAt:'desc'}
+        });
+
+        res.status(200).json({getDeliveredOrder, totalDeliveredOrder, totalPage:Math.ceil(totalDeliveredOrder/limit)})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+
+//get all deliverd order/card/prevMonth
+route.get('/previousmonthdeliverdorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
+    try{
+          const today= new Date();
+        const currentMonth= today.getMonth()+1;
+        const currentYear = today.getFullYear();
+
+        let prevMonth= currentMonth -1;
+        let prevYear= currentYear
+        if(prevMonth===0){prevMonth= 12; prevYear= currentYear-1}
+
+        const prevStart= new Date(prevYear, prevMonth-1, 1);
+        const prevEnd = new Date(currentYear, currentMonth-1 ,1)
+
+        const page= Number(req.query.page||1);
+        const limit=Number(req.query.limit||20);
+         const skip= (page-1)*limit;
+            const totalDeliveredOrder= await prisma.order.count({
+            where:{status:'DELIVERED',
+            createdAt:{gte:prevStart, lt: prevEnd}
+            }
+        });
+        const getDeliveredOrder= await prisma.order.findMany({
+            where:{status:'DELIVERED',createdAt:{gte:prevStart, lt: prevEnd}},
             select:{
                 id:true,
                 totalPrice:true,
@@ -506,20 +669,27 @@ route.get('/deliverdorder', verification,roleAuthorize('ADMIN'), async(req,res)=
 
 
 //get all delivered order/details
-route.get('/getdeliveredorder',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+route.get('/getdeliveredorder/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
-        const totalDelOrder= await prisma.order.count({
-            where:{status:'DELIVERED'}
-        });
-        const delOrder= await prisma.order.findMany({
-            where:{status:'DELIVERED'},
+      const orderId=Number(req.params.id)
+        const delOrder= await prisma.order.findUnique({
+            where:{status:'DELIVERED',id:orderId},
             select:{
                 id:true,
-                address:true,
                 createdAt:true,
-                items:true,
-                total:true,
-                    user:{
+                address:{
+                     select:{
+                        label:true,
+                        name:true,
+                        phone:true,
+                        line1:true,
+                        province:true,
+                        city:true,
+                        barangay:true,
+                        postalCode:true,
+                    }
+                },
+                     user:{
                         select:{
                             name:true,
                             email:true,
@@ -527,32 +697,63 @@ route.get('/getdeliveredorder',verification,roleAuthorize('ADMIN'),async(req,res
                             
                         }
                     },
-                    payment:{
+                    items:{
                         select:{
                             id:true,
-                            status:true,
-                            amount:true,
-                            paymentmethod:true
+                         quantity:true,
+                        unitPrice:true,
+                        size:true,
+                        variant:true,
+                        color:true,
+                            product:{
+                                select:{
+                                    name:true,
+                                    photos:true,
+                                    
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                             status :true,
+                             paymentmethod:true,
+                             createdAt:true,
+                             transactionId:true,
+                             currency:true,
+                             amount:true
+                            
                         }
                     }
-                }
+                 }
             
         });
-        res.status(200).json({delOrder, totalDelOrder})
+        res.status(200).json({delOrder})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
-//get all cancelled order/card
-route.get('/cancelledorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
+//get all cancelled order/card/current Month
+route.get('/currentmonthcancelledorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
     try{
+         const today= new Date();
+        const currentMonth= today.getMonth()+1;
+        const currentYear = today.getFullYear();
+
+        let prevMonth= currentMonth -1;
+        let prevYear= currentYear
+        if(prevMonth===0){prevMonth= 12; prevYear= currentYear-1}
+
+        const currentStart= new Date(currentYear, currentMonth -1, 1);
+        const currentEnd = new Date(currentYear, currentMonth,1);
+
         const page= Number(req.query.page||1);
         const limit=Number(req.query.limit||20);
          const skip= (page-1)*limit;
             const totalCancelledOrder= await prisma.order.count({
-            where:{status:'CANCELLED'}
+            where:{status:'CANCELLED', createdAt:{gte:currentStart,lt:currentEnd}}
         });
         const getCancelledOrder= await prisma.order.findMany({
-            where:{status:'CANCELLED'},
+            where:{status:'CANCELLED',createdAt:{gte:currentStart,lt:currentEnd}},
             select:{
                 id:true,
                 totalPrice:true,
@@ -593,21 +794,35 @@ route.get('/cancelledorder', verification,roleAuthorize('ADMIN'), async(req,res)
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
-//get Cancel Order/details
-route.get('/getcancelorder',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+
+//get all cancelled order/card/Prev Month
+route.get('/previousmonthcancelledorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
     try{
-        const totalCanOrder= await prisma.order.count({
-            where:{status:'CANCELLED'}
+          const today= new Date();
+        const currentMonth= today.getMonth()+1;
+        const currentYear = today.getFullYear();
+
+        let prevMonth= currentMonth -1;
+        let prevYear= currentYear
+        if(prevMonth===0){prevMonth= 12; prevYear= currentYear-1}
+
+        const prevStart= new Date(prevYear, prevMonth-1, 1);
+        const prevEnd = new Date(currentYear, currentMonth-1 ,1)
+
+        const page= Number(req.query.page||1);
+        const limit=Number(req.query.limit||20);
+         const skip= (page-1)*limit;
+            const totalCancelledOrder= await prisma.order.count({
+            where:{status:'CANCELLED', createdAt:{gte:prevStart,lt:prevEnd}}
         });
-        const canOrder= await prisma.order.findMany({
-            where:{status:'CANCELLED'},
+        const getCancelledOrder= await prisma.order.findMany({
+            where:{status:'CANCELLED',createdAt:{gte:prevStart,lt:prevEnd}},
             select:{
                 id:true,
-                address:true,
+                totalPrice:true,
+                status:true,
                 createdAt:true,
-                items:true,
-                total:true,
-                    user:{
+                     user:{
                         select:{
                             name:true,
                             email:true,
@@ -615,32 +830,120 @@ route.get('/getcancelorder',verification,roleAuthorize('ADMIN'),async(req,res)=>
                             
                         }
                     },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
                     payment:{
                         select:{
-                            id:true,
-                            status:true,
-                            amount:true,
-                            paymentmethod:true
+                             status :true,
+                                paymentmethod:true,
+                                createdAt:true
                         }
-                    }
-                }
-            
+                    },
+                    
+            },
+            skip:skip,
+            take:limit,
+            orderBy:{createdAt:'desc'}
         });
-        res.status(200).json({canOrder, totalCanOrder})
+
+        res.status(200).json({getCancelledOrder, totalCancelledOrder, totalPage:Math.ceil(totalCancelledOrder/limit)})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
-//get Paid Order/card
-route.get('/paidorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
+
+//get Cancel Order/details
+route.get('/getcancelorder/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
+       const orderId=Number(req.params.id)
+        const canOrder= await prisma.order.findUnique({
+            where:{status:'CANCELLED',id:orderId},
+           select:{
+                id:true,
+                createdAt:true,
+                address:{
+                     select:{
+                        label:true,
+                        name:true,
+                        phone:true,
+                        line1:true,
+                        province:true,
+                        city:true,
+                        barangay:true,
+                        postalCode:true,
+                    }
+                },
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            id:true,
+                         quantity:true,
+                        unitPrice:true,
+                        size:true,
+                        variant:true,
+                        color:true,
+                            product:{
+                                select:{
+                                    name:true,
+                                    photos:true,
+                                    
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                             status :true,
+                             paymentmethod:true,
+                             createdAt:true,
+                             transactionId:true,
+                             currency:true,
+                             amount:true
+                            
+                        }
+                    }
+                 }
+            
+            
+        });
+        res.status(200).json({canOrder})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+//get Paid Order/card/currentMonth
+route.get('/currentmonthpaidorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
+    try{
+        const today= new Date();
+        const currentMonth= today.getMonth()+1;
+        const currentYear = today.getFullYear();
+
+        let prevMonth= currentMonth -1;
+        let prevYear= currentYear
+        if(prevMonth===0){prevMonth= 12; prevYear= currentYear-1}
+
+        const currentStart= new Date(currentYear, currentMonth -1, 1);
+        const currentEnd = new Date(currentYear, currentMonth,1);
         const page= Number(req.query.page||1);
         const limit=Number(req.query.limit||20);
          const skip= (page-1)*limit;
             const totalPaidOrder= await prisma.order.count({
-            where:{payment:{status:'PAID'}}
+            where:{payment:{status:'PAID',createdAt:{gte:currentStart, lt:currentEnd}}}
         });
         const getPaidOrder= await prisma.order.findMany({
-            where:{payment:{status:'PAID'}},
+            where:{payment:{status:'PAID',createdAt:{gte:currentStart, lt:currentEnd}}},
             select:{
                 id:true,
                 totalPrice:true,
@@ -666,7 +969,7 @@ route.get('/paidorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
                     payment:{
                         select:{
                                 paymentmethod:true,
-                                transactionId:true,
+                                status:true,
                                 createdAt:true
                         }
                     },
@@ -677,30 +980,163 @@ route.get('/paidorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
             orderBy:{createdAt:'desc'}
         });
 
-        res.status(200).json({getPaidOrder, totalPaidOrder, totalPage:Math.ceil(totalPaidOrder/limit), mode:'PAID'})
+        res.status(200).json({getPaidOrder, totalPaidOrder, totalPage:Math.ceil(totalPaidOrder/limit)})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
-//get Paid order/details
 
-
-
-
-
-
-
-
-//get COD order/ card
-route.get('/codorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
+//get Paid Order/card/prevMonth
+route.get('/previousmonthpaidorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
     try{
+        const today= new Date();
+        const currentMonth= today.getMonth()+1;
+        const currentYear = today.getFullYear();
+
+        let prevMonth= currentMonth -1;
+        let prevYear= currentYear
+        if(prevMonth===0){prevMonth= 12; prevYear= currentYear-1}
+
+       const prevStart= new Date(prevYear, prevMonth-1, 1);
+        const prevEnd = new Date(currentYear, currentMonth-1 ,1)
+
+        const page= Number(req.query.page||1);
+        const limit=Number(req.query.limit||20);
+         const skip= (page-1)*limit;
+            const totalPaidOrder= await prisma.order.count({
+            where:{payment:{status:'PAID',createdAt:{gte:prevStart, lt:prevEnd}}}
+        });
+        const getPaidOrder= await prisma.order.findMany({
+            where:{payment:{status:'PAID',createdAt:{gte:prevStart, lt:prevEnd}}},
+            select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                                paymentmethod:true,
+                                status:true,
+                                createdAt:true
+                        }
+                    },
+                    
+            },
+            skip:skip,
+            take:limit,
+            orderBy:{createdAt:'desc'}
+        });
+
+        res.status(200).json({getPaidOrder, totalPaidOrder, totalPage:Math.ceil(totalPaidOrder/limit)})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+
+
+//get paid Order/details
+route.get('/getpaidorderdetails/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+       const orderId=Number(req.params.id)
+        const paidOrder= await prisma.order.findUnique({
+            where:{payment:{status:'PAID'},id:orderId},
+           select:{
+                id:true,
+                createdAt:true,
+                address:{
+                     select:{
+                        label:true,
+                        name:true,
+                        phone:true,
+                        line1:true,
+                        province:true,
+                        city:true,
+                        barangay:true,
+                        postalCode:true,
+                    }
+                },
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            id:true,
+                         quantity:true,
+                        unitPrice:true,
+                        size:true,
+                        variant:true,
+                        color:true,
+                            product:{
+                                select:{
+                                    name:true,
+                                    photos:true,
+                                    
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                             status :true,
+                             paymentmethod:true,
+                             createdAt:true,
+                             transactionId:true,
+                             currency:true,
+                             amount:true
+                            
+                        }
+                    }
+                 }
+            
+            
+        });
+        res.status(200).json({paidOrder})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+
+//get COD order/ card/currentMonth
+route.get('/currentmonthcodorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
+    try{
+           const today= new Date();
+        const currentMonth= today.getMonth()+1;
+        const currentYear = today.getFullYear();
+
+        let prevMonth= currentMonth -1;
+        let prevYear= currentYear
+        if(prevMonth===0){prevMonth= 12; prevYear= currentYear-1}
+
+        const currentStart= new Date(currentYear, currentMonth -1, 1);
+        const currentEnd = new Date(currentYear, currentMonth,1);
+
         const page= Number(req.query.page||1);
         const limit=Number(req.query.limit||20);
          const skip= (page-1)*limit;
             const totalCodOrder= await prisma.order.count({
-            where:{payment:{paymentmethod:'COD'}}
+            where:{payment:{paymentmethod:'COD',createdAt:{gte:currentStart,lt:currentEnd}}}
         });
         const getCodOrder= await prisma.order.findMany({
-            where:{payment:{paymentmethod:'COD'}},
+            where:{payment:{paymentmethod:'COD',createdAt:{gte:currentStart,lt:currentEnd}}},
             select:{
                 id:true,
                 totalPrice:true,
@@ -742,79 +1178,145 @@ route.get('/codorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
 });
 
 
-
-
-
-
-
-
-// review product
-route.post('/reviewproduct/:id',verification, async(req,res)=>{
+//get COD order/ card/previousMonth
+route.get('/previousmonthcodorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
     try{
-       const {comment}=req.body;
-       if(!comment){return res.status(400).json({msg:'Invalid Comment'})};
-        const user= await prisma.user.findUnique({
-            where:{id:Number(req.user.id)}
-        });
-        if(!user){return res.status(404).json({msg:'User Not Found'})};
-        const product=await prisma.product.findUnique({
-            where:{id:Number(req.params.id)}
-        });
-        if(!product){return res.status(404),json({msg:'Product Not Found'})};
-        await prisma.coment.create({
-            data:{comment, productId:product.id, userId:user.id}
-        });
-        res.status(200).json({msg:'Comment Added Successfully'})
+           const today= new Date();
+        const currentMonth= today.getMonth()+1;
+        const currentYear = today.getFullYear();
 
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
-});
+        let prevMonth= currentMonth -1;
+        let prevYear= currentYear
+        if(prevMonth===0){prevMonth= 12; prevYear= currentYear-1}
 
-//Delete Review By Admin
-route.delete('/deletereview/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
-    try{
-        const commentId=Number(req.params.id);
-        const comment= await prisma.comment.findUnique({
-            where:{id:commentId}
-        })
-        if(!comment){return res.status(404).json({msg:'Commnet Not Found'})};
-        await prisma.comment.delete({
-            where:{id:commentId}
-        });
-        res.status(200).json({msg:'Comment Delete Successfully'})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
-});
+        const prevStart= new Date(prevYear, prevMonth-1, 1);
+        const prevEnd = new Date(currentYear, currentMonth-1 ,1)
 
-//Get All Comment
-route.get('/getallcomment/:id',async(req,res)=>{
-    try{
-        const page= Number(req.query.page)||1;
-        const skip=(page-1)*limit;
-        const limit=Number(req.query.limit) ||10;
-        const productId=Number(req.params.id)
-        const totalComment= await prisma.comment.count({
-            where:{productId}
+        const page= Number(req.query.page||1);
+        const limit=Number(req.query.limit||20);
+         const skip= (page-1)*limit;
+            const totalCodOrder= await prisma.order.count({
+            where:{payment:{paymentmethod:'COD',createdAt:{gte:prevStart,lt:prevEnd}}}
         });
-        const allcomment= await prisma.comment.findMany({
-            where:{productId},
+        const getCodOrder= await prisma.order.findMany({
+            where:{payment:{paymentmethod:'COD',createdAt:{gte:prevStart,lt:prevEnd}}},
             select:{
                 id:true,
-                comment:true,
+                totalPrice:true,
+                status:true,
                 createdAt:true,
-                user:{
-                    select:{
-                        name:true,
-                        photo:true,
-                        role: true,
-                    }
-                }
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                                status:true,
+                                paymentmethod:true,
+                                createdAt:true
+                        }
+                    },
+                    
             },
             skip:skip,
             take:limit,
             orderBy:{createdAt:'desc'}
         });
-        res.status(200).json({allcomment, totalComment, totalPage:Math.ceil(totalComment/limit)})
+
+        res.status(200).json({getCodOrder, totalCodOrder, totalPage:Math.ceil(totalCodOrder/limit), mode:'PAID'})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
+
+
+//get COD Order/details
+route.get('/getcodorderdetails/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+       const orderId=Number(req.params.id)
+        const codOrder= await prisma.order.findUnique({
+            where:{payment:{paymentmethod:'COD'},id:orderId},
+           select:{
+                id:true,
+                createdAt:true,
+                address:{
+                    select:{
+                        label:true,
+                        name:true,
+                        phone:true,
+                        line1:true,
+                        province:true,
+                        city:true,
+                        barangay:true,
+                        postalCode:true,
+                    }
+                },
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            id:true,
+                         quantity:true,
+                        unitPrice:true,
+                        size:true,
+                        variant:true,
+                        color:true,
+                            product:{
+                                select:{
+                                    name:true,
+                                    photos:true,
+                                    
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                             status :true,
+                             paymentmethod:true,
+                             createdAt:true,
+                             transactionId:true,
+                             currency:true,
+                             amount:true
+                            
+                        }
+                    }
+                 }
+            
+            
+        });
+        res.status(200).json({codOrder})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Admin dashboard (Monthly data)
 
@@ -854,24 +1356,20 @@ route.get('/getmonthlydata', verification, roleAuthorize('ADMIN'), async(req,res
 
 
          const currentMonthPendingOrder= await prisma.order.count({
-            where:{status:'PENDING', createdAt:{gte:currentStart, lt:currentEnd}}
+            where:{status:'PENDING'}
         });
 
-        const prevMonthPendingOrder = await prisma.order.count({
-            where:{status:'PENDING',createdAt:{gte:prevStart, lt:prevEnd}}
-        });
-
-        const currentPendingOrder= currentMonthPendingOrder ||0;
-        const prevPendingOrder = prevMonthPendingOrder || 0;
-        const orderPendingGrowth = prevPendingOrder==0?100:((currentPendingOrder-prevPendingOrder)/prevPendingOrder)*100;
+        const confOrder= await prisma.order.count({
+            where:{status:'CONFIRMED'}
+        })
 
 
         const currentMonthConfirmedOrder= await prisma.order.count({
-            where:{status:'CONFIRMED', createdAt:{gte:currentStart, lt:currentEnd}}
+            where:{createdAt:{gte:currentStart, lt:currentEnd}}
         });
 
         const prevMonthConfirmedOrder = await prisma.order.count({
-            where:{status:'CONFIRMED',createdAt:{gte:prevStart, lt:prevEnd}}
+            where:{createdAt:{gte:prevStart, lt:prevEnd}}
         });
 
         const currentConfirmedOrder= currentMonthConfirmedOrder ||0;
@@ -880,16 +1378,13 @@ route.get('/getmonthlydata', verification, roleAuthorize('ADMIN'), async(req,res
 
 
         const currentMonthShippedOrder= await prisma.order.count({
-            where:{status:'SHIPPED', createdAt:{gte:currentStart, lt:currentEnd}}
+            where:{status:'SHIPPED'}
         });
 
-        const prevMonthShippedOrder = await prisma.order.count({
-            where:{status:'SHIPPED',createdAt:{gte:prevStart, lt:prevEnd}}
-        });
+        
 
-        const currentShippedOrder= currentMonthShippedOrder ||0;
-        const prevShippedOrder = prevMonthShippedOrder || 0;
-        const orderShippedGrowth = prevShippedOrder==0?100:((currentShippedOrder-prevShippedOrder)/prevShippedOrder)*100;
+     
+        
 
 
         const currentMonthDeliverdOrder= await prisma.order.count({
@@ -920,8 +1415,8 @@ route.get('/getmonthlydata', verification, roleAuthorize('ADMIN'), async(req,res
 
 
         res.status(200).json({growth:growth.toFixed(2), current, prev, 
-            orderPendingGrowth:orderPendingGrowth.toFixed(2), currentMonthPendingOrder, prevMonthPendingOrder, orderConfirmedGrowth:orderConfirmedGrowth.toFixed(2),
-            currentConfirmedOrder, prevConfirmedOrder, orderShippedGrowth:orderShippedGrowth.toFixed(2), currentMonthShippedOrder, prevShippedOrder,
+           currentMonthPendingOrder, orderConfirmedGrowth:orderConfirmedGrowth.toFixed(2),
+            currentConfirmedOrder, prevConfirmedOrder,  currentMonthShippedOrder, confOrder,
             orderDeliverdGrowth:orderDeliverdGrowth.toFixed(2), currentDeliverdOrder, prevDeliverdOrder,
             orderCancelledGrowth:orderCancelledGrowth.toFixed(2),currentCancelledOrder, prevCancelledOrder
 

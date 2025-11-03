@@ -17,6 +17,7 @@ export default function referral(){
     const getReferralData=async()=>{
         const res=await fetchWithAuth(`${BASEURI}/api/user/referral`)
         setRefData(res);
+        console.log(res)
     };
 
     useEffect(()=>{
@@ -45,7 +46,7 @@ export default function referral(){
             </div>
             <div className="text-xl font-semibold h-[100px] grid grid-cols-1 justify-items-center items-center p-4 rounded-xl bg-gradient-to-r from-[#3ee7f3] to-[#53e960] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a]">
                 <h1>Total Referred</h1>
-                <h2>({refData?.totalRef})</h2>
+                <h2>{refData?.totalRef}</h2>
             </div>
            </div>
            <div className="my-[30px]">

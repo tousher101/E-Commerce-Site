@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import OrderCard from '../../../component/OrderCard'
 import { fetchWithAuth } from '../../../Utils/fetchWithAuth'
 import { useRouter } from 'next/navigation';
+import AOS from 'aos';
+import 'aos/dist/aos.css'
 
 
 export default function orderRequest(){
@@ -22,6 +24,10 @@ export default function orderRequest(){
    };
 
    useEffect(()=>{
+        AOS.init({
+        duration:1000,once:false,mirror:false
+         });
+        AOS.refresh();
     getOrderData();
    },[])
     
@@ -30,7 +36,7 @@ export default function orderRequest(){
             <h1 className="text-center text-gray-500 my-[20px] text-2xl font-semibold">Order Request ({totalOrder})</h1>
             <div className='grid grid-cols-1 gap-1.5 items-center'>
                 {orderData?.length>0? orderData?.map((order)=>(
-                    <div key={order.id}>
+                    <div key={order.id} data-aos='slide-up'>
                     <OrderCard photo={order?.items[0]?.product?.photos[0]?.url} orderId={order?.id} amount={order?.totalPrice} orderStatus={order?.status}
                     paymentStatus={order?.payment?.status} paymentMethod={order?.payment?.paymentmethod} paymentCreate={order?.payment?.createdAt} userName={order?.user?.name}
                     userEmail={order?.user?.email} userPhone={order?.user?.phone} orderCreate={order?.createdAt} goDetails={()=>{goDetails(order.id)}}  />

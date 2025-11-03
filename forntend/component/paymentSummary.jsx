@@ -17,23 +17,23 @@ export default function paymentSummary({checkOut,subTotal,referralBonus, subtota
                 </div>
                     <div className="flex justify-between font-bold gap-1">
                     <h1> Items Price :</h1>
-                    <h1>{subTotal}</h1>
+                    <h1>₱{subTotal}</h1>
                 </div>
                   <div className="flex justify-between gap-1">
                     <h1>(-) Referral Bonus :</h1>
-                    <h1>{(referralBonus)}</h1>
+                    <h1>₱{referralBonus}</h1>
                 </div>
                   <div className="flex justify-between gap-1 font-bold">
                     <h1>Sub-Total :</h1>
-                    <h1>{subtotal}</h1>
+                    <h1>₱{subtotal}</h1>
                 </div>
                   <div className="flex justify-between gap-1">
                     <h1>(+) Shipping Fee : </h1>
-                    <h1>{shippingFee}</h1>
+                    <h1>₱{shippingFee}</h1>
                 </div>
                     <div className="flex justify-between font-bold">
                     <h1>Payment Amount : </h1>
-                    <h1>{paymentAmount}</h1>
+                    <h1>₱{paymentAmount}</h1>
                 </div>
                 
                 

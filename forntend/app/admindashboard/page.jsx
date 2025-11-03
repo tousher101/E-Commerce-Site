@@ -32,11 +32,11 @@ useEffect(()=>{
            <h1 className="text-center text-3xl font-semibold text-gray-500 my-[30px]">Admin Dashboard</h1>
             <Chart chartData={chartData}/>
             <AdminCard prevSales={cardData?.prev} currSales={cardData?.current} salesGrowth={cardData?.growth} prevOrder={cardData?.prevConfirmedOrder}
-            currOrder={cardData?.currentConfirmedOrder} orderGrowth={cardData?.orderConfirmedGrowth} prevPendingOrder={cardData?.prevMonthPendingOrder} 
-            currPendingOrder={cardData?.currentMonthPendingOrder} pendingOrderGrowth={cardData?.orderPendingGrowth} prevShippedOrder={cardData?.prevShippedOrder} 
-            currShippendOrder={cardData?.currentMonthShippedOrder} shippedOrderGrowth={cardData?.orderShippedGrowth} prevDeliveredOrder={cardData?.prevDeliverdOrder}
+            currOrder={cardData?.currentConfirmedOrder} orderGrowth={cardData?.orderConfirmedGrowth} 
+            currPendingOrder={cardData?.currentMonthPendingOrder}   
+            currShippendOrder={cardData?.currentMonthShippedOrder} prevDeliveredOrder={cardData?.prevDeliverdOrder}
             currDeliveredOrder={cardData?.currentDeliverdOrder} deliveredOrderGrwoth={cardData?.orderDeliverdGrowth} prevCancelledOrder={cardData?.prevCancelledOrder}
-            currCancelledOrder={cardData?.currentCancelledOrder} cancelledOrderGrowth={cardData?.orderCancelledGrowth} />
+            currCancelledOrder={cardData?.currentCancelledOrder} cancelledOrderGrowth={cardData?.orderCancelledGrowth} confOrder={cardData?.confOrder} />
             </div>
     )
     

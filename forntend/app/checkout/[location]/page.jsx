@@ -71,6 +71,14 @@ export default function checkOut() {
         },3000)
     };
 
+    const submitPaidOrder=async()=>{
+        const res=await fetchWithAuth(`${BaseURI}/api/payment/create-checkout-session`,{
+            method:'POST',
+            body:JSON.stringify({location, addressId:selectedAddressId})
+        });
+        if(res.url){window.location.href=res.url}
+    }
+
     const provinceOnChange=(e)=>{
        const code= e.target.value
        const selected=provinces.find((p)=>p.code===code)
@@ -200,7 +208,7 @@ return(
             <div className=" my-[15px]">
                 <h1 className=" text-center  text-xl text-gray-400 font-semibold">Payment Summary</h1>
                 <div>
-                    <PaymentSummary checkOut={checkOutData?.items} subTotal={checkOutData?.subtotal} referralBonus={checkOutData?.bonus} subtotal={checkOutData?.subtotal}
+                    <PaymentSummary checkOut={checkOutData?.items} subTotal={checkOutData?.itemPrice} referralBonus={checkOutData?.bonus} subtotal={checkOutData?.subtotal}
                     shippingFee={checkOutData?.shippingFee} paymentAmount={checkOutData?.total}/>
                 </div>
             </div>
@@ -210,7 +218,7 @@ return(
     </div>
            <div className="flex mx-[10px] justify-center gap-6 my-[30px] mb-[50px]">
             <button onClick={submitCODOrder} className="border-1 bg-blue-500 rounded-sm cursor-pointer p-2 text-white">COD Order</button>
-            <button className="border-1 bg-green-500 rounded-sm cursor-pointer p-2 text-white">Payment</button>
+            <button onClick={submitPaidOrder} className="border-1 bg-green-500 rounded-sm cursor-pointer p-2 text-white">Payment</button>
         </div>
         </>
 )

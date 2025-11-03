@@ -52,10 +52,10 @@ const handelNext=()=>{
       <div data-aos='fade-left' className='mb-[60px]'>
       <h1 className='text-center text-3xl text-gray-500 font-semibold'>All Products</h1>
       <div  className='grid grid-cols-4 gap-1 '>
-        {products.map((pro)=>(
+        {products?.map((pro)=>(
           <div key={pro.id}>
-          <Products name={pro.name} description={pro.description} price={pro.price} photos={pro?.photos[0]?.url} stock={pro.stock}
-          sold={pro.order.quantity} comment={pro._count.comment} originalPrice={pro.originalPrice} productId={pro.id} />
+          <Products name={pro?.name} description={pro?.description} price={pro?.price} photos={pro?.photos[0]?.url} stock={pro?.stock}
+           comment={pro?._count?.comment} originalPrice={pro?.originalPrice} productId={pro.id} sold={pro?.soldCount} />
            </div> ))}
       </div>
       

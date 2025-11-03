@@ -5,7 +5,8 @@ const roleAuthorize=require('../middle-wear/roleAuthorize');;
 const prisma=require('../utils/prisma');
 const cloudinary=require('../utils/cloudinary');
 const upload =require('../middle-wear/multar');
-const genTrxCode=require('../utils/genTrxCode')
+const genTrxCode=require('../utils/genTrxCode');
+
 
 
 
@@ -80,18 +81,21 @@ route.get('/allproduct', async(req,res)=>{
                 _count:{
                     select:{comment:true}
                 },
-                 order:{
-                    select:{
-                         quantity:true
-                        }
-                    }
             },
             skip:skip,
             take:limit,
             orderBy:{createdAt:'desc'}
-
         });
-      return  res.status(200).json({getAllProduct, totalPage:Math.ceil(totalProduct/limit)})
+        for(let product of getAllProduct){
+            const soldData= await prisma.orderItem.aggregate({
+                _sum:{quantity:true},
+                where:{productId:product.id, order:{status:'DELIVERED'}}
+            });
+            const soldCount=soldData._sum.quantity || 0
+            product.soldCount=soldCount
+        }
+
+    return  res.status(200).json({ getAllProduct, totalPage:Math.ceil(totalProduct/limit)})
     }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
 
@@ -143,18 +147,20 @@ route.get('/mensfashion',async(req,res)=>{
                 category:true,
                 _count:{
                     select:{comment:true}
-                },
-                order:{
-                    select:{
-                         quantity:true
-                        }
-                    }
-                
+                }   
             },
             skip:skip,
             take:limit,
             orderBy:{createdAt:'desc'}
         });
+             for(let product of getMensProduct){
+            const soldData= await prisma.orderItem.aggregate({
+                _sum:{quantity:true},
+                where:{productId:product.id, order:{status:'DELIVERED'}}
+            });
+            const soldCount=soldData._sum.quantity || 0
+            product.soldCount=soldCount
+        }
      return   res.status(200).json({getMensProduct, totalMensProduct, totalPage:Math.ceil(totalMensProduct/limit)})
     }catch(err){console.error(err);return res.status(500).json({msg: 'Server Error'})}
 });
@@ -182,18 +188,21 @@ route.get('/womenfashion',async(req,res)=>{
                 category:true,
                 _count:{
                     select:{comment:true}
-                },
-                order:{
-                    select:{
-                         quantity:true
-                        }
-                    }
-                
+                }
             },
             skip:skip,
             take:limit,
             orderBy:{createdAt:'desc'}
         });
+            for(let product of getWomensProduct){
+            const soldData= await prisma.orderItem.aggregate({
+                _sum:{quantity:true},
+                where:{productId:product.id, order:{status:'DELIVERED'}}
+            });
+            const soldCount=soldData._sum.quantity || 0
+            product.soldCount=soldCount
+        }
+        
       return  res.status(200).json({getWomensProduct, totalWomensProduct, totalPage:Math.ceil(totalWomensProduct/limit)})
     }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
@@ -220,18 +229,21 @@ route.get('/kidsfashion',async(req,res)=>{
                 category:true,
                 _count:{
                     select:{comment:true}
-                },
-                order:{
-                    select:{
-                         quantity:true
-                        }
-                    }
-                
+                }
             },
             skip:skip,
             take:limit,
             orderBy:{createdAt:'desc'}
         });
+
+         for(let product of getKidsProduct){
+            const soldData= await prisma.orderItem.aggregate({
+                _sum:{quantity:true},
+                where:{productId:product.id, order:{status:'DELIVERED'}}
+            });
+            const soldCount=soldData._sum.quantity || 0
+            product.soldCount=soldCount
+        }
      return   res.status(200).json({getKidsProduct, totalKidsProduct, totalPage:Math.ceil(totalKidsProduct/limit)})
     }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
@@ -258,18 +270,21 @@ route.get('/accessories',async(req,res)=>{
                 category:true,
                 _count:{
                     select:{comment:true}
-                },
-                order:{
-                    select:{
-                         quantity:true
-                        }
-                    }
-                
+                }, 
             },
             skip:skip,
             take:limit,
             orderBy:{createdAt:'desc'}
         });
+         
+        for(let product of getAccessoriesProduct){
+            const soldData= await prisma.orderItem.aggregate({
+                _sum:{quantity:true},
+                where:{productId:product.id, order:{status:'DELIVERED'}}
+            });
+            const soldCount=soldData._sum.quantity || 0
+            product.soldCount=soldCount
+        }
       return  res.status(200).json({getAccessoriesProduct, totalAccessoriesProduct, totalPage:Math.ceil(totalAccessoriesProduct/limit)})
     }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
@@ -296,18 +311,21 @@ route.get('/perfume',async(req,res)=>{
                 category:true,
                 _count:{
                     select:{comment:true}
-                },
-                order:{
-                    select:{
-                         quantity:true
-                        }
-                    }
-                
+                },  
             },
             skip:skip,
             take:limit,
             orderBy:{createdAt:'desc'}
         });
+        
+        for(let product of getPerfumeProduct){
+            const soldData= await prisma.orderItem.aggregate({
+                _sum:{quantity:true},
+                where:{productId:product.id, order:{status:'DELIVERED'}}
+            });
+            const soldCount=soldData._sum.quantity || 0
+            product.soldCount=soldCount
+        }
        return res.status(200).json({getPerfumeProduct, totalPerfumeProduct, totalPage:Math.ceil(totalPerfumeProduct/limit)})
     }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
@@ -620,41 +638,58 @@ route.get('/perfume',async(req,res)=>{
 
 
     //get Shipped order/details
-    route.get('/shippedorder/:id', verification,roleAuthorize('USER'),async(req,res)=>{
+    route.get('/shippedorderdetails/:id', verification,roleAuthorize('USER'),async(req,res)=>{
         try{
+             const orderId=Number(req.params.id)
               const user= await prisma.user.findUnique({
                 where:{id:Number(req.user.id)}
             });
             if(!user){return res.status(404).json({msg:'User Not Found'})}
-            const totalShippedOrder=await prisma.order.count({
-                where:{user:user.id, status:'SHIPPED'}
-            });
-            const page=Number(req.query.page) ||1;
-            const limit=Number(req.query.limit) ||15;
-            const skip=(page-1)*limit
-            const shippedOrder= await prisma.order.findMany({
-                where:{user:user.id, status:'SHIPPED'},
-                select:{
-                    id:true,
-                    items:true,
-                    total:true,
-                    status:true,
-                    address:true,
-                    createdAt:true,
-                    shippingFee:true,
+            const shippedOrder= await prisma.order.findUnique({
+                where:{userId:user.id, id:orderId, status:'SHIPPED'},
+                     select:{
+                id:true,
+                createdAt:true,
+                address:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            id:true,
+                         quantity:true,
+                        unitPrice:true,
+                        size:true,
+                        variant:true,
+                        color:true,
+                            product:{
+                                select:{
+                                    name:true,
+                                    photos:true,
+                                    
+                                }
+                            }
+                        }
+                    },
                     payment:{
                         select:{
-                            paymentmethod:true,
-                            status:true
+                             status :true,
+                             paymentmethod:true,
+                             createdAt:true,
+                             transactionId:true,
+                             currency:true,
+                             amount:true
+                            
                         }
                     }
-
-                },
-                take:limit,
-                skip:skip,
-                orderBy:{createdAt:'desc'}
+                 }
             });
-           return res.status(200).json({totalShippedOrder, shippedOrder, totalPage:Math.ceil(totalShippedOrder/limit)})
+           return res.status(200).json({ shippedOrder})
 
         }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
     });
@@ -719,41 +754,58 @@ route.get('/perfume',async(req,res)=>{
     
     
     //get Deliverd Order/details
-    route.get('/deliveredorder', verification,roleAuthorize('USER'),async(req,res)=>{
+    route.get('/deliveredorderdestials/:id', verification,roleAuthorize('USER'),async(req,res)=>{
         try{
+            const orderId=Number(req.params.id)
               const user= await prisma.user.findUnique({
                 where:{id:Number(req.user.id)}
             });
             if(!user){return res.status(404).json({msg:'User Not Found'})}
-            const totalDeliveredOrder=await prisma.order.count({
-                where:{user:user.id, status:'DELIVERED'}
-            });
-            const page=Number(req.query.page) ||1;
-            const limit=Number(req.query.limit) ||15;
-            const skip=(page-1)*limit
-            const deliveredOrder= await prisma.order.findMany({
-                where:{user:user.id, status:'SHIPPED'},
-                select:{
-                    id:true,
-                    items:true,
-                    total:true,
-                    status:true,
-                    address:true,
-                    createdAt:true,
-                    shippingFee:true,
+            const deliveredOrder= await prisma.order.findUnique({
+                where:{userId:user.id,id:orderId, status:'DELIVERED'},
+                 select:{
+                id:true,
+                createdAt:true,
+                address:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            id:true,
+                         quantity:true,
+                        unitPrice:true,
+                        size:true,
+                        variant:true,
+                        color:true,
+                            product:{
+                                select:{
+                                    name:true,
+                                    photos:true,
+                                    
+                                }
+                            }
+                        }
+                    },
                     payment:{
                         select:{
-                            paymentmethod:true,
-                            status:true
+                             status :true,
+                             paymentmethod:true,
+                             createdAt:true,
+                             transactionId:true,
+                             currency:true,
+                             amount:true
+                            
                         }
                     }
-
-                },
-                take:limit,
-                skip:skip,
-                orderBy:{createdAt:'desc'}
+                 }
             });
-           return res.status(200).json({totalDeliveredOrder, deliveredOrder, totalPage:Math.ceil(totalDeliveredOrder/limit)})
+           return res.status(200).json({deliveredOrder })
 
         }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
     });
@@ -816,6 +868,64 @@ route.get('/perfume',async(req,res)=>{
     });
 
 
+    //get Cancelled Order/details
+      route.get('/cancelledorderdetails/:id', verification,roleAuthorize('USER'),async(req,res)=>{
+        try{
+                const orderId=Number(req.params.id)
+              const user= await prisma.user.findUnique({
+                where:{id:Number(req.user.id)}
+            });
+            if(!user){return res.status(404).json({msg:'User Not Found'})}
+            const cancelleddOrder= await prisma.order.findUnique({
+                where:{userId:user.id,id:orderId, status:'CANCELLED'},
+               select:{
+                id:true,
+                createdAt:true,
+                address:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            id:true,
+                         quantity:true,
+                        unitPrice:true,
+                        size:true,
+                        variant:true,
+                        color:true,
+                            product:{
+                                select:{
+                                    name:true,
+                                    photos:true,
+                                    
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                             status :true,
+                             paymentmethod:true,
+                             createdAt:true,
+                             transactionId:true,
+                             currency:true,
+                             amount:true
+                            
+                        }
+                    }
+                 }
+            });
+           return res.status(200).json({ cancelleddOrder})
+
+        }catch(err){console.error(err);return res.status(500).json({msg: 'Server Error'})}
+    });
+
+
         //get Paid Order/card
      route.get('/allpaidorder', verification,roleAuthorize('USER'),async(req,res)=>{
         try{
@@ -872,49 +982,68 @@ route.get('/perfume',async(req,res)=>{
 
         }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
     });
-    
-    
-    
 
-    //get Cancelled Order/details
-      route.get('/cancelledorder', verification,roleAuthorize('USER'),async(req,res)=>{
+    //get paid Order/details
+      route.get('/paidorderdetails/:id', verification,roleAuthorize('USER'),async(req,res)=>{
         try{
+                const orderId=Number(req.params.id)
               const user= await prisma.user.findUnique({
                 where:{id:Number(req.user.id)}
             });
             if(!user){return res.status(404).json({msg:'User Not Found'})}
-            const totalCancelledOrder=await prisma.order.count({
-                where:{user:user.id, status:'CANCELLED'}
-            });
-            const page=Number(req.query.page) ||1;
-            const limit=Number(req.query.limit) ||15;
-            const skip=(page-1)*limit
-            const cancelleddOrder= await prisma.order.findMany({
-                where:{user:user.id, status:'CANCELLED'},
-                select:{
-                    id:true,
-                    items:true,
-                    total:true,
-                    status:true,
-                    address:true,
-                    createdAt:true,
-                    shippingFee:true,
+            const paidOrder= await prisma.order.findUnique({
+                where:{userId:user.id,id:orderId, payment:{status:'PAID'}},
+               select:{
+                id:true,
+                createdAt:true,
+                address:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            id:true,
+                         quantity:true,
+                        unitPrice:true,
+                        size:true,
+                        variant:true,
+                        color:true,
+                            product:{
+                                select:{
+                                    name:true,
+                                    photos:true,
+                                    
+                                }
+                            }
+                        }
+                    },
                     payment:{
                         select:{
-                            paymentmethod:true,
-                            status:true
+                             status :true,
+                             paymentmethod:true,
+                             createdAt:true,
+                             transactionId:true,
+                             currency:true,
+                             amount:true
+                            
                         }
                     }
-
-                },
-                take:limit,
-                skip:skip,
-                orderBy:{createdAt:'desc'}
+                 }
             });
-           return res.status(200).json({totalCancelledOrder, cancelleddOrder, totalPage:Math.ceil(totalCancelledOrder/limit)})
+           return res.status(200).json({ paidOrder})
 
         }catch(err){console.error(err);return res.status(500).json({msg: 'Server Error'})}
     });
+    
+    
+    
+
+    
 
 
     // Add to Cart Product
@@ -1053,7 +1182,7 @@ route.get('/perfume',async(req,res)=>{
                 totalWeight+= product.weight * item.quantity
                 totalPrice+=product.price*item.quantity
             };
-            const shippingFee = shippingRate.baseFee+(totalWeight*shippingRate.perKgFee);
+            const shippingFee = Math.round(shippingRate.baseFee+(totalWeight*shippingRate.perKgFee));
             const bounsAmount= await prisma.refWallet.findFirst({
                 where:{userId},
                 select:{amount:true}
@@ -1062,7 +1191,7 @@ route.get('/perfume',async(req,res)=>{
               const payment=await prisma.payment.create({
                                 data:{
                                 status:'UNPAID',
-                                amount:(totalPrice-bonus)+shippingFee,
+                                amount:Math.round((totalPrice-bonus)+shippingFee),
                                 currency:'PHP',
                                 transactionId:(await genTrxCode()).toString(),
                                 paymentmethod:'COD'
@@ -1077,7 +1206,7 @@ route.get('/perfume',async(req,res)=>{
                         product:{connect:{id:item.productId}} ,
                         quantity:item.quantity,
                         unitPrice:item.unitPrice,
-                        totalPrice:parseFloat(item.quantity*item.unitPrice),
+                        totalPrice:Math.round(parseFloat(item.quantity*item.unitPrice)),
                         size:item.size,
                         color:item.color,
                         variant:item.variant
@@ -1157,7 +1286,7 @@ route.get('/perfume',async(req,res)=>{
                 select:{amount:true}
             });
             const bonus= bonusAount?bonusAount.amount:0
-           if(shippingRate){shippingFee = shippingRate.baseFee + (totalWeight * shippingRate.perKgFee)}
+           if(shippingRate){shippingFee =Math.round(shippingRate.baseFee + (totalWeight * shippingRate.perKgFee))}
            else{ return res.status(400).json({msg:'Shipping Not Available for This Area'})}
 
             res.status(200).json({items:cart, bonus, shippingFee:Math.ceil(shippingFee), itemPrice:subtotal, subtotal:(subtotal-bonus), total:(subtotal-bonus)+shippingFee,})
@@ -1291,7 +1420,77 @@ route.get('/getalladdress',verification,roleAuthorize('USER'),async(req,res)=>{
         });
       return  res.status(200).json({address})
     }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
-})
+});
+
+// review product
+route.post('/reviewproduct/:id',verification, async(req,res)=>{
+    try{
+       const {comment}=req.body;
+       if(!comment){return res.status(400).json({msg:'Invalid Comment'})};
+        const user= await prisma.user.findUnique({
+            where:{id:Number(req.user.id)}
+        });
+        if(!user){return res.status(404).json({msg:'User Not Found'})};
+        const product=await prisma.product.findUnique({
+            where:{id:Number(req.params.id)}
+        });
+        if(!product){return res.status(404),json({msg:'Product Not Found'})};
+        await prisma.comment.create({
+            data:{comment, productId:product.id, userId:user.id}
+        });
+        res.status(200).json({msg:'Comment Added Successfully'})
+
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+//Get All Comment
+route.get('/getallcomment/:id',async(req,res)=>{
+    try{
+        const page= Number(req.query.page)||1;
+        const limit=Number(req.query.limit) ||10;
+         const skip=(page-1)*limit;
+        const productId=Number(req.params.id)
+        const totalComment= await prisma.comment.count({
+            where:{productId}
+        });
+        const allcomment= await prisma.comment.findMany({
+            where:{productId},
+            select:{
+                id:true,
+                comment:true,
+                createdAt:true,
+                user:{
+                    select:{
+                        name:true,
+                        photo:true,
+                        role: true,
+                    }
+                }
+            },
+            skip:skip,
+            take:limit,
+            orderBy:{createdAt:'desc'}
+        });
+        res.status(200).json({allcomment, totalComment, totalPage:Math.ceil(totalComment/limit)})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+//Delete Review By Admin
+route.delete('/deletereview/:id',verification,async(req,res)=>{
+    try{
+        const commentId=Number(req.params.id);
+        const comment= await prisma.comment.findUnique({
+            where:{id:commentId}
+        })
+        if(!comment){return res.status(404).json({msg:'Commnet Not Found'})};
+        await prisma.comment.delete({
+            where:{id:commentId}
+        });
+        res.status(200).json({msg:'Comment Delete Successfully'})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
+
+
 
 
 
