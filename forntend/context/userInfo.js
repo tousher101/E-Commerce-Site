@@ -10,7 +10,8 @@ export const UserProvider=({children})=>{
     const [totalCartItmes, setTotalCartItems]=useState(0);
     const [cartData, setCartData]=useState(null);
     const [shippingAreaData, setShippingAreaData]=useState([]);
-    const [mode, setMode]=useState(null)
+    const [mode, setMode]=useState(null);
+    const [role,setRole]=useState(null);
   
 
    
@@ -47,13 +48,13 @@ export const UserProvider=({children})=>{
     
     const storedUser= sessionStorage.getItem('token')
     const storeRole=sessionStorage.getItem('role')
-    if(storedUser&&storeRole){setUser(storedUser)}
+    if(storedUser&&storeRole){setUser(storedUser);setRole(storeRole)}
 },[]);
 
 
 
 return (
-    <UserInfoContext.Provider value={{userInfo, getAllUser, setUserInfo, user, totalCartItmes, getTotalCartItems, cartData,getCartItems, shippingAreaData, getShippingArea, mode}}>{children}</UserInfoContext.Provider>
+    <UserInfoContext.Provider value={{userInfo, getAllUser, setUserInfo, user,role, totalCartItmes, getTotalCartItems, cartData,getCartItems, shippingAreaData, getShippingArea, mode}}>{children}</UserInfoContext.Provider>
 )
 };
 export const useUserInfo=()=>useContext(UserInfoContext)

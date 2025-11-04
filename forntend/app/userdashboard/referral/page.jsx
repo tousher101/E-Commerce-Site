@@ -4,6 +4,8 @@ import {useUserInfo} from "../../../context/userInfo"
 import Alert from "../../../Utils/Alert"
 import { fetchWithAuth } from "../../../Utils/fetchWithAuth";
 import { maskText } from "../../../Utils/maskText";
+import AOS from 'aos';
+import 'aos/dist/aos.css'
 
 export default function referral(){
     const BASEURI=process.env.NEXT_PUBLIC_API_URI;
@@ -17,10 +19,14 @@ export default function referral(){
     const getReferralData=async()=>{
         const res=await fetchWithAuth(`${BASEURI}/api/user/referral`)
         setRefData(res);
-        console.log(res)
     };
 
     useEffect(()=>{
+          
+          AOS.init({
+            duration:1000,once:false,mirror:false
+          });
+          AOS.refresh();
         getReferralData();
     },[])
 
@@ -40,11 +46,11 @@ export default function referral(){
             <button onClick={copyToClipboard} className="border-1 ml-[10px] rounded-xl border-gray-300 p-1 cursor-pointer"><img className="h-[35px] w-[35px]" src="/copy.gif"/></button>
            </div>
            <div className="flex justify-center gap-5 mt-[30px]">
-            <div className="text-xl font-semibold h-[100px] grid grid-cols-1 justify-items-center items-center p-4 rounded-xl bg-gradient-to-r from-[#8A2BE2] to-[#FF69B4] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a]">
+            <div data-aos='flip-left' className="text-xl font-semibold h-[100px] grid grid-cols-1 justify-items-center items-center p-4 rounded-xl bg-gradient-to-r from-[#8A2BE2] to-[#FF69B4] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a]">
                 <h1>Bonus Amout</h1>
                 <h2> ₱{refData?.wallet}</h2>
             </div>
-            <div className="text-xl font-semibold h-[100px] grid grid-cols-1 justify-items-center items-center p-4 rounded-xl bg-gradient-to-r from-[#3ee7f3] to-[#53e960] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a]">
+            <div data-aos='flip-right' className="text-xl font-semibold h-[100px] grid grid-cols-1 justify-items-center items-center p-4 rounded-xl bg-gradient-to-r from-[#3ee7f3] to-[#53e960] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a]">
                 <h1>Total Referred</h1>
                 <h2>{refData?.totalRef}</h2>
             </div>
@@ -55,7 +61,7 @@ export default function referral(){
             <div className="grid grid-cols-1 gap-2 mt-[20px]">
 
             {refData?.user?.referredUser?.map((ref)=>(
-                <div key={ref?.id} className="border-1 border-gray-300 rounded-xl bg-red-400 flex justify-around p-1 w-full  ">
+                <div data-aos='slide-up' key={ref?.id} className="border-1 border-gray-300 rounded-xl bg-red-400 flex justify-around p-1 w-full  ">
                 <h1>{maskText(ref?.name)}</h1>
                 <h2>{maskText(ref?.email)}</h2>
                 <h3>{maskText(ref?.phone)}</h3>

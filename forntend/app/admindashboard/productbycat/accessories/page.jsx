@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import AdminProduct from '../../../../component/AdminProduct';
 import { fetchWithAuth } from '../../../../Utils/fetchWithAuth';
 import Alert from '../../../../Utils/Alert';
+import AOS from 'aos';
+import 'aos/dist/aos.css'
 
 
 
@@ -14,6 +16,7 @@ export default function accessories(){
     const [totalProduct, setTotalProduct]=useState(0);
     const [msg, setMsg]=useState(null);
     const [type, setType]=useState(null);
+ 
   
 
     const getAccessoriesProduct=async(page)=>{
@@ -25,6 +28,10 @@ export default function accessories(){
     };
 
     useEffect(()=>{
+            AOS.init({
+            duration:1000,once:false,mirror:false
+            });
+            AOS.refresh();
         getAccessoriesProduct(page);
     },[page]);
 
@@ -38,7 +45,7 @@ export default function accessories(){
         <div className=" mx-[10px] overflow-x-hidden">
             <h1 className='text-center text-3xl text-gray-400 font-semibold my-[30px]'>Accessories Product ({totalProduct})</h1>
            {productData?.map((pro)=>(
-                 <div key={pro.id}>
+                 <div key={pro.id} data-aos='slide-up'>
                 <AdminProduct productName={pro.name} productDescription={pro.description} productPhotos={pro?.photos[0]?.url} productPrice={pro.price} productStock={pro.stock}  
                 productColor={pro.color} productSize={pro.size} productVariant={pro.variant} productWeight={pro.weight} update={pro.updatedAt} create={pro.createdAt} productId={pro.id} getMens={()=>{getMensProduct()}} mode={'Accessories'} 
                 selectedProduct={pro} productOriginalPrice={pro.originalPrice}/>

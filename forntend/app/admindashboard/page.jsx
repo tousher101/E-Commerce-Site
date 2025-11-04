@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import AdminCard from '../../component/AdminCard'
 import Chart from '../../component/Chart'
 import {fetchWithAuth} from '../../Utils/fetchWithAuth'
+import AOS from 'aos';
+import 'aos/dist/aos.css'
 
 export default function  admindashboard(){
 const BaseURI= process.env.NEXT_PUBLIC_API_URI;
@@ -20,9 +22,13 @@ const getChartData=async()=>{
     setChartData(res?.salesData)
 }
 useEffect(()=>{
-
+      AOS.init({
+        duration:1000,once:false,mirror:false
+            });
+        AOS.refresh();
     getChartData();
     getCardData();
+         
 },[]);
 
 
@@ -30,7 +36,11 @@ useEffect(()=>{
         
         <div className='grid grid-cols-1  mx-auto overflow-hidden '>
            <h1 className="text-center text-3xl font-semibold text-gray-500 my-[30px]">Admin Dashboard</h1>
-            <Chart chartData={chartData}/>
+           <div data-aos='fade-up'>
+            <Chart chartData={chartData}  />
+           </div>
+            
+            
             <AdminCard prevSales={cardData?.prev} currSales={cardData?.current} salesGrowth={cardData?.growth} prevOrder={cardData?.prevConfirmedOrder}
             currOrder={cardData?.currentConfirmedOrder} orderGrowth={cardData?.orderConfirmedGrowth} 
             currPendingOrder={cardData?.currentMonthPendingOrder}   

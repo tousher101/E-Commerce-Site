@@ -11,9 +11,9 @@ const genTrxCode=require('../utils/genTrxCode');
 
 
 // Upload Profile Photo
-route.post('/uploadprofilephoto',verification,roleAuthorize('USER'),upload.single('photo'),async(req,res)=>{
+route.post('/uploadprofilephoto',verification,roleAuthorize('USER','ADMIN'),upload.single('photo'),async(req,res)=>{
 try{
-    const {photo}=req.file
+    const photo=req.file
     const user= await prisma.user.findUnique({
         where:{id:Number(req.user.id)}
     });
@@ -1475,19 +1475,92 @@ route.get('/getallcomment/:id',async(req,res)=>{
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
-//Delete Review By Admin
-route.delete('/deletereview/:id',verification,async(req,res)=>{
-    try{
-        const commentId=Number(req.params.id);
-        const comment= await prisma.comment.findUnique({
-            where:{id:commentId}
-        })
-        if(!comment){return res.status(404).json({msg:'Commnet Not Found'})};
-        await prisma.comment.delete({
-            where:{id:commentId}
-        });
-        res.status(200).json({msg:'Comment Delete Successfully'})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+
+
+// product Search for user
+
+route.get("/search", async (req, res) => {
+  try {
+    const  {query}  = req.query;
+    const page= Number(req.query.page)||1;
+    const limit=Number(req.query.limit)||20;
+    const skip=(page-1)*limit
+    const take=limit
+
+    if (!query || query.trim() === "") {
+      return res.status(400).json({ msg: "Search query required" });
+    }
+
+    // Normalize the keyword (remove symbols, convert to lowercase)
+    const keyword = query.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim().split(/\s+/);
+   const conditions = [];
+    const params = [];
+    for (const kw of keyword) {
+  const p = `%${kw}%`;
+  conditions.push(`
+    (REPLACE(LOWER(name), "'", '') LIKE ? 
+     OR REPLACE(LOWER(description), "'", '') LIKE ? 
+     OR REPLACE(LOWER(category), "'", '') LIKE ?)
+  `);
+  params.push(p, p, p);
+}
+
+const whereClause = conditions.join(" AND ");
+
+  
+    
+
+const rawIds = await prisma.$queryRawUnsafe(
+  `
+  SELECT id FROM Product
+  WHERE ${whereClause}
+  ORDER BY createdAt DESC
+  LIMIT ? OFFSET ?;
+  `,
+  ...params,
+  take,
+  skip
+);
+       const ids = rawIds.map((r) => r.id);
+
+    if (ids.length === 0) {
+      return res.json({ success: true, total: 0, totalPages: 0, results: [] });
+    }
+
+     const products = await prisma.product.findMany({
+      where: { id: { in: ids } },
+      select:{
+                id:true,
+                name:true,
+                description:true,
+                price:true,
+                stock:true,
+                photos:true,
+                originalPrice:true,
+                _count:{
+                    select:{comment:true}
+                },
+            },
+      orderBy: { createdAt: 'desc' },
+    });
+        for(let product of products){
+            const soldData= await prisma.orderItem.aggregate({
+                _sum:{quantity:true},
+                where:{productId:product.id, order:{status:'DELIVERED'}}
+            });
+            const soldCount=soldData._sum.quantity || 0
+            product.soldCount=soldCount
+        };
+
+    const [{ total }] = await prisma.$queryRawUnsafe(`
+      SELECT COUNT(*) as total FROM Product WHERE ${whereClause};
+    `,...params);
+    const totalCount = Number(total);
+  return  res.status(200).json({products, totalProduct:total, totalPage:Math.ceil(totalCount/take)});
+  } catch (err) {
+    console.error("Search Error:", err);
+   return res.status(500).json({ msg: "Server Error" });
+  }
 });
 
 

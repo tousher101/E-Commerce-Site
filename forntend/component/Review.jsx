@@ -15,7 +15,7 @@ export default function review({productId}){
     const [comment,setComment]=useState('');
     const [msg,setMsg]=useState(null);
     const [type,setType]=useState(null);
-    const {user}=useUserInfo();
+    const {user,role}=useUserInfo();
     const [commentId,setCommentId]=useState(null);
 
     const getAllComment=async(page,id)=>{
@@ -39,7 +39,7 @@ export default function review({productId}){
     };
 
     const deleteComment=async(id)=>{
-        const res=await fetchWithAuth(`${BaseURI}/api/user/deletereview/${id}`,{
+        const res=await fetchWithAuth(`${BaseURI}/api/admin/deletereview/${id}`,{
             method:'DELETE'
         });
     setMsg(res.msg);setType('Success');getAllComment(page,productId);
@@ -55,7 +55,7 @@ export default function review({productId}){
         <div className="mx-[auto] overflow-hidden mb-[25px]">
             <h1 className="text-xl font-semibold">Review ({totalComment || 0})</h1>
           <div className="grid grid-cols-1 mx-[10px] gap-3  bg-gray-400  p-3 rounded-xl ">
-            {commentData?commentData?.map((com)=>(
+            {commentData.length>0?commentData?.map((com)=>(
                 <div key={com.id}  className="bg-gray-200 p-2 rounded-sm">
                  <div className="flex items-center gap-1  p-2 rounded-sm">
                     <img className="h-[45px] w-[45px] rounded-4xl" src={com?.user?.photo ||'./User-2.gif'}/>
@@ -67,11 +67,11 @@ export default function review({productId}){
                     </div>
                     <div className="flex justify-between mx-[10px] items-center my-[10px] ">
                     <h1 className="text-[11px]" >{new Date(com?.createdAt).toDateString()}</h1>
-                    <button onClick={()=>{deleteComment(com.id)}} className="p-1 border-1 rounded-sm cursor-pointer">Delete</button>
+                    {role==='ADMIN'&&<button onClick={()=>{deleteComment(com.id)}} className="p-1 border-1 rounded-sm cursor-pointer">Delete</button>}
                     </div>
                     
             </div>
-            )):<h1 className="text-center text-2xl text-black font-semibold">No Comment Available</h1>}
+            )):<h1 className="text-center text-2xl text-black font-semibold">Review Not Available</h1>}
                
         </div>
         </div>
@@ -81,7 +81,7 @@ export default function review({productId}){
             <button onClick={handleNext}   className='h-[40px] w-[100px] bg-black text-white rounded-xl cursor-pointer'>Next</button>
             </div>}
 
-            {user?<SubmitReview commentValue={comment} commentOnCh={(e)=>{setComment(e.target.value)}} submitComment={()=>{submitComment(id)}}/>:''}
+            {user&&<SubmitReview commentValue={comment} commentOnCh={(e)=>{setComment(e.target.value)}} submitComment={()=>{submitComment(productId)}}/>}
         </div>
         </>
     )

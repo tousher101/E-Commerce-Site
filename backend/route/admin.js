@@ -1307,8 +1307,23 @@ route.get('/getcodorderdetails/:id',verification,roleAuthorize('ADMIN'),async(re
 });
 
 
-
-
+//Delete Review by admin
+route.delete('/deletereview/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const commentId=Number(req.params.id);
+        const userId=Number(req.user.id)
+  
+  
+        const comment= await prisma.comment.findUnique({
+            where:{id:commentId}
+        })
+        if(!comment){return res.status(404).json({msg:'Commnet Not Found'})};
+        await prisma.comment.delete({
+            where:{id:commentId}
+        });
+        res.status(200).json({msg:'Comment Delete Successfully'})
+    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+});
 
 
 

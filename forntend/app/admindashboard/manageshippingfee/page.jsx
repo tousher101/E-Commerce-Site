@@ -4,6 +4,8 @@ import DeleteModal from '../../../component/DeleteModal'
 import EditModal from '../../../component/EditModal'
 import {fetchWithAuth} from '../../../Utils/fetchWithAuth'
 import Alert from '../../../Utils/Alert'
+import AOS from 'aos';
+import 'aos/dist/aos.css'
 
 export default function manageShippingFee(){
 
@@ -69,6 +71,11 @@ export default function manageShippingFee(){
         };
     useState(()=>{
         getAllShippingFee()
+         AOS.init({
+            duration:1000,once:false,mirror:false
+          });
+          AOS.refresh();
+        
     },[])
 
     const deleteShippingRate=async(id)=>{
@@ -104,7 +111,7 @@ export default function manageShippingFee(){
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
         <div className=" mx-auto overflow-x-hidden">
             <h1 className="text-center text-3xl font-semibold text-gray-400 my-[30px]">Manage Shipping Fee Rate</h1>
-            <div className="grid grid-cols-1 gap-2 ">
+            <div data-aos='fade-up' className="grid grid-cols-1 gap-2 ">
                 <input value={location} onChange={(e)=>{setLocation(e.target.value)}} className="border-1 border-gray-300 p-2 rounded-xl" type="text" placeholder="Zone Name"/>
                 <div className=" flex w-full gap-5 justify-center">
                     <input value={baseFee} onChange={(e)=>{setBaseFee(e.target.value)}} className="border-1 border-gray-300 p-2 rounded-xl"  type="text" placeholder="Base Fee"/>
@@ -114,9 +121,9 @@ export default function manageShippingFee(){
             </div>
 
             <h1 className="text-center text-2xl text-gray-400 mt-[20px]">Current Shipping Fee Rate</h1>
-                <div className='grid grid-cols-1 gap-1'>
+                <div data-aos='fade-up' className='grid grid-cols-1 gap-1'>
                 {shippingData.map((rate)=>(
-                        <div key={rate.id} onClick={()=>{setShippingRateId(rate.id), setSelectedShippingFee(rate)}}  className="grid grid-cols-4 items-center border-1 border-gray-400 rounded-xl p-2 my-[5px]">
+                        <div  key={rate.id} onClick={()=>{setShippingRateId(rate.id), setSelectedShippingFee(rate)}}  className="grid grid-cols-4 items-center border-1 border-gray-400 rounded-xl p-2 my-[5px]">
                             <div className='flex justify-items-center items-center'>
                                 <h1>{rate.location}</h1>
                             </div>

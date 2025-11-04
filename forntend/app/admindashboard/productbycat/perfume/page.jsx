@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 import AdminProduct from '../../../../component/AdminProduct';
 import { fetchWithAuth } from '../../../../Utils/fetchWithAuth';
 import Alert from '../../../../Utils/Alert';
+import AOS from 'aos';
+import 'aos/dist/aos.css'
+
 
 
 export default function perfume(){
@@ -23,7 +26,11 @@ export default function perfume(){
     };
 
     useEffect(()=>{
-        getPerfumeProduct(page);
+    AOS.init({
+    duration:1000,once:false,mirror:false
+    });
+    AOS.refresh();
+    getPerfumeProduct(page);
     },[page]);
 
     const handleNext=()=>{
@@ -36,7 +43,7 @@ export default function perfume(){
         <div className=" mx-[10px] overflow-x-hidden">
             <h1 className='text-center text-3xl text-gray-400 font-semibold my-[30px]'>Perfume Product ({totalProduct})</h1>
            {productData?.map((pro)=>(
-                 <div key={pro.id}>
+                 <div key={pro.id} data-aos='slide-up'>
                 <AdminProduct productName={pro.name} productDescription={pro.description} productPhotos={pro?.photos[0]?.url} productPrice={pro.price} productStock={pro.stock}  
                 productColor={pro.color} productSize={pro.size} productVariant={pro.variant} productWeight={pro.weight} update={pro.updatedAt} create={pro.createdAt} productId={pro.id} getMens={()=>{getMensProduct()}} mode={'Perfume'} 
                 selectedProduct={pro} productOriginalPrice={pro.originalPrice}/>

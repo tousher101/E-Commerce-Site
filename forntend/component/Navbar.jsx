@@ -10,12 +10,22 @@ import {useUserInfo} from '../context/userInfo'
 import UserInfo from '../component/UserInfo'
 import Alert from "../Utils/Alert";
 import { fetchWithAuth } from "../Utils/fetchWithAuth";
+import CropperModal from "../component/CropperModal";
+import Loading from "../Utils/Loading";
+
 
 export default function navBar() {
   const {userInfo,getAllUser, totalCartItmes,getTotalCartItems,cartData,getCartItems, shippingAreaData,mode}=useUserInfo();
   const [msg, setMsg]=useState(null);
   const [type,setType]=useState(null);
   const [selectedArea, setSelectedArea]=useState('');
+  const [searchData, setSearchData]=useState('');
+  const [profilePhotoModal,setProfilePhotoModal]=useState(false);
+   const [openCartModal, setOpenCartModal]=useState(false);
+    const [animatedModal, setAnimatedModal]=useState(false)
+    const [userModal, setUserModal]=useState(false);
+    const [loading, setLoading]=useState(false);
+    const BaseURI=process.env.NEXT_PUBLIC_API_URI;
   
   const router=useRouter()
 
@@ -26,6 +36,17 @@ export default function navBar() {
     const goSingIn=()=>{
         // window.location.href=('/signin')
         router.push('/signin')
+    };
+
+    const goSearch=()=>{
+     
+       if (!searchData || searchData.trim() === "") {
+      setMsg('Please Input Valid Query'); setType('Error'); return
+    };
+    
+      router.push(`/searchproduct/${searchData}`)
+      setSearchData('');
+
     }
         const goCheckOut=()=>{
           if(!cartData||cartData.length===0){setMsg('Cart Is Empty'); setType('Error'); return}
@@ -36,10 +57,7 @@ export default function navBar() {
     };
 
  
-    const [openCartModal, setOpenCartModal]=useState(false);
-    const [animatedModal, setAnimatedModal]=useState(false)
-    const [userModal, setUserModal]=useState(false);
-    const BaseURI=process.env.NEXT_PUBLIC_API_URI;
+
     const openUserModal=()=>{
       setUserModal(true)
         setTimeout(()=>{
@@ -69,6 +87,16 @@ export default function navBar() {
       },10)
     };
    
+  const uploadProfilePhoto=async(blob)=>{
+    const formData= new FormData();
+    formData.append('photo',blob);
+    setLoading(true);
+    const res= await fetchWithAuth(`${BaseURI}/api/user/uploadprofilephoto`,{
+      method:'POST',
+      body:formData
+    });
+    setMsg(res.msg);setType('Success'); setProfilePhotoModal(false);getAllUser();setLoading(false);
+  }
 
 
  
@@ -95,9 +123,6 @@ export default function navBar() {
     getTotalCartItems();
     };
 
- 
-
-
     useEffect(()=>{
       getCartItems();
       
@@ -113,8 +138,8 @@ export default function navBar() {
             <Link href='/'><Image className="" src={logo} alt="logo" width={180} height={80} priority/></Link>
             </div>
             <div className=" flex items-center gap-5 ">
-              <input className="border border-gray-400 p-[5px]  rounded-xl" type="text" placeholder="Search Product"/>
-              <button className="h-[35px] w-[100px] bg-blue-500 text-white cursor-pointer rounded-2xl shadow-sm">Search</button>
+              <input value={searchData} onChange={(e)=>{setSearchData(e.target.value)}} className="border border-gray-400 p-[5px]  rounded-xl" type="text" placeholder="Search Product"/>
+              <button onClick={goSearch} className="h-[35px] w-[100px] bg-blue-500 text-white cursor-pointer rounded-2xl shadow-sm">Search</button>
             </div>
             <div  className="flex justify-between items-center">
                 {userInfo?.role==='USER'&&<div onClick={openModal} className="cursor-pointer">
@@ -169,8 +194,11 @@ export default function navBar() {
         </nav>
       {openCartModal&&<Cart closeModal={closeModal} design={animatedModal} data={cartData} totalItems={totalCartItmes} submitItemDelete={deleteCartItems} areaValue={selectedArea} areaOnCh={(e)=>{setSelectedArea(e.target.value)}} goCheckOut={goCheckOut}
         shippingArea={shippingAreaData} mode={mode}/>}
-      {userModal&&<UserInfo photo={userInfo?.photo} design={animatedModal} closeModal={closeUserModal} name={userInfo.name}
+      {userModal&&<UserInfo photo={userInfo?.photo} design={animatedModal} closeModal={closeUserModal} name={userInfo.name} openUploadImage={()=>{setProfilePhotoModal(true)}}
       email={userInfo.email} phone={userInfo.phone} role={userInfo.role} logout={()=>{logOut()}}/>}
+
+      {profilePhotoModal&&<CropperModal closeModal={()=>{setProfilePhotoModal(false)}} onUpload={uploadProfilePhoto}/>}
+        {loading&&<Loading/>}
       </>
     )
 }
