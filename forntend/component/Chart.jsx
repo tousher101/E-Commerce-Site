@@ -25,7 +25,7 @@ export default function SalesAreaChart({chartData}) {
           </defs>
 
           <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-          <XAxis dataKey="month" />
+          <XAxis dataKey="month" interval={0} tick={ {fontSize:10}} angle={-30} textAnchor="end"/>
           <YAxis />
           <Tooltip />
 

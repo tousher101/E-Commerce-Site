@@ -23,9 +23,9 @@ export default function layout({children}){
 };
     return(
         <>
-             <div className=" mx-[10px] overflow-hidden mb-[80px]">
+             <div className=" mx-[10px] overflow-hidden mb-[80px] ">
             <div className="flex gap-3">
-            <div data-aos='slide-up' className="flex flex-[20%] shadow-xl h-[650px] rounded-xl ">
+            <div data-aos='slide-up' className="flex-[20%] shadow-xl h-[700px] rounded-xl lg:flex md:hidden hidden ">
                 <div className="grid grid-cols-1 gap-2 p-3">
                         <div className="grid grid-cols-1 justify-items-center items-center my-[25px] gap-3">
                        <button onClick={()=>{setChangePassModal(true)}} className="p-2.5 rounded-xl bg-gray-800 cursor-pointer text-white">Change Password</button>
@@ -81,14 +81,90 @@ export default function layout({children}){
             <div className="flex-[80%]  justify-center shadow-xl">
                 {children}
                     </div>
+
+            <div>
+                <input type="checkbox" className=" peer/sidebar hidden" id='sidebar-toggle'/>
+                <label htmlFor="sidebar-toggle" className="lg:hidden md:block block cursor-pointer md:top-30 top-35 left-5 absolute z-50   ">
+                    <img src="./bx-menu.svg" className="w-8"/>
+                </label>
+                <aside className="bg-white absolute top-35 left-0 h-[940px]  w-[220px] text-black transition-transform duration-1000 -translate-x-full peer-checked/sidebar:translate-x-0 z-50 rounded-r-xl"> 
+                    <div>
+                        <label htmlFor="sidebar-toggle" className="cursor-pointer"><img className="w-8 ml-[10px]" src="./bx-x.svg"/></label>
+                    </div>
+                      <div data-aos='slide-up' className="flex-[20%] shadow-xl h-[900px] rounded-xl lg:hidden md:flex flex ">
+                <div className="grid grid-cols-1 gap-2 p-3">
+                        <div className="grid grid-cols-1 justify-items-center items-center my-[25px] gap-3">
+                       <button onClick={()=>{setChangePassModal(true)}} className="p-2.5 rounded-xl bg-gray-800 cursor-pointer text-white">Change Password</button>
+                        </div>
+                    <div className="flex items-center gap-1">
+                        <img className="w-[40px] h-[40px]" src="/task-management.gif"/>
+                        <h1 className="  text-center text-xl font-semibold mb-[10px]">Manage Order</h1>
+                    </div>
+                
+                    <div className="flex items-center  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/home.gif"/>
+                        <Link href={'/userdashboard'}><h1 className="p-2 rounded-xl cursor-pointer ">Home</h1></Link>
+                    </div>
+
+                     <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/rfp.gif"/>
+                         <Link href={'/userdashboard/pendingorder'}><h1 className="p-2 ">Pending Order</h1></Link>
+                    </div>
+
+                    <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/hand-paper-check.gif"/>
+                        <Link href={'/userdashboard/confirmedorder'}><h1 className="p-2">Confirmed Order</h1></Link>
+                    </div>
+
+                    <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/warehouse.gif"/>
+                        <Link href={'/userdashboard/shippedorder'}><h1 className="p-2">Shipped Order</h1></Link>
+                    </div>
+
+                     <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/shippe.gif"/>
+                        <Link href={'/userdashboard/deliveredorder'}><h1 className="p-2 ">Delivered Order</h1></Link>
+                    </div>
+
+                     <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/delivery.gif"/>
+                        <Link href={'/userdashboard/cancelledorder'}><h1 className="p-2">Cancel Order</h1></Link>
+                    </div>
+
+                    <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/receipt.gif"/>
+                        <Link href={'/userdashboard/paidorder'}><h1 className="p-2">Paid Order</h1></Link>
+                    </div>
+
+                    
+                    <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/referral.gif"/>
+                        <Link href={'/userdashboard/referral'}><h1 className="p-2">Referral</h1></Link>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+
+                </aside>
+
+            </div>
+
+
                
             </div>
-              
+   
         </div>  
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}   
         {changePassModal&&<ChangePasswordModal closeModal={()=>{setChangePassModal(false); setNewPassword(''); setCurrentPassword(''); setConfirmNewPass('')}} currentPassValue={currentPassword} currentPassOnCh={(e)=>{setCurrentPassword(e.target.value)}}
         newPassValue={newPassword} newPassOnCh={(e)=>{setNewPassword(e.target.value)}} confirmNewPassValue={confirmNewPass} confirmNewPassOnCh={(e)=>{setConfirmNewPass(e.target.value)}}
-        submitChange={()=>{changePassword()}}/>} 
+        submitChange={()=>{changePassword()}}/>}
+
+
+
+
         </>
         
     )

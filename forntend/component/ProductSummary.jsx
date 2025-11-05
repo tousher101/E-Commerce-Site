@@ -8,19 +8,19 @@ export default function productSummary({photo, name, price, quantity, size, colo
    
     return(
             <div className='grid grid-cols-1 content-center w-full rounded-xl'>
-                        <div data-aos='slide-up' className='flex items-center justify-around rounded-xl  shadow-sm my-[20px] p-2'>
+                        <div data-aos='slide-up' className=' flex  items-center justify-around  rounded-xl  shadow-sm my-[20px] p-2 w-full'>
                             <Image src={photo||noImage} height={40} width={60} className="h-[40] w-[60] rounded-sm" alt='cart-product'/>
                             <div className='grid grid-cols-1 justify-items-center mx-[10px]'>
                                 <h1 className='text-[15px]'>{name} </h1>
-                                <div className='flex justify-around items-center  gap-2 text-xs'>
+                                <div className='lg:flex md:flex lg:justify-around  md:justify-around grid grid-cols-2 items-center justify-items-start  gap-2 text-xs'>
                                 <h2>Price : ₱{price}</h2>
-                                <h2>||</h2>
+                                <h2 className="lg:flex md:flex hidden">||</h2>
                                 <h2>Quantity : {quantity}</h2>
-                                <h2>||</h2>
+                                 <h2 className="lg:flex md:flex hidden">||</h2>
                                 <h2>Size : {size}</h2>
-                                <h2>||</h2>
+                                 <h2 className="lg:flex md:flex hidden">||</h2>
                                 <h2>Color : {color}</h2>
-                                <h2>||</h2>
+                                <h2 className="lg:flex md:flex hidden">||</h2>
                                 <h2>Variant : {variant}</h2>
                             </div>
                             </div>

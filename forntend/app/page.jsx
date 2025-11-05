@@ -51,7 +51,7 @@ const handelNext=()=>{
       <Category/>
       <div className='mb-[60px]'>
       <h1 className='text-center text-3xl text-gray-500 font-semibold'>All Products</h1>
-      <div  className='grid grid-cols-4 gap-1 '>
+      <div  className='grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 justify-items-center hover:scale-102 duration-1000 gap-1  '>
         {products?.map((pro)=>(
           <div key={pro.id} data-aos='fade-left'>
           <Products name={pro?.name} description={pro?.description} price={pro?.price} photos={pro?.photos[0]?.url} stock={pro?.stock}

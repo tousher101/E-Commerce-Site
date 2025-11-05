@@ -66,7 +66,7 @@ export default function pedningOrderDetails(){
                  <div className="grid grid-cols-1 gap-2">
                     {detailsData?.items?.map((item)=>(
                         <div key={item.id}>
-                        <ProductSummary mode={mode} name={item?.product?.name} photo={item?.product?.photos[0]?.url} size={item?.size} price={item?.unitPrice} quantity={item?.quantity} variant={item?.variant}/>
+                        <ProductSummary  name={item?.product?.name} photo={item?.product?.photos[0]?.url} size={item?.size} price={item?.unitPrice} quantity={item?.quantity} variant={item?.variant} color={item?.color}/>
                         </div>
                     ))}
                         

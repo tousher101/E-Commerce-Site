@@ -40,8 +40,9 @@ export default function referral(){
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
         <div className=" mx-[10px] overflow-hidden ">
            <h1 className="text-center text-3xl text-gray-400 font-semibold my-[30px]">Referral Dashboard</h1>
-           <div className="mb-[10px] flex justify-center items-center gap-2">
-            <h1 className="text-center">Your Referral Code: <span className="border-1 border-gray-300 p-2 rounded-xl">{text} </span></h1>
+           <div className="mb-[10px] lg:flex md:flex grid grid-cols-1 lg:justify-center md:justify-center justify-items-center items-center  gap-2">
+            <h1 className="text-center">Your Referral Code:</h1>
+            <h1 className="border-1 border-gray-300 p-2 rounded-xl">{text}</h1>
             
             <button onClick={copyToClipboard} className="border-1 ml-[10px] rounded-xl border-gray-300 p-1 cursor-pointer"><img className="h-[35px] w-[35px]" src="/copy.gif"/></button>
            </div>
@@ -61,7 +62,7 @@ export default function referral(){
             <div className="grid grid-cols-1 gap-2 mt-[20px]">
 
             {refData?.user?.referredUser?.map((ref)=>(
-                <div data-aos='slide-up' key={ref?.id} className="border-1 border-gray-300 rounded-xl bg-red-400 flex justify-around p-1 w-full  ">
+                <div data-aos='slide-up' key={ref?.id} className="border-1 border-gray-300 rounded-xl bg-red-400 lg:flex md:flex  lg:justify-around md:justify-around grid grid-cols-1 justify-items-center p-1 w-full  ">
                 <h1>{maskText(ref?.name)}</h1>
                 <h2>{maskText(ref?.email)}</h2>
                 <h3>{maskText(ref?.phone)}</h3>

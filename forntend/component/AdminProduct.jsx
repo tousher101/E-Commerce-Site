@@ -108,7 +108,7 @@ const variantArray = Array.isArray(selectProduct.variant)
       <>
       {loading&&<Loading/>}
       {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-        <div className=" overflow-hidden  mx-[10px] rounded-xl shadow-sm flex items-center justify-evenly my-[30px] p-1">
+        <div className=" overflow-hidden  mx-[10px]  rounded-xl shadow-sm lg:flex justify-items-center-safe grid grid-cols-1   items-center lg:justify-evenly my-[30px] p-2">
             <div className="h-[90px] w-[150px] rounded-xl">
                      <Image src={productPhotos||NoImage} height={90} width={150} priority className="rounded-xl w-full h-full object-cover"  alt="product-photo"/>
             </div>
@@ -131,7 +131,7 @@ const variantArray = Array.isArray(selectProduct.variant)
                 <h2>Create :{new Date(create).toDateString()} </h2>
                 <h2> Update: {new Date(update).toDateString()}</h2>
              </div>
-             <div className="flex justify-center items-center gap-3">
+             <div className="flex justify-center items-center gap-3 mb-[5px]">
                 <button onClick={openEditModal} className="border-1 border-gray-400 rounded-xl cursor-pointer p-2"><img className="w-[30px] h-[30px]" src="/edit.gif"/></button>
                 <button onClick={openDeleteModal} className="border-1 border-gray-400 rounded-xl cursor-pointer p-2"><img className="w-[30px] h-[30px]" src="/bin.gif"/></button>
              </div>

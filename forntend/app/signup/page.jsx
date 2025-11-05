@@ -63,37 +63,47 @@ export default function signUp(){
             <div data-aos='slide-up' className="grid grid-cols-1 justify-items-center my-[20px]" >
                 <div className="grid grid-cols-1 justify-items-center">
                     <Image src={logo} height='auto' width='auto' priority className="h-[60px] w-[120px]" alt="logo"/>
-                    <h1 className="text-gray-400 text-sm mb-[10px] mt-[5px] ">Hello! Welcome To Our Shop! Please Create Your Account Here!</h1>
+                    <h1 className="text-gray-400 lg:text-sm md:text-sm text-[11px] mb-[10px] mt-[5px] ">Hello! Welcome To Our Shop! Please Create Your Account Here!</h1>
                     <p className="text-gray-800 font-bold text-3xl">Create Account</p>
                 </div>
 
-                <form className="grid grid-cols-1 gap-2 w-[400px] justify-items-center my-[15px]">
-                    <input className="border-1 p-1.5 rounded-xl w-[400px]" value={name} onChange={(e)=>{setName(e.target.value)}} type="text" placeholder="Full Name"/>
-                    <input className="border-1 p-1.5 rounded-xl w-[400px]" value={email} onChange={(e)=>{setEmail(e.target.value)}} type="email" placeholder="@Email"/>
-                    <div className="flex justify-between w-[400px] gap-1 items-center">
-                        <div className=" flex  border-1 p-1.5 rounded-xl justify-evenly items-center flex-[20%]">
+                <form className="grid grid-cols-1 gap-2 lg:w-[400px] md:w-[400px] w-[full] justify-items-center my-[15px]">
+                    <input className="border-1 p-1.5 rounded-xl lg:w-[400px] md:w-[400px] w-[350px]" value={name} onChange={(e)=>{setName(e.target.value)}} type="text" placeholder="Full Name"/>
+                    <input className="border-1 p-1.5 rounded-xl lg:w-[400px] md:w-[400px] w-[350px]" value={email} onChange={(e)=>{setEmail(e.target.value)}} type="email" placeholder="@Email"/>
+                    <div className="flex justify-between lg:w-[400px] md:w-[400px] w-[350px] gap-1 items-center">
+                        <div className=" flex  border-1 p-1.5 rounded-xl justify-evenly items-center lg:flex-[20%] md:flex-[20%] flex-[30%]">
                          <Image src={flag} className="h-[15px] w-[15px]" alt="flag"/>
                             <p>+630</p>
                         </div>
                         
-                        <input className="border-1 p-1.5 rounded-xl  flex-[80%]" value={phone} onChange={(e)=>{setPhone(e.target.value)}} type="number" placeholder="Phone Number"/>
+                        <input className="border-1 p-1.5 rounded-xl  lg:flex-[80%] md:flex-[80%] flex-[70%]" value={phone} onChange={(e)=>{setPhone(e.target.value)}} type="number" placeholder="Phone Number"/>
 
                     </div>
-                    <div className="flex justify-between items-center cursor-pointer">
-                        <input className="border-1 p-1.5 rounded-xl w-[400px]" value={password} onChange={(e)=>{setPassword(e.target.value)}} type={`${showPassword}`} placeholder="Password"/>
-                        <div onClick={handleOpenEye} className="flex items-center">
+
+                            <div className="lg:w-[400px] md:w-[400px] w-[340px] flex">
+                            <div className="flex justify-between items-center cursor-pointer flex-[90%]">
+                        <input className="border-1 p-1.5 rounded-xl lg:w-[400px] md:w-[400px] w-[340px]" value={password} onChange={(e)=>{setPassword(e.target.value)}} type={`${showPassword}`} placeholder="Password"/>
+                        <div onClick={handleOpenEye} className="flex items-center flex-[10%]">
                         <img className={`h-[35px] w-[35px] ${openEye}`} src="/eye.gif"/>
                         <img  className={`h-[35px] w-[35px] ${closeEye}`} src="/hide.gif"/>
                         </div>
                         
                     </div>
-                    <div  className="flex justify-between items-center cursor-pointer">
-                         <input className="border-1 p-1.5 rounded-xl w-[400px]" value={confirmPass} onChange={(e)=>{setConfirmPassword(e.target.value)}} type={`${showPassword}`} placeholder="Confirm Password"/>
-                         <div onClick={handleOpenEye} className="flex items-center">
+                            </div>
+
+                  
+
+                    <div className=" flex lg:w-[400px] md:w-[400px] w-[340px]">
+                        <div  className="flex flex-[90%] justify-between items-center cursor-pointer">
+                         <input className="border-1 p-1.5 rounded-xl lg:w-[400px] md:w-[400px] w-[340px] " value={confirmPass} onChange={(e)=>{setConfirmPassword(e.target.value)}} type={`${showPassword}`} placeholder="Confirm Password"/>
+                         <div onClick={handleOpenEye} className="flex flex-[10%] items-center">
                         <img className={`h-[35px] w-[35px] ${openEye}`} src="/eye.gif"/>
                         <img  className={`h-[35px] w-[35px] ${closeEye}`} src="/hide.gif"/>
                         </div>
                     </div>
+
+                    </div>
+              
                     
                     <div className="flex justify-center items-center my-[30px]">
                    <button onClick={handleSubmit} className="h-[40px] w-[150px] bg-blue-500 rounded-2xl text-white font-semibold cursor-pointer hover:bg-gray-600 duration-500">Signup</button>

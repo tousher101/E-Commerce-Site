@@ -39,6 +39,7 @@ export default function checkOut() {
     const {location}=params;
     const router=useRouter();
     const {getCartItems,getTotalCartItems}=useUserInfo();
+ 
 
 
     
@@ -74,9 +75,10 @@ export default function checkOut() {
     const submitPaidOrder=async()=>{
         const res=await fetchWithAuth(`${BaseURI}/api/payment/create-checkout-session`,{
             method:'POST',
-            body:JSON.stringify({location, addressId:selectedAddressId})
+            body:JSON.stringify({location, addressId:selectedAddressId, paymentAmount:checkOutData?.total})
         });
         if(res.url){window.location.href=res.url}
+        console.log(checkOutData.total)
     }
 
     const provinceOnChange=(e)=>{
@@ -163,7 +165,7 @@ export default function checkOut() {
 return(
     <>
     {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-    <div className="flex mx-auto overflow-hidden">
+    <div className="lg:flex grid grid-cols-1 mx-auto overflow-hidden">
         <div className=" flex-[70%] justify-center my-[25px]">
             <div className="grid grid-cols-1 justify-items-center">
                  <h1 className="  text-3xl text-gray-400 font-semibold">Order Summary</h1>
@@ -180,7 +182,7 @@ return(
                 <h1 className=" text-center text-xl text-gray-400 font-semibold mb-[15px]">Shipping Address</h1>
                 <p className="font-semibold text-xs text-gray-500 text-center mb-[15px]">Note: Please Make Sure! Your Selected Shipping Area & Your Shipping Address Is Same Area!</p>
                 
-                <div className=" grid grid-cols-3 gap-3 w-full">
+                <div className=" grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3 w-full">
                     {addressData?.map((add)=>(
                         <label key={add?.id} htmlFor={`address-${add.id}`} className={`cursor-pointer block mb-[25px] border-1 rounded-md ${selectedAddressId===add.id?'border-blue-500 bg-blue-50 border-2': 'border-gray-400'}`}>
                              <input type="radio" name="address" value={add?.id} checked={selectedAddressId===add?.id} onChange={()=>{setSelectedAddressId(add?.id)}} id={`address-${add.id}`} className=" h-[20px] w-[20px] hidden"/>

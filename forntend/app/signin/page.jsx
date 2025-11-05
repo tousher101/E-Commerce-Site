@@ -45,17 +45,17 @@ else if(res.status===404 ||res.status===400||res.status===500){setMsg(data.msg);
     return(
         <>
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-        <div    className=" mx-auto overflow-hidden shadow-xl my-[50px]">
-            <div data-aos='zoom-in' className="grid grid-cols-1 justify-items-center my-[30px]">
+        <div    className=" mx-auto overflow-hidden shadow-xl my-[50px] ">
+            <div data-aos='zoom-in' className="grid grid-cols-1 justify-items-center my-[30px]  ">
                 <div className="grid grid-cols-1 justify-items-center">
                     <Image src={logo} height='auto' width='auto' priority className="h-[60px] w-[120px]" alt="logo"/>
-                    <h1 className="text-gray-400 text-sm mb-[10px] mt-[5px] ">Hello! Welcome Back To Our Shop! Please Login Your Account Here!</h1>
+                    <h1 className="text-gray-400 lg:text-sm md:text-sm text-[11px] mb-[10px] mt-[5px] ">Hello! Welcome Back To Our Shop! Please Login Your Account Here!</h1>
                     <p className="text-gray-800 font-bold text-3xl">Login</p>
                 </div>
 
                 <div className="grid grid-cols-1 gap-2 w-[400px] justify-items-center my-[15px]">
-                    <input value={email} onChange={(e)=>{setEmail(e.target.value)}} className="border-1 p-1.5 rounded-xl w-[400px]" type="email" placeholder="@Email"/>
-                    <input value={password} onChange={(e)=>{setPassword(e.target.value)}} className="border-1 p-1.5 rounded-xl w-[400px]" type="password" placeholder="Password"/>
+                    <input value={email} onChange={(e)=>{setEmail(e.target.value)}} className="border-1 p-1.5 rounded-xl lg:w-[400px] md:w-[400px] w-[full]" type="email" placeholder="@Email"/>
+                    <input value={password} onChange={(e)=>{setPassword(e.target.value)}} className="border-1 p-1.5 rounded-xl lg:w-[400px] md:w-[400px] w-[full]" type="password" placeholder="Password"/>
                 </div>
                 <div className="flex justify-evenly w-[400px]">
                     <p>Remember Me <input type="checkbox"/></p>

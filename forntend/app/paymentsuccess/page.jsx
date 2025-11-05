@@ -1,5 +1,8 @@
+import PayemntSuccess from '../../component/PaymentSuucess'
 export default function paymentSuccess(){
     return(
-        <div>Im Payment Success</div>
+        <div className='mx-auto overflow-hidden'>
+            <PayemntSuccess/>
+        </div>
     )
 }

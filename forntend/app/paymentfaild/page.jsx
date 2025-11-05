@@ -1,5 +1,8 @@
+import PaymentFaild from '../../component/PaymentFaild'
 export default function paymentFaild(){
     return(
-        <div>Im payment Faild</div>
+        <div className='mx-auto overflow-x-hidden'>
+            <PaymentFaild/>
+        </div>
     )
 }

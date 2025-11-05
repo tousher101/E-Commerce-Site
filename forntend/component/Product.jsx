@@ -11,7 +11,7 @@ export default function Product({name, description,price,stock,sold,photos,comme
         
         <div className=" mx-[10px] overflow-hidden grid grid-cols-1 mt-[30px] ">
             
-                <div className="h-[380px] w-[302px] border-1 border-gray-400 grid grid-cols-1 rounded-xl mb-[10px] hover:scale-102 duration-1000 ml-[5px] shadow-sm mt-[10px]">
+                <div className="h-[380px] w-[302px] border-1 border-gray-400 grid grid-cols-1 rounded-xl mb-[10px]  ml-[5px] shadow-sm mt-[10px]">
                     <div className='h-[180px] w-[300px]  relative rounded-xl'>
                          <Image src={photos||NoImage} height={180} width={300} priority className='rounded-xl object-cover h-full w-full ' alt='productphoto' />
                     </div>

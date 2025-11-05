@@ -8,14 +8,14 @@ export default function addProduct({name,nameOnCh,description,descriptionOnCh,pr
             <div className="grid grid-cols-1 gap-2 p-4 ">
                 <input value={name} onChange={nameOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Product Name"/>
                 <input value={description} onChange={descriptionOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Description"/>
-                <div className="flex justify-between items-center">
+                <div className="lg:flex  lg:justify-between  grid grid-cols-1 gap-2 items-center">
                 <input value={price} onChange={priceOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="number" placeholder="Price"/>
                 <input value={stock} onChange={stockOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="number" placeholder="Stock"/>
                 <input value={size} onChange={sizeOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Size"/>
                 <input value={weight} onChange={weightOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="number" placeholder="Weight"/>
                 </div> 
 
-                <div className="flex justify-between items-center">
+                <div className="lg:flex   lg:justify-between  grid grid-cols-1 gap-2 items-center">
                 <input value={color} onChange={colorOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Color"/>
                 <input value={variant} onChange={variantOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Veriant"/>
                 <input value={originalPrice} onChange={originlPriceOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="number" placeholder="Original Price"/>

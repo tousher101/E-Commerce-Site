@@ -207,6 +207,7 @@ enum PaymentStatus{
   PAID
   UNPAID
   CANCELLED
+  FAILED
 
 }
 enum Category{

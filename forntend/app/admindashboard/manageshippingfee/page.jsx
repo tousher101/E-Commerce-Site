@@ -109,11 +109,11 @@ export default function manageShippingFee(){
     return(
         <>
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-        <div className=" mx-auto overflow-x-hidden">
-            <h1 className="text-center text-3xl font-semibold text-gray-400 my-[30px]">Manage Shipping Fee Rate</h1>
+        <div className=" mx-auto overflow-hidden">
+            <h1 className="text-center lg:text-3xl text-2xl font-semibold text-gray-400 my-[30px]">Manage Shipping Fee Rate</h1>
             <div data-aos='fade-up' className="grid grid-cols-1 gap-2 ">
                 <input value={location} onChange={(e)=>{setLocation(e.target.value)}} className="border-1 border-gray-300 p-2 rounded-xl" type="text" placeholder="Zone Name"/>
-                <div className=" flex w-full gap-5 justify-center">
+                <div className=" lg:flex md:flex grid grid-cols-1 w-full gap-5 justify-center">
                     <input value={baseFee} onChange={(e)=>{setBaseFee(e.target.value)}} className="border-1 border-gray-300 p-2 rounded-xl"  type="text" placeholder="Base Fee"/>
                     <input value={perKgFee} onChange={(e)=>{setPerKgFee(e.target.value)}} className="border-1 border-gray-300 p-2 rounded-xl"  type="text" placeholder="Per Kg Fee"/>
                 </div>
@@ -123,8 +123,8 @@ export default function manageShippingFee(){
             <h1 className="text-center text-2xl text-gray-400 mt-[20px]">Current Shipping Fee Rate</h1>
                 <div data-aos='fade-up' className='grid grid-cols-1 gap-1'>
                 {shippingData.map((rate)=>(
-                        <div  key={rate.id} onClick={()=>{setShippingRateId(rate.id), setSelectedShippingFee(rate)}}  className="grid grid-cols-4 items-center border-1 border-gray-400 rounded-xl p-2 my-[5px]">
-                            <div className='flex justify-items-center items-center'>
+                        <div  key={rate.id} onClick={()=>{setShippingRateId(rate.id), setSelectedShippingFee(rate)}}  className="grid lg:grid-cols-4 md:grid-cols-4 grid-cols-1 justify-items-center items-center border-1 border-gray-400 rounded-xl p-2 my-[5px]">
+                            <div className=' flex justify-items-center items-center'>
                                 <h1>{rate.location}</h1>
                             </div>
                             <div className='flex items-center justify-items-center'>

@@ -13,13 +13,13 @@ export default function productDetails({name, des, price, originalPrice, weight,
             <div className=' text-gray-500 text-center'>
                 <h1 className='font-semibold text-2xl'>{name}</h1>
                 <h1 >{des}</h1>
-                <div className='flex justify-around mt-[20px]'>
+                <div className='lg:flex md:flex  lg:justify-around md:justify-around grid grid-cols-2 justify-items-center gap-2 mt-[20px]'>
                     <h1 className='font-semibold'>Price :  ₱{price}</h1>
                     <h1 className='text-black font-semibold line-through'>Original Price :  ₱{originalPrice}</h1>
                     <h1>Stock : {stock} pcs</h1>
                     <h1>Weight: {weight} kg</h1>
                 </div>
-                <div className='flex justify-around my-[30px]'>
+                <div className='lg:flex md:flex  lg:justify-around md:justify-around grid grid-cols-2 justify-items-center gap-2 my-[30px]'>
                    
                         <select value={selectedSizeValue} onChange={selectedSizeOnCh} className='border-1 border-gray-400 p-2 rounded-xl'>
                         <option value={''}>Select Size</option>

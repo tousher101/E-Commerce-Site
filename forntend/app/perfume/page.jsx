@@ -33,7 +33,7 @@ const [currentpage, setCurrentPage]=useState(1);
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
         <div className=' mx-[10px] overflow-hidden'>
             <h1 className="text-center font-semibold text-3xl mt-[50px]">Prefume Product ({allproduct})</h1>
-            <div className="grid grid-cols-4 gap-1">
+            <div className="lg:grid-cols-4 md:grid-cols-2 grid-cols-1 justify-items-center gap-1">
             {productData?.map((pro)=>(
             <div key={pro.id}>
             <Product name={pro.name} description={pro.description} price={pro.price} stock={pro.stock} photos={pro.photos[0]?.url}

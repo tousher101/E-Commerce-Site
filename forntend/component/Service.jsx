@@ -4,7 +4,7 @@ export default function service(){
     return(
         <div data-aos='zoom-in' className=" mx-[10px] overflow-hidden mt-[60px] ">
             <h1 className="text-center text-gray-500 text-3xl font-semibold">Our Services</h1>
-            <div  className="grid lg:grid-cols-5 sm:grid-cols-2 grid-cols-1 gap-4 my-[30px] mx-[10px] ">
+            <div  className="grid lg:grid-cols-5 md:grid-cols-2 grid-cols-1 gap-4 my-[30px] mx-[10px] ">
                  <div  className="h-[200px]  rounded-2xl  grid grid-cols-1 border border-gray-400 justify-items-center hover:scale-105 duration-1000 cursor-pointer">
                     <img className='h-[80px] w-[80px] mt-[20px] ' src='/shipping.gif' alt='shipping-logo'/>
                     <h1 className="text-xl font-semibold">Free Shipping</h1>
