@@ -9,7 +9,6 @@ const globalLimiter=require('./middle-wear/globalLimiter');
 const hpp=require('hpp')
 
 
-app.use(cookieParser());
 const allowdOrigin='https://e-comarce-five.vercel.app'
 app.use(cors({
   origin:allowdOrigin,
@@ -22,6 +21,9 @@ app.options('*',cors())
 BigInt.prototype.toJSON = function() {
   return Number(this);
 };
+
+app.use(cookieParser());
+
 app.use(hpp());
 app.use(globalLimiter);
 app.use(helmet());
