@@ -8,10 +8,34 @@ const helmet = require('helmet');
 const globalLimiter=require('./middle-wear/globalLimiter');
 const hpp=require('hpp')
 
-app.use(cors({
-  origin:'https://touchandtake.onrender.com/',
-  credentials: true
-}))
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://e-commerce-frontend.onrender.com"
+];
+
+// ✅ Safe middleware — crash free
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET,POST,PUT,DELETE,PATCH,OPTIONS"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
+
+  // ✅ Instantly reply to preflight requests
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+
+  next();
+});
 
 app.use(cookieParser());
 
