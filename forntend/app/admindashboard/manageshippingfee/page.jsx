@@ -1,5 +1,5 @@
-"use client"
-import { useState } from 'react'
+"use client";
+import { useEffect, useState } from 'react'
 import DeleteModal from '../../../component/DeleteModal'
 import EditModal from '../../../component/EditModal'
 import {fetchWithAuth} from '../../../Utils/fetchWithAuth'
@@ -50,7 +50,7 @@ export default function manageShippingFee(){
     };
 
     const addShippingFee=async()=>{
-      console.log(BaseURI)
+
         const res= await fetchWithAuth(`${BaseURI}/api/admin/addshippingrate`,{
             method:"POST",
             body: JSON.stringify({location,
@@ -69,7 +69,7 @@ export default function manageShippingFee(){
             const res= await fetchWithAuth(`${BaseURI}/api/admin/getshippingfee`)
             setShippingData(res.rate)
         };
-    useState(()=>{
+    useEffect(()=>{
         getAllShippingFee()
          AOS.init({
             duration:1000,once:false,mirror:false
