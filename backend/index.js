@@ -9,7 +9,7 @@ const globalLimiter=require('./middle-wear/globalLimiter');
 const hpp=require('hpp')
 
 app.use(cors({
-  origin:'https://e-comarce-five.vercel.app',
+  origin:'https://touchandtake.onrender.com/',
   credentials: true
 }))
 
