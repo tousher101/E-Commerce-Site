@@ -9,6 +9,11 @@ const globalLimiter=require('./middle-wear/globalLimiter');
 const hpp=require('hpp')
 
 
+
+
+
+app.use('/webhook',require('./route/webhook'))
+
 app.set('trust proxy', 1)
 const allowedOrigins = [
   "http://localhost:3000",
@@ -40,7 +45,7 @@ BigInt.prototype.toJSON = function() {
 app.use(hpp());
 app.use(globalLimiter);
 app.use(helmet());
-app.use('/webhook',require('./route/webhook'))
+
 app.use(express.json({limit:'50mb'}));
 app.use(express.urlencoded({extended:true, limit: '50mb'}));
 app.use(compression());
