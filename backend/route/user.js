@@ -6,6 +6,7 @@ const prisma=require('../utils/prisma');
 const cloudinary=require('../utils/cloudinary');
 const upload =require('../middle-wear/multar');
 const genTrxCode=require('../utils/genTrxCode');
+const Prisma=require('@prisma/client')
 
 
 
@@ -1511,7 +1512,7 @@ const whereClause = conditions.join(" AND ");
     
 
 const rawIds = await prisma.$queryRaw(
- prisma.raw( `
+ Prisma.raw( `
   SELECT id FROM Product
   WHERE ${whereClause}
   ORDER BY createdAt DESC
@@ -1553,7 +1554,7 @@ const rawIds = await prisma.$queryRaw(
         };
 
     const [{ total }] = await prisma.$queryRaw(
-        prisma.raw(`
+        Prisma.raw(`
       SELECT COUNT(*) as total FROM Product WHERE ${whereClause};
     `),...params);
     const totalCount = Number(total);
