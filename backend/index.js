@@ -9,6 +9,7 @@ const globalLimiter=require('./middle-wear/globalLimiter');
 const hpp=require('hpp')
 
 
+app.set('trust proxy', 1)
 const allowedOrigins = [
   "http://localhost:3000",
   "https://touchandtake.onrender.com/"
