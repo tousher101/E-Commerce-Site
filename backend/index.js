@@ -9,20 +9,26 @@ const globalLimiter=require('./middle-wear/globalLimiter');
 const hpp=require('hpp')
 
 
-const allowdOrigin='https://e-comarce-five.vercel.app'
+const allowdOrigin=['https://e-comarce-five.vercel.app','http://localhost:3000'];
 app.use(cors({
-  origin:allowdOrigin,
-  
+  origin:function (origin, callback) {
+      if (!origin || allowdOrigin.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
   credentials: true,
   methods:['GET','POST','PUT','DELETE','OPTIONS'],
   allowedHeaders:['Content-Type','Authorization']
 }));
-app.options('*',cors())
+app.options('*',cors());
+app.use(cookieParser());
+
 BigInt.prototype.toJSON = function() {
   return Number(this);
 };
 
-app.use(cookieParser());
 
 app.use(hpp());
 app.use(globalLimiter);
