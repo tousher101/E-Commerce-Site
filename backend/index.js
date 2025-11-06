@@ -8,36 +8,10 @@ const helmet = require('helmet');
 const globalLimiter=require('./middle-wear/globalLimiter');
 const hpp=require('hpp')
 
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://e-comarce-five.vercel.app",
-];
-
-// ✅ CORS middleware (Crash free + Cookie safe)
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-
-  if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
-
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, PATCH, DELETE, OPTIONS"
-  );
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization"
-  );
-
-  // ✅ Handle preflight request instantly
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-
-  next();
-});
+app.use(cors({
+  origin:'https://e-comarce-five.vercel.app',
+  credentials: true
+}))
 
 app.use(cookieParser());
 
