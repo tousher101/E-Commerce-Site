@@ -12,8 +12,7 @@ const hpp=require('hpp')
 app.use(cookieParser());
 const allowdOrigin=['https://e-comarce-five.vercel.app', 'http://localhost:3000']
 app.use(cors({
-  origin: function (origin,callbcak){
-    if(!origin||allowdOrigin.includes(origin)){callbcak(null,true)}else{callbcak(new Error("CORS not allowed for this origin") )}},
+  origin:allowdOrigin,
   
   credentials: true,
   methods:['GET','POST','PUT','DELETE','OPTIONS'],
