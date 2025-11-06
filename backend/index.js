@@ -4,15 +4,24 @@ const app = express();
 const cors = require('cors');
 const compression = require('compression');
 const cookieParser=require('cookie-parser');
-
+const helmet = require('helmet');
+const globalLimiter=require('./middle-wear/globalLimiter');
+const hpp=require('hpp')
+const allowdOrigin=['https://e-comarce-five.vercel.app', 'http://localhost:3000']
 app.use(cookieParser());
+
 app.use(cors({
-  origin: 'https://e-comarce-five.vercel.app',
+  origin: function (origin,callbcak){
+    if(!origin||allowdOrigin.includes(origin)){callbcak(null,true)}else{callbcak(new Error("CORS not allowed for this origin") )}},
+  
   credentials: true
 }));
 BigInt.prototype.toJSON = function() {
   return Number(this);
 };
+app.use(hpp());
+app.use(globalLimiter);
+app.use(helmet());
 app.use('/api/webhook',require('./route/webhook'))
 app.use(express.json({limit:'50mb'}));
 app.use(express.urlencoded({extended:true, limit: '50mb'}));
