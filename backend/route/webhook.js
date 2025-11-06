@@ -6,7 +6,7 @@ const prisma=require('../utils/prisma');
 const genTrxCode=require('../utils/genTrxCode')
 
 //WEBHOOK STRIP
-route.post('/webhook' ,express.raw({ type: 'application/json' }), async (req, res) => {
+route.post('/' ,express.raw({ type: 'application/json' }), async (req, res) => {
 
   const sig = req.headers['stripe-signature'];
   let event;
