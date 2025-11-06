@@ -37,7 +37,7 @@ if(res.ok){ sessionStorage.setItem('token', data.accessToken);
     setTimeout(()=>{
         if(data.role==='ADMIN'){window.location.href=('/admindashboard'); getAllUser()}
     if(data.role==='USER'){window.location.href=('/');getAllUser();getTotalCartItems(); getCartItems();getShippingArea();}
-    },200)
+    },500)
    
 } 
 else if(res.status===404 ||res.status===400||res.status===500){setMsg(data.msg); setType('Error')}
