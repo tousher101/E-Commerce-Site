@@ -80,7 +80,7 @@ export default function productDetailsPage(){
                 {relatedData?.map((rel)=>(
                         <div key={rel.id}>
                     <Product name={rel?.name} description={rel?.description} price={rel?.price} originalPrice={rel?.originalPrice}
-                    stock={rel?.stock} photos={rel?.photos[0]?.url} comment={rel?._count?.comment} sold={rel?.order?.quantity} />
+                    stock={rel?.stock} photos={rel?.photos[0]?.url} comment={rel?._count?.comment} sold={rel?.order?.quantity} productId={rel.id} />
                         </div>
                 ))}
                 
