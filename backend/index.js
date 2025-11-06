@@ -10,7 +10,7 @@ const hpp=require('hpp')
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://e-commerce-frontend.onrender.com"
+  "https://touchandtake.onrender.com"
 ];
 
 // ✅ Safe middleware — crash free
