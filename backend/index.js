@@ -15,8 +15,11 @@ app.use(cors({
   origin: function (origin,callbcak){
     if(!origin||allowdOrigin.includes(origin)){callbcak(null,true)}else{callbcak(new Error("CORS not allowed for this origin") )}},
   
-  credentials: true
+  credentials: true,
+  methods:['GET','POST','PUT','DELETE','OPTIONS'],
+  allowedHeaders:['Content-Type','Authorization']
 }));
+app.options('*',cors())
 BigInt.prototype.toJSON = function() {
   return Number(this);
 };
