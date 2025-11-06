@@ -31,13 +31,14 @@ const res=await fetch(`${BaseURI}/api/auth/signin`,{
     body: JSON.stringify({email,password})
 });
 const data= await res.json();
+
 if(res.ok){ sessionStorage.setItem('token', data.accessToken);
     sessionStorage.setItem('role',data.role)
     setTimeout(()=>{
         if(data.role==='ADMIN'){window.location.href=('/admindashboard'); getAllUser()}
     if(data.role==='USER'){window.location.href=('/');getAllUser();getTotalCartItems(); getCartItems();getShippingArea();}
     },1000)
-    console.log(BaseURI)
+   
 } 
 else if(res.status===404 ||res.status===400||res.status===500){setMsg(data.msg); setType('Error')}
 }
