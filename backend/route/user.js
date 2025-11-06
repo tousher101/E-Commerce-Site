@@ -1510,13 +1510,13 @@ const whereClause = conditions.join(" AND ");
   
     
 
-const rawIds = await prisma.$queryRawUnsafe(
-  `
+const rawIds = await prisma.$queryRaw(
+ prisma.raw( `
   SELECT id FROM Product
   WHERE ${whereClause}
   ORDER BY createdAt DESC
   LIMIT ? OFFSET ?;
-  `,
+  `),
   ...params,
   take,
   skip
@@ -1552,9 +1552,10 @@ const rawIds = await prisma.$queryRawUnsafe(
             product.soldCount=soldCount
         };
 
-    const [{ total }] = await prisma.$queryRawUnsafe(`
+    const [{ total }] = await prisma.$queryRaw(
+        prisma.raw(`
       SELECT COUNT(*) as total FROM Product WHERE ${whereClause};
-    `,...params);
+    `),...params);
     const totalCount = Number(total);
   return  res.status(200).json({products, totalProduct:total, totalPage:Math.ceil(totalCount/take)});
   } catch (err) {
