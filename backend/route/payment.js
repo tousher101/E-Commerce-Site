@@ -33,8 +33,8 @@ route.post('/create-checkout-session',verification,roleAuthorize('USER'), async(
         userId:String(userId)
       },
     
-      success_url: 'http://localhost:3000/paymentsuccess',
-      cancel_url: 'http://localhost:3000/paymentfaild',
+      success_url: 'https://touchandtake.onrender.com/paymentsuccess',
+      cancel_url: 'https://touchandtake.onrender.com/paymentfaild',
         });
          res.json({ url: session.url });
     }catch(err){console.error(err); res.status(500).json({msg: 'Stripe session creation failed'})}
