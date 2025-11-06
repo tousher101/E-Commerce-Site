@@ -58,6 +58,7 @@ export default function checkOut() {
     };
 
     const submitCODOrder=async()=>{
+        if(!selectedAddressId){ setMsg('Please Select Address'); setType('Error'); return}
         const res= await fetchWithAuth(`${BaseURI}/api/user/checkout`,{
             method:'POST',
             body:JSON.stringify({location,addressId:selectedAddressId})
@@ -73,12 +74,13 @@ export default function checkOut() {
     };
 
     const submitPaidOrder=async()=>{
+        if(!selectedAddressId){ setMsg('Please Select Address'); setType('Error'); return}
         const res=await fetchWithAuth(`${BaseURI}/api/payment/create-checkout-session`,{
             method:'POST',
             body:JSON.stringify({location, addressId:selectedAddressId, paymentAmount:checkOutData?.total})
         });
         if(res.url){window.location.href=res.url}
-        console.log(checkOutData.total)
+       
     }
 
     const provinceOnChange=(e)=>{

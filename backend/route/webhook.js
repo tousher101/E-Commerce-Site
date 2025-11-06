@@ -92,6 +92,16 @@ route.post('/webhook' ,express.raw({ type: 'application/json' }), async (req, re
                 include:{items:true}
             });
 
+              const existingWallet= await prisma.refWallet.findFirst({
+                where:{userId}
+            });
+            if(existingWallet){
+                 await prisma.refWallet.update({
+                    where:{userId},
+                    data:{amount:0}
+                });
+            }
+
              const existingOrder= await prisma.order.findMany({
                     where:{userId}
                 });
@@ -117,117 +127,31 @@ route.post('/webhook' ,express.raw({ type: 'application/json' }), async (req, re
                     await prisma.refWallet.update({
                     where:{id:wallet.id},
                     data:{amount:parseFloat(wallet.amount+50)}
+                });
+                let ownWallet= await prisma.refWallet.findFirst({
+                  where:{userId}
+                });
+                if(!ownWallet){ownWallet=await prisma.refWallet.create({
+                  data:{userId,amount:0}
+                })}
+                await prisma.refWallet.update({
+                  where:{id:ownWallet.id},
+                  data:{amount:parseFloat(ownWallet.amount+50)}
                 })
               };
-                }
+
+                };
+                
                
 
                 await prisma.cart.update({
                     where:{id:cart.id},
                     data:{status:'COMPLETED'}
                 });
-                   const existingWallet= await prisma.refWallet.findFirst({
-                where:{userId}
-            });
-            if(existingWallet){
-                 await prisma.refWallet.update({
-                    where:{userId},
-                    data:{amount:0}
-                });
-            }
+      
 
       }
-    //     const session= event.data.object;
-    //     const paymentId=Number(session.metadata.paymentId);
-    //     const userId=Number(session.metadata.userId);
-    //     const orderId=Number(session.metadata.orderId);
-
-    //         if (!userId) {
-    //   return res.status(400).send("Invalid user ID in metadata.");
-    //     }
-    //         if (!paymentId) {
-    //   return res.status(400).send("Invalid Payment ID in metadata.");
-    //   }
-    //       if (!orderId) {
-    //   return res.status(400).send("Invalid order ID in metadata.");
-    // }
-    //   const user= await prisma.user.findUnique({
-    //                 where:{id:userId},
-    //                 select:{referredBy:true}
-    //             });
-           
-    //             const payment= await prisma.payment.findFirst({
-    //                 where:{id:paymentId}
-    //             });
-
-    //           const updatePaymentStatus=  await prisma.payment.update({
-    //                 where:{id:payment.id},
-    //                 data:{status:'PAID'}
-    //             });
-
-    //             await prisma.order.update({
-    //                 where:{id:orderId},
-    //                 data:{status:'CONFIRMED'}
-    //             });
-
-    //          
-    //   }
-    //    else if(event.type==='checkout.session.async_payment_failed'){
-    //     const session= event.data.object;
-    //     const paymentId=Number(session.metadata.paymentId);
-    //     const userId=Number(session.metadata.userId);
-    //     const orderId=Number(session.metadata.orderId);
-
-    //         if (!userId) {
-    //   return res.status(400).send("Invalid user ID in metadata.");
-    //     }
-    //         if (!paymentId) {
-    //   return res.status(400).send("Invalid Payment ID in metadata.");
-    //   }
-    //       if (!orderId) {
-    //   return res.status(400).send("Invalid order ID in metadata.");
-    // };
-    //  const payment= await prisma.payment.findFirst({
-    //                 where:{id:paymentId}
-    //             });
-    //           const updatePaymentStatus=  await prisma.payment.update({
-    //                 where:{id:payment.id},
-    //                 data:{status:'FAILED'}
-    //             });
-    //                 await prisma.order.update({
-    //                 where:{id:orderId},
-    //                 data:{status:'CANCELLED'}
-    //             })
-
-
-    //    }
-    //    if(event.type==='checkout.session.expired'){
-    //      const session= event.data.object;
-    //     const paymentId=Number(session.metadata.paymentId);
-    //     const userId=Number(session.metadata.userId);
-    //     const orderId=Number(session.metadata.orderId);
-
-    //         if (!userId) {
-    //   return res.status(400).send("Invalid user ID in metadata.");
-    //     }
-    //         if (!paymentId) {
-    //   return res.status(400).send("Invalid Payment ID in metadata.");
-    //   }
-    //       if (!orderId) {
-    //   return res.status(400).send("Invalid order ID in metadata.");
-    // };
-    //        const payment= await prisma.payment.findFirst({
-    //                 where:{id:paymentId}
-    //             });
-    //           const updatePaymentStatus=  await prisma.payment.update({
-    //                 where:{id:payment.id},
-    //                 data:{status:'CANCELLED'}
-    //             });
-    //                 await prisma.order.update({
-    //                 where:{id:orderId},
-    //                 data:{status:'CANCELLED'}
-    //             });
-    //    }
+   
             
     } catch (err) {
       console.error('❌ Failed to update user:', err.message);

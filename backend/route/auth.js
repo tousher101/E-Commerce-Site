@@ -12,7 +12,7 @@ const refCodeGen = require('../utils/refCodeGen');
 
 //Create User/SignUp
 route.post('/createuser',[body('email','Enter Valid Email').isEmail(), body('name','Enter Valid Name').isLength({min:3}),
-body('password', 'Enter Valid Password').isLength({min:5}), body('phone').isLength({min:10})],async(req,res)=>{
+body('password', 'Enter Valid Password').isLength({min:5}), body('phone').isLength({max:10,min:10})],async(req,res)=>{
     const errors = validationResult(req); 
         if (!errors.isEmpty()) {
          return res.status(400).json({ msg: 'Something Went Wrong. Check Your Information', errors: errors.array() });}

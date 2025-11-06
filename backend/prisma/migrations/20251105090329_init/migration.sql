@@ -132,7 +132,7 @@ CREATE TABLE `CartItem` (
 -- CreateTable
 CREATE TABLE `Payment` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `status` ENUM('PAID', 'UNPAID', 'CANCELLED') NOT NULL,
+    `status` ENUM('PAID', 'UNPAID', 'CANCELLED', 'FAILED') NOT NULL,
     `amount` DECIMAL(10, 2) NOT NULL,
     `currency` VARCHAR(191) NOT NULL DEFAULT 'BDT',
     `transactionId` VARCHAR(191) NULL,
