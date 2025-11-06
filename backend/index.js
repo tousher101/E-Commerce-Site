@@ -7,9 +7,10 @@ const cookieParser=require('cookie-parser');
 const helmet = require('helmet');
 const globalLimiter=require('./middle-wear/globalLimiter');
 const hpp=require('hpp')
-const allowdOrigin=['https://e-comarce-five.vercel.app', 'http://localhost:3000']
-app.use(cookieParser());
 
+
+app.use(cookieParser());
+const allowdOrigin=['https://e-comarce-five.vercel.app', 'http://localhost:3000']
 app.use(cors({
   origin: function (origin,callbcak){
     if(!origin||allowdOrigin.includes(origin)){callbcak(null,true)}else{callbcak(new Error("CORS not allowed for this origin") )}},
