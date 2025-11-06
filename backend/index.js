@@ -10,7 +10,7 @@ const hpp=require('hpp')
 
 
 app.use(cookieParser());
-const allowdOrigin=['https://e-comarce-five.vercel.app', 'http://localhost:3000']
+const allowdOrigin='https://e-comarce-five.vercel.app'
 app.use(cors({
   origin:allowdOrigin,
   
