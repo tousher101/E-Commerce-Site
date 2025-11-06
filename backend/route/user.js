@@ -5,8 +5,7 @@ const roleAuthorize=require('../middle-wear/roleAuthorize');;
 const prisma=require('../utils/prisma');
 const cloudinary=require('../utils/cloudinary');
 const upload =require('../middle-wear/multar');
-const genTrxCode=require('../utils/genTrxCode');
-const Prisma=require('@prisma/client')
+
 
 
 
@@ -1511,13 +1510,13 @@ const whereClause = conditions.join(" AND ");
   
     
 
-const rawIds = await prisma.$queryRaw(
- Prisma.raw( `
+const rawIds = await prisma.$queryRawUnsafe(
+ `
   SELECT id FROM Product
   WHERE ${whereClause}
   ORDER BY createdAt DESC
   LIMIT ? OFFSET ?;
-  `),
+  `,
   ...params,
   take,
   skip
@@ -1553,10 +1552,10 @@ const rawIds = await prisma.$queryRaw(
             product.soldCount=soldCount
         };
 
-    const [{ total }] = await prisma.$queryRaw(
-        Prisma.raw(`
+    const [{ total }] = await prisma.$queryRawUnsafe(
+        `
       SELECT COUNT(*) as total FROM Product WHERE ${whereClause};
-    `),...params);
+    `,...params);
     const totalCount = Number(total);
   return  res.status(200).json({products, totalProduct:total, totalPage:Math.ceil(totalCount/take)});
   } catch (err) {
