@@ -1498,9 +1498,9 @@ route.get("/search", async (req, res) => {
     for (const kw of keyword) {
   const p = `%${kw}%`;
   conditions.push(`
-    (REPLACE(LOWER(name), "'", '') LIKE ? 
-     OR REPLACE(LOWER(description), "'", '') LIKE ? 
-     OR REPLACE(LOWER(category), "'", '') LIKE ?)
+    (REPLACE(LOWER(name), '''', '') LIKE ? 
+     OR REPLACE(LOWER(description), '''', '') LIKE ? 
+     OR REPLACE(LOWER(category), '''', '') LIKE ?)
   `);
   params.push(p, p, p);
 }
