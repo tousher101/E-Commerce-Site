@@ -61,7 +61,7 @@ async(req,res)=>{
         const accessToken=jwt.sign(payload,ACCESS_TOKEN_SECRATE,{expiresIn:'15m'});
         const refreshToken= jwt.sign(payload, REFRESH_TOKEN_SECRATE,{expiresIn:'7d'})
         res.cookie('refreshToken',refreshToken,{httpOnly:true, secure: true //true in Production
-            ,sameSite: 'none', //'none' in production
+            ,sameSite: 'none', //'None' in production
         path:'/', maxAge: 7 * 24 * 60 * 60 * 1000})
        return res.status(200).json({accessToken, role:user.role})
 
@@ -89,7 +89,7 @@ route.post('/logout', async(req,res)=>{
         res.clearCookie("refreshToken",{
             httpOnly:true,
              secure: true, //true in Production
-            sameSite: 'none', //'none' in production
+            sameSite: 'None', //'none' in production
             path:'/'
         });
       return  res.status(200).json({msg:'Logout Successfully'})
