@@ -32,7 +32,7 @@ export default function mensFashion(){
     return(
         <>
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-        <div className=' mx-[10px] overflow-hidden'>
+        <div className=' mx-auto overflow-hidden'>
             <h1 className="text-center font-semibold text-3xl mt-[50px]">Men's Product ({allproduct})</h1>
             <div className='grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 justify-items-center  gap-1'>
             {productData?.map((pro)=>(

@@ -63,7 +63,7 @@ export default function productDetailsPage(){
     return(
         <>
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-        <div className="mx-[10px] overflow-hidden">
+        <div className="mx-auto overflow-hidden">
             <div>
             <ProductDetails name={productData?.name} des={productData?.description} price={productData?.price} originalPrice={productData?.originalPrice}
             weight={productData?.weight} color={productData?.color} size={productData?.size} variant={productData?.variant} stock={productData?.stock} photos={productData?.photos}

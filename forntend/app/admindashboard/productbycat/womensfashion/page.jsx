@@ -122,7 +122,8 @@ const variantArray = Array.isArray(selectProduct?.variant)
         <>
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
         <div className=" mx-auto overflow-hidden">
-            <h1 className='text-center text-3xl text-gray-400 font-semibold my-[30px]'>Women's Product ({totalProduct})</h1>
+            <h1 className='text-center text-3xl text-gray-400 font-semibold my-[30px]'>Women's ({totalProduct})</h1>
+            <div className='grid lg:grid-cols-1 md:grid-cols-2 grid-cols-1 gap-1 justify-items-center'></div>
            {productData?.map((pro)=>(
                  <div key={pro.id} onClick={()=>{setSelectProduct(pro);setProductId(pro.id)}} data-aos='slide-up'>
                 <AdminProduct productName={pro.name} productDescription={pro.description} productPhotos={pro?.photos[0]?.url} productPrice={pro.price} productStock={pro.stock}  
@@ -130,6 +131,7 @@ const variantArray = Array.isArray(selectProduct?.variant)
                 productOriginalPrice={pro.originalPrice} openDeleteModal={openDeleteModal} openEditModal={openEditModal}/>
             </div>
            ))}
+           </div>
             
               {totalPage>1&&<div className="flex justify-between mx-[10px]">
                 <button onClick={()=>{setPage((p)=>p-1)}} disabled={page<=1} className="bg-black rounded-xl h-[40px] text-white cursor-pointer w-[100px]">Previous</button>
