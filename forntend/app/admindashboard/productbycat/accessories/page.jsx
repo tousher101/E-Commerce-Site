@@ -66,7 +66,7 @@ export default function accessories(){
       setType('Success')
       getAccessoriesProduct();
 
-
+    }
 const colorArray = Array.isArray(selectProduct.color)
   ? selectProduct.color
   : selectProduct.color?.split(/[\s,]+/).filter(Boolean) || [];
