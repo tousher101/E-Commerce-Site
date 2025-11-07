@@ -49,7 +49,7 @@ export default function navBar() {
 
     }
         const goCheckOut=()=>{
-         if (!Array.isArray(cartData) || cartData.length === 0) {
+         if (!cartData?.items || cartData?.items?.length === 0) {
         setMsg('Cart Is Empty'); 
         setType('Error'); 
         return;
