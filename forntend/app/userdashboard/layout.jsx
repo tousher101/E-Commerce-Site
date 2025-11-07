@@ -4,6 +4,9 @@ import { fetchWithAuth } from "../../Utils/fetchWithAuth"
 import { useState } from "react"
 import ChangePasswordModal from '../../component/ChangePasswordModal'
 import Alert from "../../Utils/Alert"
+import openSlide from '../../public/bx-menu.svg'
+import closedSlide from '../../public/bx-x.svg'
+
 export default function layout({children}){
     const [changePassModal,setChangePassModal]=useState(false);
     const [msg, setMsg]=useState(null);
@@ -85,11 +88,11 @@ export default function layout({children}){
             <div>
                 <input type="checkbox" className=" peer/sidebar hidden" id='sidebar-toggle'/>
                 <label htmlFor="sidebar-toggle" className="lg:hidden md:block block cursor-pointer md:top-30 top-35 left-5 absolute z-50   ">
-                    <img src="./bx-menu.svg" className="w-8"/>
+                    <img src={openSlide} className="w-8"/>
                 </label>
                 <aside className="bg-white absolute top-35 left-0 h-[940px]  w-[220px] text-black transition-transform duration-1000 -translate-x-full peer-checked/sidebar:translate-x-0 z-50 rounded-r-xl"> 
                     <div>
-                        <label htmlFor="sidebar-toggle" className="cursor-pointer"><img className="w-8 ml-[10px]" src="./bx-x.svg"/></label>
+                        <label htmlFor="sidebar-toggle" className="cursor-pointer"><img className="w-8 ml-[10px]" src={closedSlide}/></label>
                     </div>
                       <div data-aos='slide-up' className="flex-[20%] shadow-xl h-[900px] rounded-xl lg:hidden md:flex flex ">
                 <div className="grid grid-cols-1 gap-2 p-3">

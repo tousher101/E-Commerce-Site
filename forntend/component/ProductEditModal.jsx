@@ -4,11 +4,11 @@ function productEditModal({design, closeModal, submitEdit, nameValue, nameOnCh,d
 sizeValue, sizeOnCh, variantValue, variantOnCh, colorValue, colorOnCh, weightValue, weightOnCh, originalPriceValue, originalPriceOnCh
 }) {
   return (
-    <div className={`fixed top-0 left-0 h-full w-full bg-[rgba(0,0,0,0.5)] flex justify-center items-center z-999 transition-opacity duration-500 ${design?"opacity-100":'opacity-0'}`} >
-        <div className= {`grid justify-center content-center items-center bg-white lg:w-[500px] w-[400px] p-2 rounded-2xl text-center text-black duration-1000 ${design?'scale-100':'scale-0'}`}>
+    <div className={`fixed top-0 left-0 h-full w-full bg-[rgba(0,0,0,0.5)] flex justify-center items-center z-50 transition-opacity duration-500 ${design?"opacity-100":'opacity-0'}`} >
+        <div className= {`grid justify-center content-center items-center bg-white lg:w-[500px] md:w-[400px] w-[350px] p-2 rounded-2xl text-center text-black duration-1000  ${design?'scale-100':'scale-0'}`}>
             <p className='text-3xl mb-[30px] text-gray-400'> Edit Product Details</p>
           
-                  <div className="grid grid-cols-1 gap-2 lg:w-[400px] w-[300px]">
+                  <div className="grid grid-cols-1 gap-1">
                 <input value={nameValue} onChange={nameOnCh} className="border-1 border-gray-300 p-2 rounded-xl" type="text" placeholder="Name"/>
                 <input value={descriptionValue} onChange={descriptionOnCh} className="border-1 border-gray-300 p-2 rounded-xl" type="text" placeholder="Description"/>
                 <div className='lg:flex lg:justify-between grid grid-cols-1'>
