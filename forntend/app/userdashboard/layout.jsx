@@ -82,7 +82,7 @@ export default function layout({children}){
 
                 </div>
             </div>
-            <div className="flex-[80%]  justify-center shadow-xl">
+            <div className="flex-[80%] mx-auto overflow-hidden  justify-center">
                 {children}
                     </div>
 

@@ -203,7 +203,7 @@ const changePassword=async()=>{
 
 
 
-            <div className="flex-[80%]  justify-center shadow-xl">
+            <div className="flex-[80%]  justify-center mx-auto overflow-x-hidden">
                 {children}
                     </div>
                
