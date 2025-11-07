@@ -145,6 +145,7 @@ route.get('/mensfashion',async(req,res)=>{
                 stock:true,
                 photos:true,
                 category:true,
+                originalPrice:true,
                 _count:{
                     select:{comment:true}
                 }   
@@ -186,6 +187,7 @@ route.get('/womenfashion',async(req,res)=>{
                 stock:true,
                 photos:true,
                 category:true,
+                originalPrice:true,
                 _count:{
                     select:{comment:true}
                 }
@@ -227,6 +229,7 @@ route.get('/kidsfashion',async(req,res)=>{
                 stock:true,
                 photos:true,
                 category:true,
+                originalPrice:true,
                 _count:{
                     select:{comment:true}
                 }
@@ -268,6 +271,7 @@ route.get('/accessories',async(req,res)=>{
                 stock:true,
                 photos:true,
                 category:true,
+                originalPrice:true,
                 _count:{
                     select:{comment:true}
                 }, 
@@ -309,6 +313,7 @@ route.get('/perfume',async(req,res)=>{
                 stock:true,
                 photos:true,
                 category:true,
+                originalPrice:true,
                 _count:{
                     select:{comment:true}
                 },  
@@ -967,7 +972,7 @@ route.get('/perfume',async(req,res)=>{
                     },
                     payment:{
                         select:{
-                             transactionId :true,
+                             status:true,
                              paymentmethod:true,
                              createdAt:true
                         }

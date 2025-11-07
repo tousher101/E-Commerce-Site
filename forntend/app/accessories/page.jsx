@@ -38,7 +38,7 @@ export default function accessories() {
             {productData?.map((pro)=>(
             <div key={pro.id}>
             <Product name={pro.name} description={pro.description} price={pro.price} stock={pro.stock} photos={pro?.photos[0]?.url}
-            sold={pro.soldeCount} comment={pro._count.comment} productId={pro.id} />
+            sold={pro.soldeCount} comment={pro._count.comment} productId={pro.id} originalPrice={pro?.originalPrice} />
             </div>
             ))}
             </div>
