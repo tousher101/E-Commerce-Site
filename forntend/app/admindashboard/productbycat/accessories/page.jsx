@@ -67,17 +67,17 @@ export default function accessories(){
       getAccessoriesProduct();
 
     }
-const colorArray = Array.isArray(selectProduct.color)
+const colorArray = Array.isArray(selectProduct?.color)
   ? selectProduct.color
-  : selectProduct.color?.split(/[\s,]+/).filter(Boolean) || [];
+  : selectProduct?.color?.split(/[\s,]+/).filter(Boolean) || [];
 
-const sizeArray = Array.isArray(selectProduct.size)
+const sizeArray = Array.isArray(selectProduct?.size)
   ? selectProduct.size
-  : selectProduct.size?.split(/[\s,]+/).filter(Boolean) || [];
+  : selectProduct?.size?.split(/[\s,]+/).filter(Boolean) || [];
 
-const variantArray = Array.isArray(selectProduct.variant)
+const variantArray = Array.isArray(selectProduct?.variant)
   ? selectProduct.variant
-  : selectProduct.variant?.split(/[\s,]+/).filter(Boolean) || [];
+  : selectProduct?.variant?.split(/[\s,]+/).filter(Boolean) || [];
 
    const editProduct=async(id)=>{
       const res=await fetchWithAuth(`${BaseURI}/api/admin/editproduct/${id}`,{
@@ -127,10 +127,10 @@ const variantArray = Array.isArray(selectProduct.variant)
         <div className=" mx-[10px] overflow-x-hidden">
             <h1 className='text-center text-3xl text-gray-400 font-semibold my-[30px]'>Accessories Product ({totalProduct})</h1>
            {productData?.map((pro)=>(
-                 <div key={pro.id} onClick={()=>{setSelectProduct(pro)}, setProductId(pro.id)} data-aos='slide-up'>
-                <AdminProduct productName={pro.name} productDescription={pro.description} productPhotos={pro?.photos[0]?.url} productPrice={pro.price} productStock={pro.stock}  
-                productColor={pro.color} productSize={pro.size} productVariant={pro.variant} productWeight={pro.weight} update={pro.updatedAt} create={pro.createdAt} 
-                 productOriginalPrice={pro.originalPrice} openDeleteModal={openDeleteModal} openEditModal={openEditModal}/>
+                 <div key={pro.id} onClick={()=>{setSelectProduct(pro);setProductId(pro.id)} } data-aos='slide-up'>
+                <AdminProduct productName={pro?.name} productDescription={pro?.description} productPhotos={pro?.photos[0]?.url} productPrice={pro?.price} productStock={pro?.stock}  
+                productColor={pro?.color} productSize={pro?.size} productVariant={pro?.variant} productWeight={pro?.weight} update={pro?.updatedAt} create={pro?.createdAt} 
+                 productOriginalPrice={pro?.originalPrice} openDeleteModal={openDeleteModal} openEditModal={openEditModal}/>
                 
             </div>
            ))}
