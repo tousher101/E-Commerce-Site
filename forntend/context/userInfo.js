@@ -8,7 +8,7 @@ export const UserProvider=({children})=>{
     const [userInfo, setUserInfo]=useState(null);
     const [user,setUser]=useState(null);
     const [totalCartItmes, setTotalCartItems]=useState(0);
-    const [cartData, setCartData]=useState(null);
+    const [cartData, setCartData]=useState([]);
     const [shippingAreaData, setShippingAreaData]=useState([]);
     const [mode, setMode]=useState(null);
     const [role,setRole]=useState(null);
