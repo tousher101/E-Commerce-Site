@@ -47,7 +47,7 @@ export default function cancelledOrder(){
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
         <div className=" mx-auto overflow-hidden">
         <h1 className="text-center text-gray-500 my-[20px] text-2xl font-semibold"> Cancelled Order ({totalOrder})</h1>
-             <div className='flex gap-2 items-center ml-[10px]'>
+             <div className='flex gap-2 items-center ml-[10px] justify-center'>
           <button onClick={()=>{setMode('CurrentMonth');}} className={`p-2 border-1 border-gray-300 rounded-sm text-gray-600 cursor-pointer ${
               mode === "CurrentMonth" ? "bg-gray-800 text-white" : "text-gray-600"
             } `}>Current Month</button>

@@ -123,7 +123,7 @@ const variantArray = Array.isArray(selectProduct?.variant)
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
         <div className=" mx-auto overflow-hidden">
             <h1 className='text-center text-3xl text-gray-400 font-semibold my-[30px]'>Women's ({totalProduct})</h1>
-            <div className='grid lg:grid-cols-1 md:grid-cols-2 grid-cols-1 gap-1 justify-items-center'></div>
+            <div className='grid lg:grid-cols-1 md:grid-cols-2 grid-cols-1 gap-1 justify-items-center'>
            {productData?.map((pro)=>(
                  <div key={pro.id} onClick={()=>{setSelectProduct(pro);setProductId(pro.id)}} data-aos='slide-up'>
                 <AdminProduct productName={pro.name} productDescription={pro.description} productPhotos={pro?.photos[0]?.url} productPrice={pro.price} productStock={pro.stock}  
