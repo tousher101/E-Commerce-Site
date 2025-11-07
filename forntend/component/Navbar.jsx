@@ -49,7 +49,7 @@ export default function navBar() {
 
     }
         const goCheckOut=()=>{
-          if(!cartData||cartData.length===0){setMsg('Cart Is Empty'); setType('Error'); return}
+          if(!cartData&&cartData.length===0){setMsg('Cart Is Empty'); setType('Error'); return}
           if(!selectedArea){setMsg('Please Selecte Shipping Area');setType('Error'); return}
         router.push(`/checkout/${selectedArea}`);
       setSelectedArea('');
