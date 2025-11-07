@@ -128,7 +128,7 @@ const changePassword=async()=>{
                 <label htmlFor="sidebar-toggle" className="lg:hidden md:block block cursor-pointer md:top-30 top-35 left-5 absolute z-50   ">
                <Image src={openSlide} height={40} width={40} alt="toggle-icone"/>
                 </label>
-                <aside className="bg-white absolute top-35 left-0 h-[880px]  w-[250px] text-black transition-transform duration-1000 -translate-x-full peer-checked/sidebar:translate-x-0 z-50 rounded-r-xl">
+                <aside className="bg-white absolute top-30 left-0 h-[880px]  w-[250px] text-black transition-transform duration-1000 -translate-x-full peer-checked/sidebar:translate-x-0 z-50 rounded-r-xl">
                         <div>
                         <label htmlFor="sidebar-toggle" className="cursor-pointer"><Image src={closedSlide} height={40} width={40} alt="toggle-close-icone"/></label>
                         </div>
