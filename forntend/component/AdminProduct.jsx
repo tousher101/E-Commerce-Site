@@ -1,7 +1,7 @@
 
 import Image from "next/image"
 import NoImage from '../public/noimage.png'
-export default function adminProduct({productPhotos, productName, productDescription, productPrice, productStock, productSize, productVariant, productColor, productWeight, update,create, productId,
+export default function adminProduct({productPhotos, productName, productDescription, productPrice, productStock, productSize, productVariant, productColor, productWeight, update,create,
    productOriginalPrice,openEditModal,openDeleteModal
 }){
       

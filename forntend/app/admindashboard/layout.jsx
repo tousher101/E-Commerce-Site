@@ -10,6 +10,7 @@ import Alert from "../../Utils/Alert";
 import ChangePasswordModal from '../../component/ChangePasswordModal'
 import openSlide from '../../public/bx-menu.svg'
 import closedSlide from '../../public/bx-x.svg'
+import Image from "next/image";
 
 
 
@@ -125,11 +126,11 @@ const changePassword=async()=>{
                 <div>
                 <input type="checkbox" className=" peer/sidebar hidden" id='sidebar-toggle'/>
                 <label htmlFor="sidebar-toggle" className="lg:hidden md:block block cursor-pointer md:top-30 top-35 left-5 absolute z-50   ">
-                <img src={openSlide} className="w-8"/>
+               <Image src={openSlide} height={40} width={40} alt="toggle-icone"/>
                 </label>
                 <aside className="bg-white absolute top-35 left-0 h-[880px]  w-[250px] text-black transition-transform duration-1000 -translate-x-full peer-checked/sidebar:translate-x-0 z-50 rounded-r-xl">
                         <div>
-                        <label htmlFor="sidebar-toggle" className="cursor-pointer"><img className="w-8 ml-[10px]" src={closedSlide}/></label>
+                        <label htmlFor="sidebar-toggle" className="cursor-pointer"><Image src={closedSlide} height={40} width={40} alt="toggle-close-icone"/></label>
                         </div>
                             <div data-aos='fade-up' className=" flex-[20%] shadow-xl h-[850px] rounded-xl lg:hidden md:flex flex ">
                 <div className="grid grid-cols-1 gap-2 p-3">
