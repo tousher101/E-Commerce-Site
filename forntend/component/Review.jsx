@@ -53,7 +53,7 @@ export default function review({productId}){
         <>
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
         <div className="mx-[auto] overflow-hidden mb-[25px]">
-            <h1 className="text-xl font-semibold">Review ({totalComment || 0})</h1>
+            <h1 className="text-xl ml-[10px] font-semibold">Review ({totalComment || 0})</h1>
           <div className="grid grid-cols-1 mx-[10px] gap-3  bg-gray-400  p-3 rounded-xl ">
             {commentData.length>0?commentData?.map((com)=>(
                 <div key={com.id}  className="bg-gray-200 p-2 rounded-sm">
@@ -71,7 +71,7 @@ export default function review({productId}){
                     </div>
                     
             </div>
-            )):<h1 className="text-center text-2xl text-black font-semibold">Review Not Available</h1>}
+            )):<h1 className="text-center text-sm text-black font-semibold">Review Not Available</h1>}
                
         </div>
         </div>
