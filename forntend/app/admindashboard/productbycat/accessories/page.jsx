@@ -25,7 +25,7 @@ export default function accessories(){
        const [animatedModal, setAnimatedModal]=useState(false);
        const [loading, setLoading]=useState(false);
        const [selectProduct, setSelectProduct]=useState(null);
-       const [productId, setProductId]
+       const [productId, setProductId]=useState(null)
  
 
 
