@@ -8,6 +8,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css'
 import { useRouter } from "next/navigation";
 import { useGlobalContext } from "../../../../context/globalContext";
+import Link from "next/link";
 
 export default function shippedOrderDetails(){
     const BaseURI=process.env.NEXT_PUBLIC_API_URI;

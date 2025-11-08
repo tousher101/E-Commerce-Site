@@ -484,6 +484,8 @@ route.get('/getshippedorderdetails/:id',verification,roleAuthorize('ADMIN'),asyn
            select:{
                 id:true,
                 createdAt:true,
+                 trakingNumber:true,
+                 updatedAt:true,
                 address:{
                      select:{
                         label:true,
@@ -499,7 +501,6 @@ route.get('/getshippedorderdetails/:id',verification,roleAuthorize('ADMIN'),asyn
                 courier:{
                     select:{
                         courierName:true,
-                        trakingNumber:true,
                         createdAt:true,
                         courierLink:true
                     }
@@ -689,6 +690,8 @@ route.get('/getdeliveredorder/:id',verification,roleAuthorize('ADMIN'),async(req
             select:{
                 id:true,
                 createdAt:true,
+                  trakingNumber:true,
+                 updatedAt:true,
                 address:{
                      select:{
                         label:true,
@@ -703,7 +706,6 @@ route.get('/getdeliveredorder/:id',verification,roleAuthorize('ADMIN'),async(req
                 },    courier:{
                     select:{
                         courierName:true,
-                        trakingNumber:true,
                         createdAt:true,
                         courierLink:true
                     }
@@ -1077,6 +1079,8 @@ route.get('/getpaidorderdetails/:id',verification,roleAuthorize('ADMIN'),async(r
            select:{
                 id:true,
                 createdAt:true,
+                  trakingNumber:true,
+                 updatedAt:true,
                 address:{
                      select:{
                         label:true,
@@ -1092,7 +1096,6 @@ route.get('/getpaidorderdetails/:id',verification,roleAuthorize('ADMIN'),async(r
                     courier:{
                     select:{
                         courierName:true,
-                        trakingNumber:true,
                         createdAt:true,
                         courierLink:true
                     }
@@ -1277,6 +1280,8 @@ route.get('/getcodorderdetails/:id',verification,roleAuthorize('ADMIN'),async(re
            select:{
                 id:true,
                 createdAt:true,
+                  trakingNumber:true,
+                 updatedAt:true,
                 address:{
                     select:{
                         label:true,
@@ -1292,7 +1297,6 @@ route.get('/getcodorderdetails/:id',verification,roleAuthorize('ADMIN'),async(re
                     courier:{
                     select:{
                         courierName:true,
-                        trakingNumber:true,
                         createdAt:true,
                         courierLink:true
                     }

@@ -8,6 +8,7 @@ import 'aos/dist/aos.css'
 
 
 
+
 export default function cancelledOrderDetails(){
     const BaseURI=process.env.NEXT_PUBLIC_API_URI;
     const {id}=useParams();

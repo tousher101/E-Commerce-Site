@@ -657,6 +657,8 @@ route.get('/perfume',async(req,res)=>{
                 id:true,
                 createdAt:true,
                 address:true,
+                  trakingNumber:true,
+                 updatedAt:true,
                      user:{
                         select:{
                             name:true,
@@ -668,7 +670,6 @@ route.get('/perfume',async(req,res)=>{
                         courier:{
                     select:{
                         courierName:true,
-                        trakingNumber:true,
                         createdAt:true,
                         courierLink:true
                     }
@@ -781,6 +782,8 @@ route.get('/perfume',async(req,res)=>{
                 id:true,
                 createdAt:true,
                 address:true,
+                  trakingNumber:true,
+                 updatedAt:true,
                      user:{
                         select:{
                             name:true,
@@ -792,7 +795,6 @@ route.get('/perfume',async(req,res)=>{
                         courier:{
                     select:{
                         courierName:true,
-                        trakingNumber:true,
                         createdAt:true,
                         courierLink:true
                     }
@@ -1019,6 +1021,8 @@ route.get('/perfume',async(req,res)=>{
                 id:true,
                 createdAt:true,
                 address:true,
+                  trakingNumber:true,
+                 updatedAt:true,
                      user:{
                         select:{
                             name:true,
@@ -1030,7 +1034,6 @@ route.get('/perfume',async(req,res)=>{
                         courier:{
                     select:{
                         courierName:true,
-                        trakingNumber:true,
                         createdAt:true,
                         courierLink:true
                     }
