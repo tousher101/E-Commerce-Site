@@ -12,7 +12,7 @@ export default function courierInfoModal({closeModal, courierData,courierNameVal
                         ))}
                     </select>
                
-                    <input value={trackingNumber} onChange={trackingNumberOnCh} type="text" placeholder="Tracking Number" className="p-2 rounded-xl"/>
+                    <input value={trackingNumber} onChange={trackingNumberOnCh} type="text" placeholder="Tracking Number" className="p-2 border-1 rounded-xl"/>
                    
                     </div>
                     

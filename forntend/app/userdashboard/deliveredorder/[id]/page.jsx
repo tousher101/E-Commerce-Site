@@ -76,7 +76,7 @@ export default function confirmedOrderDetails(){
                <div className="grid grid-cols-1 gap-1 border-1 p-3 rounded-xl border-gray-400 ">
                 <h1>Courier Name : {detailsData?.courier?.courierName}</h1>
                 <h1>Tracking Link : <Link href={`${detailsData?.courier?.courierLink}`} ><span>{detailsData?.courier?.courierLink}</span></Link> </h1>
-                 <h1>Tracking Number : {detailsData?.trackingNumber} </h1>
+                 <h1>Tracking Number :  {detailsData?.trackingNumber} </h1>
                </div>
                 </div>
             </div>
