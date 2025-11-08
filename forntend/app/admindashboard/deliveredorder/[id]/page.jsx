@@ -10,9 +10,9 @@ import Link from "next/link";
 
 export default function deliveredOrderDetails(){
     const BaseURI=process.env.NEXT_PUBLIC_API_URI;
-    const {id}=useParams();
+    const params=useParams();
     const [detailsData, setDetailsData]=useState(null)
-  
+    const {id}=params
  
     const getDetailsData=async(id)=>{
         const res= await fetchWithAuth(`${BaseURI}/api/admin/getdeliveredorder/${id}`)

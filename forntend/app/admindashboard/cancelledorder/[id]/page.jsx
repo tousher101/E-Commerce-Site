@@ -9,9 +9,9 @@ import 'aos/dist/aos.css'
 
 export default function cancelledOrderDetails(){
     const BaseURI=process.env.NEXT_PUBLIC_API_URI;
-    const {id}=useParams();
+    const params=useParams();
     const [detailsData, setDetailsData]=useState(null)
-  
+  const {id}=params
  
     const getDetailsData=async(id)=>{
         const res= await fetchWithAuth(`${BaseURI}/api/admin/getcancelorder/${id}`)

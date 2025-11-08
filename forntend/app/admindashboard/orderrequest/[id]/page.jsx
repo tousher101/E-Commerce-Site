@@ -20,7 +20,7 @@ export default function pedningOrderDetails(){
     const [cancelModal,setCacnelModal]=useState(false);
     const router=useRouter();
     const {getAllCount}=useGlobalContext()
-    const {orderId}=params
+    const {id}=params
  
     const openCancelModal=()=>{
         setCacnelModal(true);
@@ -66,7 +66,7 @@ export default function pedningOrderDetails(){
             duration:1000,once:false,mirror:false
              });
             AOS.refresh();
-        getDetailsData(orderId);
+        getDetailsData(id);
     },[])
     return(
        <>
@@ -142,7 +142,7 @@ export default function pedningOrderDetails(){
         </div>}
          {mode==='ReqOrder'&&<div className="flex mx-[10px] justify-center gap-6 my-[30px] mb-[50px]"  data-aos='fade-up'>
             <button  onClick={openCancelModal}  className="border-1 bg-red-500 rounded-sm cursor-pointer p-2 text-white">Cancel Order</button>
-            <button onClick={()=>{accepteOrder(orderId)}}  className="border-1 bg-green-500 rounded-sm cursor-pointer p-2 text-white">Accepte Order</button>
+            <button onClick={()=>{accepteOrder(id)}}  className="border-1 bg-green-500 rounded-sm cursor-pointer p-2 text-white">Accepte Order</button>
         </div>}
 
         {cancelModal&&<CancelModal closeModal={closeCancelModal} submitCancel={()=>{cancelOrder(detailsData.id)}} />}

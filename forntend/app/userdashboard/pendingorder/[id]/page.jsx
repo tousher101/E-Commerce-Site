@@ -11,7 +11,8 @@ import { useRouter } from "next/navigation";
 
 export default function pedningOrderDetails(){
     const BaseURI=process.env.NEXT_PUBLIC_API_URI;
-    const {id}=useParams();
+    const params=useParams();
+    const {id}=params
     const [msg,setMsg]=useState(null);
     const [type, setType]=useState(null);
     const [detailsData, setDetailsData]=useState(null)

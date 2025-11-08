@@ -18,7 +18,7 @@ export default function shippedOrderDetails(){
     const [detailsData, setDetailsData]=useState(null)
     const router=useRouter();
     const {getAllCount}=useGlobalContext();
-    const {orderId}=params;
+    const {id}=params;
  
     const getDetailsData=async(id)=>{
         const res= await fetchWithAuth(`${BaseURI}/api/admin/getshippedorderdetails/${id}`)
@@ -44,7 +44,7 @@ export default function shippedOrderDetails(){
             duration:1000,once:false,mirror:false
              });
             AOS.refresh();
-        getDetailsData(orderId);
+        getDetailsData(id);
     },[])
     return(
        <>
@@ -126,7 +126,7 @@ export default function shippedOrderDetails(){
 
     </div>
             <div className="flex justify-center" data-aos='slide-up'>
-             <button onClick={()=>{makeDeliverdOrder(orderId)}}  className="border-1 bg-green-500 rounded-sm cursor-pointer p-2 text-white">Delivered Order</button>
+             <button onClick={()=>{makeDeliverdOrder(id)}}  className="border-1 bg-green-500 rounded-sm cursor-pointer p-2 text-white">Delivered Order</button>
             </div>
            
        

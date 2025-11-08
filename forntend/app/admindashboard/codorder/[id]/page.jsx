@@ -10,9 +10,9 @@ import Link from "next/link";
 
 export default function codOrderDetails(){
     const BaseURI=process.env.NEXT_PUBLIC_API_URI;
-    const {id}=useParams();
+    const params=useParams();
     const [detailsData, setDetailsData]=useState(null)
-
+    const {id}=params
   
  
     const getDetailsData=async(id)=>{
