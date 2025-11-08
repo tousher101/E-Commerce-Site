@@ -18,7 +18,7 @@ export default function manageCourier(){
             method:'POST',
             body:JSON.stringify({courierLink,courierName})
         });
-        setMsg(res.msg); setType('Success');setCourierName('');setCourierLink('')
+        setMsg(res.msg); setType('Success');setCourierName('');setCourierLink(''); getAllCourier()
     };
     
     const getAllCourier=async()=>{
@@ -38,7 +38,7 @@ export default function manageCourier(){
         const res =await fetchWithAuth(`${BaseURI}/api/admin/deletecourier/${id}`,{
             method:'DELETE'
         })
-        setMsg(res.msg); setType('Success')
+        setMsg(res.msg); setType('Success'); getAllCourier()
     }
 
 
