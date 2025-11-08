@@ -11,12 +11,13 @@ import { useGlobalContext } from "../../../../context/globalContext";
 
 export default function shippedOrderDetails(){
     const BaseURI=process.env.NEXT_PUBLIC_API_URI;
-    const {id}=useParams();
+    const params=useParams();
     const [msg,setMsg]=useState(null);
     const [type, setType]=useState(null);
     const [detailsData, setDetailsData]=useState(null)
     const router=useRouter();
-    const {getAllCount}=useGlobalContext()
+    const {getAllCount}=useGlobalContext();
+    const {orderId}=params;
  
     const getDetailsData=async(id)=>{
         const res= await fetchWithAuth(`${BaseURI}/api/admin/getshippedorderdetails/${id}`)
@@ -42,7 +43,7 @@ export default function shippedOrderDetails(){
             duration:1000,once:false,mirror:false
              });
             AOS.refresh();
-        getDetailsData(id);
+        getDetailsData(orderId);
     },[])
     return(
        <>
@@ -124,7 +125,7 @@ export default function shippedOrderDetails(){
 
     </div>
             <div className="flex justify-center" data-aos='slide-up'>
-             <button onClick={()=>{makeDeliverdOrder(detailsData.id)}}  className="border-1 bg-green-500 rounded-sm cursor-pointer p-2 text-white">Delivered Order</button>
+             <button onClick={()=>{makeDeliverdOrder(orderId)}}  className="border-1 bg-green-500 rounded-sm cursor-pointer p-2 text-white">Delivered Order</button>
             </div>
            
        
