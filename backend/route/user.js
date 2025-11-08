@@ -1211,7 +1211,22 @@ route.get('/perfume',async(req,res)=>{
                 totalWeight+= product.weight * item.quantity
                 totalPrice+=product.price*item.quantity
             };
-            const shippingFee = Math.round(shippingRate.baseFee+(totalWeight*shippingRate.perKgFee));
+            let shippingFee=0
+
+
+            if (totalWeight <= 0.5) {
+             shippingFee = Math.round(shippingRate.baseFee);
+                } 
+            else if (totalWeight > 0.5 && totalWeight < 1) {
+            shippingFee = Math.round(shippingRate.perKgFee);
+            } 
+            else if (totalWeight >= 1) {
+        shippingFee = Math.round(shippingRate.perKgFee * totalWeight);
+                }
+
+            
+          
+            // const shippingFee = Math.round(shippingRate.baseFee+(totalWeight*shippingRate.perKgFee));
             const bounsAmount= await prisma.refWallet.findFirst({
                 where:{userId},
                 select:{amount:true}
