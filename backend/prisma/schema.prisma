@@ -1,8 +1,5 @@
-
-
 generator client {
   provider = "prisma-client-js"
-
 }
 
 datasource db {
@@ -11,202 +8,208 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  name      String
-  email     String    @unique
-  password  String
-  phone     String    @unique
-  photo     String?
-  publicId  String?
-  role      Role      @default(USER)
-  orders    Order[]
-  carts Cart[]
-  address Address[]
-  comment Comment[]
-  referralCode String @unique
-  referredBy String?
-  referredUser User[] @relation("UserReferrals")
-  referredByUser User?       @relation("UserReferrals", fields: [referredBy], references: [referralCode])
-  wallet RefWallet?
-  createdAt DateTime  @default(now())
+  id             Int        @id @default(autoincrement())
+  name           String
+  email          String     @unique
+  password       String
+  phone          String     @unique
+  photo          String?
+  publicId       String?
+  role           Role       @default(USER)
+  referralCode   String     @unique
+  referredBy     String?
+  createdAt      DateTime   @default(now())
+  address        Address[]
+  carts          Cart[]
+  comment        Comment[]
+  orders         Order[]
+  wallet         RefWallet?
+  referredByUser User?      @relation("UserReferrals", fields: [referredBy], references: [referralCode])
+  referredUser   User[]     @relation("UserReferrals")
+
+  @@index([referredBy], map: "User_referredBy_fkey")
 }
 
 model RefWallet {
-  id Int @id @default(autoincrement())
+  id     Int   @id @default(autoincrement())
   amount Float
-  user User @relation(fields:[userId], references:[id])
-  userId Int @unique
-
+  userId Int   @unique
+  user   User  @relation(fields: [userId], references: [id])
 }
 
 model Product {
-  id          Int       @id @default(autoincrement())
-  name        String
-  description String?
-  price       Float
-  stock       Int       @default(0)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  order OrderItem[]
-  cart CartItem[]
-  photos ProductPhotos[]
-  size  Json
-  color Json
-  variant Json
-  category Category
-  comment Comment[]
-  weight Float
-  barcode String? @unique
+  id            Int             @id @default(autoincrement())
+  name          String
+  description   String?
+  price         Float
+  stock         Int             @default(0)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  size          Json
+  color         Json
+  variant       Json
+  category      Category
+  weight        Float
+  barcode       String?         @unique
   originalPrice Float
+  cart          CartItem[]
+  comment       Comment[]
+  order         OrderItem[]
+  photos        ProductPhotos[]
 }
 
-model ProductPhotos{
-  id Int @id @default(autoincrement())
-  url String
-  publicId String?
-  product Product @relation(fields:[productId], references:[id])
+model ProductPhotos {
+  id        Int     @id @default(autoincrement())
+  url       String
+  publicId  String?
   productId Int
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@index([productId], map: "ProductPhotos_productId_fkey")
 }
 
 model Order {
-  id        Int         @id @default(autoincrement())
-  user      User        @relation(fields: [userId], references: [id])
-  userId    Int
-  items     OrderItem[]
+  id             Int         @id @default(autoincrement())
+  userId         Int
   totalPrice     Float
-  status    OrderStatus @default(PENDING)
-  payment Payment?  @relation(fields:[paymentId],references:[id])
-  paymentId Int? @unique
-  address Address? @relation(fields:[addressId], references:[id])
-  addressId Int?
-  courier Courier? @relation(fields:[courierId],references:[id])
-  courierId Int?
-  trackingNumber String? @unique
-  updatedAt DateTime @updatedAt
-  createdAt DateTime    @default(now())
+  status         OrderStatus @default(PENDING)
+  paymentId      Int?        @unique
+  addressId      Int?
+  courierId      Int?
+  trackingNumber String?     @unique
+  updatedAt      DateTime    @updatedAt
+  createdAt      DateTime    @default(now())
+  address        Address?    @relation(fields: [addressId], references: [id])
+  courier        Courier?    @relation(fields: [courierId], references: [id])
+  payment        Payment?    @relation(fields: [paymentId], references: [id])
+  user           User        @relation(fields: [userId], references: [id])
+  items          OrderItem[]
 
+  @@index([addressId], map: "Order_addressId_fkey")
+  @@index([courierId], map: "Order_courierId_fkey")
+  @@index([userId], map: "Order_userId_fkey")
 }
 
 model Courier {
-  id Int @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   courierName String
   courierLink String
-  order Order[]
-  createdAt DateTime @default(now())
-  
+  createdAt   DateTime @default(now())
+  order       Order[]
 }
 
 model ShippingRate {
-  id Int @id @default(autoincrement())
-  location String
-  baseFee Float
-  perKgFee Float
+  id        Int      @id @default(autoincrement())
+  location  String
+  baseFee   Float
+  perKgFee  Float
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model OrderItem {
-  id        Int     @id @default(autoincrement())
-  order     Order   @relation(fields: [orderId], references: [id])
-  orderId   Int
-  product   Product @relation(fields: [productId], references: [id])
-  productId Int
-  quantity  Int
-  unitPrice     Float 
+  id         Int     @id @default(autoincrement())
+  orderId    Int
+  productId  Int
+  quantity   Int
+  unitPrice  Float
   totalPrice Float
-  size  String?
-  color String?
-  variant String?
- 
+  size       String?
+  color      String?
+  variant    String?
+  order      Order   @relation(fields: [orderId], references: [id])
+  product    Product @relation(fields: [productId], references: [id])
+
+  @@index([orderId], map: "OrderItem_orderId_fkey")
+  @@index([productId], map: "OrderItem_productId_fkey")
 }
 
 model Cart {
   id        Int        @id @default(autoincrement())
-  userId    Int 
-  user      User       @relation(fields:[userId], references:[id], onDelete: Cascade)
-  items     CartItem[]
+  userId    Int
   status    CartStatus
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+
   @@index([userId])
 }
 
 model CartItem {
-  id          Int            @id @default(autoincrement())
-  cartId      Int
-  cart        Cart           @relation(fields:[cartId], references:[id], onDelete: Cascade)
-
-  productId   Int
-  product     Product        @relation(fields:[productId], references:[id], onDelete: Restrict)
-  size  String?
-  color String?
-  variant String?
-  quantity    Int            @default(1)
-  // snapshot so price change later doesn't affect the cart
-  unitPrice   Decimal        @db.Decimal(10,2)
-  totalPrice  Decimal        @db.Decimal(10,2)
+  id         Int     @id @default(autoincrement())
+  cartId     Int
+  productId  Int
+  size       String?
+  color      String?
+  variant    String?
+  quantity   Int     @default(1)
+  unitPrice  Decimal @db.Decimal(10, 2)
+  totalPrice Decimal @db.Decimal(10, 2)
+  cart       Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product    Product @relation(fields: [productId], references: [id])
 
   @@index([cartId])
   @@index([productId])
 }
 
 model Payment {
-  id            Int            @id @default(autoincrement())
-
-  order         Order?    
-
-  status        PaymentStatus 
-  amount        Decimal        @db.Decimal(10,2)
-  currency      String         @default("BDT")
-  transactionId String?        @unique
+  id            Int           @id @default(autoincrement())
+  status        PaymentStatus
+  amount        Decimal       @db.Decimal(10, 2)
+  currency      String        @default("BDT")
+  transactionId String?       @unique
   rawPayload    Json?
-  paymentmethod PaymentMethod 
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  paymentmethod PaymentMethod
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  order         Order?
 
-  @@index([ status])
+  @@index([status])
 }
 
 model Address {
   id         Int      @id @default(autoincrement())
   userId     Int?
-  user       User?    @relation(fields:[userId], references:[id], onDelete: SetNull)
-  label      String?  // e.g. "Home", "Office"
+  label      String?
   name       String
   phone      String
   line1      String
   barangay   String
-  city        String?
+  city       String?
   postalCode String?
-  province String?
+  province   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User?    @relation(fields: [userId], references: [id])
+  order      Order[]
 
-  order         Order[] 
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  @@index([userId], map: "Address_userId_fkey")
 }
-
 
 model Comment {
-  id Int @id @default(autoincrement())
-  comment String
+  id        Int      @id @default(autoincrement())
+  comment   String
   createdAt DateTime @default(now())
-  user User @relation(fields:[userId], references:[id])
-  userId Int
-  product Product @relation(fields:[productId], references:[id])
+  userId    Int
   productId Int
-}
+  product   Product  @relation(fields: [productId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 
+  @@index([productId], map: "Comment_productId_fkey")
+  @@index([userId], map: "Comment_userId_fkey")
+}
 
 enum Role {
   USER
   ADMIN
- 
 }
 
 enum CartStatus {
   PENDING
   COMPLETED
 }
+
 enum OrderStatus {
   PENDING
   CONFIRMED
@@ -215,22 +218,22 @@ enum OrderStatus {
   CANCELLED
 }
 
-enum PaymentStatus{
+enum PaymentStatus {
   PAID
   UNPAID
   CANCELLED
   FAILED
-
 }
-enum Category{
+
+enum Category {
   MENSFASHION
   WOMENFASHION
   KIDSFASHION
   ACCESSORIES
   PERFUME
 }
-enum PaymentMethod{
+
+enum PaymentMethod {
   COD
   CARD
-
 }

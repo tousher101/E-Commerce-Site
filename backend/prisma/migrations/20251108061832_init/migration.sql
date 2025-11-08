@@ -68,9 +68,12 @@ CREATE TABLE `Order` (
     `paymentId` INTEGER NULL,
     `addressId` INTEGER NULL,
     `courierId` INTEGER NULL,
+    `trackingNumber` VARCHAR(191) NULL,
+    `updatedAt` DATETIME(3) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     UNIQUE INDEX `Order_paymentId_key`(`paymentId`),
+    UNIQUE INDEX `Order_trackingNumber_key`(`trackingNumber`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -79,7 +82,6 @@ CREATE TABLE `Courier` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `courierName` VARCHAR(191) NOT NULL,
     `courierLink` VARCHAR(191) NOT NULL,
-    `trackingNumber` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`id`)

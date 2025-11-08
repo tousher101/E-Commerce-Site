@@ -427,7 +427,7 @@ route.get('/perfume',async(req,res)=>{
             });
             if(!user){return res.status(404).json({msg:'User Not Found'})}
           
-            const pendingOrderDetails= await prisma.order.findUnique({
+            const pendingOrderDetails= await prisma.order.findFirst({
                 where:{userId:user.id,id:orderId, status:'PENDING'},
                      select:{
                 id:true,
@@ -541,7 +541,7 @@ route.get('/perfume',async(req,res)=>{
             });
             if(!user){return res.status(404).json({msg:'User Not Found'})}
           
-            const confirmedOrder= await prisma.order.findUnique({
+            const confirmedOrder= await prisma.order.findFirst({
                   where:{userId:user.id,id:orderId, status:'CONFIRMED'},
                      select:{
                 id:true,
@@ -651,7 +651,7 @@ route.get('/perfume',async(req,res)=>{
                 where:{id:Number(req.user.id)}
             });
             if(!user){return res.status(404).json({msg:'User Not Found'})}
-            const shippedOrder= await prisma.order.findUnique({
+            const shippedOrder= await prisma.order.findFirst({
                 where:{userId:user.id, id:orderId, status:'SHIPPED'},
                      select:{
                 id:true,
@@ -775,7 +775,7 @@ route.get('/perfume',async(req,res)=>{
                 where:{id:Number(req.user.id)}
             });
             if(!user){return res.status(404).json({msg:'User Not Found'})}
-            const deliveredOrder= await prisma.order.findUnique({
+            const deliveredOrder= await prisma.order.findFirst({
                 where:{userId:user.id,id:orderId, status:'DELIVERED'},
                  select:{
                 id:true,
@@ -898,7 +898,7 @@ route.get('/perfume',async(req,res)=>{
                 where:{id:Number(req.user.id)}
             });
             if(!user){return res.status(404).json({msg:'User Not Found'})}
-            const cancelleddOrder= await prisma.order.findUnique({
+            const cancelleddOrder= await prisma.order.findFirst({
                 where:{userId:user.id,id:orderId, status:'CANCELLED'},
                select:{
                 id:true,
@@ -1013,7 +1013,7 @@ route.get('/perfume',async(req,res)=>{
                 where:{id:Number(req.user.id)}
             });
             if(!user){return res.status(404).json({msg:'User Not Found'})}
-            const paidOrder= await prisma.order.findUnique({
+            const paidOrder= await prisma.order.findFirst({
                 where:{userId:user.id,id:orderId, payment:{status:'PAID'}},
                select:{
                 id:true,
