@@ -74,7 +74,7 @@ export default function cancelledOrderDetails(){
                 <div className=" w-full text-sm">
                <div className="grid grid-cols-1 gap-1 border-1 p-3 rounded-xl border-gray-400 ">
                 <h1>Transection No : {detailsData?.payment?.transactionId}</h1>
-                <h1 className="font-semibold">Payment Amount : ₱{detailsData?.payment?.amount} <span className="text-xs text-gray-400">(*Including Shipping Fee)</span></h1>
+                <h1 className="font-semibold">Payment Amount : ₱{detailsData?.payment?.amount} <span className="text-xs text-[11px] text-gray-400">(*Including Shipping Fee)</span></h1>
                 
                  <div className="flex gap-1 justify-between mr-[10px]">
                     <h1 className="font-semibold">Payment Method : {detailsData?.payment?.paymentmethod}</h1>

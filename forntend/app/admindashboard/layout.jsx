@@ -192,6 +192,10 @@ const changePassword=async()=>{
                         <img className="w-[30px] h-[30px]" src="/ship.gif"/>
                          <Link href={'/admindashboard/manageshippingfee'}><h1 className="p-2">Manage Shipping Fee</h1></Link>
                     </div>
+                       <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/courier.gif"/>
+                         <Link href={'/admindashboard/managecourier'}><h1 className="p-2">Manage Courier Service</h1></Link>
+                    </div>
                 </div>
             </div>
 

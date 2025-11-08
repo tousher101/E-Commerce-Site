@@ -664,6 +664,14 @@ route.get('/perfume',async(req,res)=>{
                             
                         }
                     },
+                        courier:{
+                    select:{
+                        courierName:true,
+                        trakingNumber:true,
+                        createdAt:true,
+                        courierLink:true
+                    }
+                },
                     items:{
                         select:{
                             id:true,
@@ -780,6 +788,14 @@ route.get('/perfume',async(req,res)=>{
                             
                         }
                     },
+                        courier:{
+                    select:{
+                        courierName:true,
+                        trakingNumber:true,
+                        createdAt:true,
+                        courierLink:true
+                    }
+                },
                     items:{
                         select:{
                             id:true,
@@ -1010,6 +1026,14 @@ route.get('/perfume',async(req,res)=>{
                             
                         }
                     },
+                        courier:{
+                    select:{
+                        courierName:true,
+                        trakingNumber:true,
+                        createdAt:true,
+                        courierLink:true
+                    }
+                },
                     items:{
                         select:{
                             id:true,

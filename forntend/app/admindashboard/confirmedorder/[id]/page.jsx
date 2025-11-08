@@ -8,6 +8,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css'
 import { useRouter } from "next/navigation";
 import { useGlobalContext } from "../../../../context/globalContext";
+import CourierInfoModal from"../../../../component/CourierInfoModal";
 
 export default function confirmedOrderDetails(){
     const BaseURI=process.env.NEXT_PUBLIC_API_URI;
@@ -16,7 +17,11 @@ export default function confirmedOrderDetails(){
     const [type, setType]=useState(null);
     const [detailsData, setDetailsData]=useState(null)
     const router=useRouter();
-    const {getAllCount}=useGlobalContext()
+    const {getAllCount}=useGlobalContext();
+    const [courierModal, setCourierModal]=useState(false);
+    const [courierData, setCourierData]=useState([]);
+    const [selectedCourier, setSelectedCourier]=useState('');
+    const [trackingNumber, setTrackingNumber]=useState('')
  
     const getDetailsData=async(id)=>{
         const res= await fetchWithAuth(`${BaseURI}/api/admin/getconfirmedorderdetails/${id}`)
@@ -26,7 +31,8 @@ export default function confirmedOrderDetails(){
 
     const makeShippedOrder=async(id)=>{
         const res=await fetchWithAuth(`${BaseURI}/api/admin/makeshippedorder/${id}`,{
-            method:'PUT'
+            method:'PUT',
+            body:JSON.stringify({courierId:selectedCourier, trackingNumber})
         });
         setMsg(res.msg);
         setType('Success');
@@ -34,6 +40,11 @@ export default function confirmedOrderDetails(){
             setTimeout(()=>{
             router.push('/admindashboard/confirmedorder');
         },2000) 
+    };
+
+    const getCourireData=async()=>{
+        const res= await fetchWithAuth(`${BaseURI}/api/admin/getallcourier`)
+        setCourierData(res.courier)
     }
 
 
@@ -43,6 +54,7 @@ export default function confirmedOrderDetails(){
              });
             AOS.refresh();
         getDetailsData(id);
+        getCourireData();
     },[])
     return(
        <>
@@ -114,10 +126,11 @@ export default function confirmedOrderDetails(){
 
     </div>
             <div className="flex justify-center" data-aos='slide-up'>
-             <button onClick={()=>{makeShippedOrder(detailsData.id)}}  className="border-1 bg-green-500 rounded-sm cursor-pointer p-2 text-white">Shipped Order</button>
+             <button onClick={()=>{setCourierModal(true)}}  className="border-1 bg-green-500 rounded-sm cursor-pointer p-2 text-white">Shipped Order</button>
             </div>
            
-       
+       {courierModal&&<CourierInfoModal closeModal={()=>{setCourierModal(false)}} courierData={courierData} courierNameValue={selectedCourier} courierNameOnCh={(e)=>{setSelectedCourier(e.target.value)}}
+         trackingNumber={trackingNumber} trackingNumberOnCh={(e)=>{setTrackingNumber(e.target.value)}} submitShippedOrder={()=>{makeShippedOrder(id)}} />}
 
  
         </>

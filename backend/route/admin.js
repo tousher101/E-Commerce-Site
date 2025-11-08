@@ -270,13 +270,18 @@ route.put('/cancelorder/:id',verification,roleAuthorize('ADMIN'),async(req,res)=
 route.put('/makeshippedorder/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
         const orderId=Number(req.params.id);
+        const {courierId,trackingNumber}=req.body
         const order=await prisma.order.findUnique({
             where:{id:orderId,status:'CONFIRMED'}
         });
         if(!order){return res.status(404).json({msg:'Order Not Found'})}
+        await prisma.courier.update({
+            where:{id:courierId},
+            data:{trackingNumber}
+        });
          await prisma.order.update({
             where:{id:order.id, status:'CONFIRMED'},
-            data:{status:'SHIPPED'}
+            data:{status:'SHIPPED', courier:{connect:{id:Number(courierId)}}}
         });
         res.status(200).json({msg:'Order Shipped Successfully'})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
@@ -492,6 +497,14 @@ route.get('/getshippedorderdetails/:id',verification,roleAuthorize('ADMIN'),asyn
                         postalCode:true,
                     }
                 },
+                courier:{
+                    select:{
+                        courierName:true,
+                        trakingNumber:true,
+                        createdAt:true,
+                        courierLink:true
+                    }
+                },
                      user:{
                         select:{
                             name:true,
@@ -687,6 +700,13 @@ route.get('/getdeliveredorder/:id',verification,roleAuthorize('ADMIN'),async(req
                         city:true,
                         barangay:true,
                         postalCode:true,
+                    }
+                },    courier:{
+                    select:{
+                        courierName:true,
+                        trakingNumber:true,
+                        createdAt:true,
+                        courierLink:true
                     }
                 },
                      user:{
@@ -1070,6 +1090,14 @@ route.get('/getpaidorderdetails/:id',verification,roleAuthorize('ADMIN'),async(r
                         postalCode:true,
                     }
                 },
+                    courier:{
+                    select:{
+                        courierName:true,
+                        trakingNumber:true,
+                        createdAt:true,
+                        courierLink:true
+                    }
+                },
                      user:{
                         select:{
                             name:true,
@@ -1260,6 +1288,14 @@ route.get('/getcodorderdetails/:id',verification,roleAuthorize('ADMIN'),async(re
                         city:true,
                         barangay:true,
                         postalCode:true,
+                    }
+                },
+                    courier:{
+                    select:{
+                        courierName:true,
+                        trakingNumber:true,
+                        createdAt:true,
+                        courierLink:true
                     }
                 },
                      user:{
@@ -1711,6 +1747,46 @@ route.get('/adminperfume',verification,roleAuthorize('ADMIN'),async(req,res)=>{
         res.status(200).json({totalPerfumeFashion, getPerfumeFashion, totalPage:Math.ceil(totalPerfumeFashion/limit)})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
+
+//Add courier Company
+route.post('/addcourier',verification, roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const {courierName, courierLink}=req.body
+        if(!courierLink||!courierName){return res.status(400).json({msg:'Courier Name & Link Need'})}
+        await prisma.courier.create({
+            data:{courierName,courierLink}
+        });
+        return res.status(200).json({msg:'Courier Service Create Successfully'})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+//Delete courier Company
+route.delete('/deletecourier/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const courierId=Number(req.params.id)
+        const courier= await prisma.courier.findUnique({
+            where:{id:courierId}
+        });
+        if(!courier){return res.status(404).json({msg:'Courier Service Not Found'})}
+        await prisma.courier.delete({
+            where:{id:courier.id}
+        });
+        return res.status(200).json({msg:'Courier Service Delete Successfully'})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+//get all courier service 
+route.get('/getallcourier',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const courier= await prisma.courier.findMany({
+            select:{
+                id:true,
+                courierName:true,
+                courierLink:true
+            }
+        });
+        return res.status(200).json({courier})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+})
 
 
 
