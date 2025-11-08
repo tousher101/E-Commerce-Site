@@ -47,14 +47,14 @@ export default function manageCourier(){
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
         <div className="overflow-hidden mx-auto">
             <div className="grid grid-cols-1 justify-center mx-[10px]" data-aos='silde-up'>
-                <input value={courierName} onChange={(e)=>{setCourierName(e.target.value)}} type="text" placeholder="Courier Company Name"/>
-                <imput value={courierLink} onChange={(e)=>{setCourierLink(e.target.value)}} type="text" placeholder="Courier Company Website Link"/>
+                <input value={courierName} onChange={(e)=>{setCourierName(e.target.value)}} type="text" placeholder="Courier Company Name" className="border-1 border-gray-500 rounded-xl p-2"/>
+                <input value={courierLink} onChange={(e)=>{setCourierLink(e.target.value)}} type="text" placeholder="Courier Company Website Link" className="border-1 border-gray-500 rounded-xl p-2"/>
             </div>
-            <div className="flex justify-center">
-                <button onClick={submitCourier} className="border-1 p-2 rounded-sm bg-blue-500 cursor-pointer">Submit</button>
+            <div className="flex justify-center mt-[20px]">
+                <button onClick={submitCourier} className="text-white p-2 rounded-sm bg-blue-500 cursor-pointer">Submit</button>
             </div>
 
-            <div className="mx-[10px]">
+            <div className="mx-[10px] mt-[30px]">
                 <h1 className="text-center text-2xl text-gray-400 font-semibold">Active Courier Service List</h1>
                 <div className="grid grid-cols-1 gap-2" data-aos='slide-up'>
                     {courierData?.map((cou)=>(

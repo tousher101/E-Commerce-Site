@@ -61,7 +61,7 @@ const changePassword=async()=>{
             <div className=" mx-auto overflow-hidden mb-[80px]">
             <div className="flex gap-3">
 
-            <div data-aos='fade-up' className=" flex-[20%] shadow-sm h-[850px] rounded-xl lg:flex md:hidden hidden ">
+            <div data-aos='fade-up' className=" flex-[20%] shadow-sm h-[950px] rounded-xl lg:flex md:hidden hidden ">
                 <div className="grid grid-cols-1 gap-2 p-3">
                         <div className="grid grid-cols-1 justify-items-center items-center my-[25px] gap-3">
                         <Link href={'/admindashboard/addproduct'}><button className="p-2.5 rounded-xl bg-gray-800 cursor-pointer text-white">+ Add Product</button></Link>
@@ -132,7 +132,7 @@ const changePassword=async()=>{
                         <div>
                         <label htmlFor="sidebar-toggle" className="cursor-pointer"><Image src={closedSlide} height={40} width={40} alt="toggle-close-icone"/></label>
                         </div>
-                            <div data-aos='fade-up' className=" flex-[20%] shadow-xl h-[850px] rounded-xl lg:hidden md:flex flex ">
+                            <div data-aos='fade-up' className=" flex-[20%] shadow-xl h-[950px] rounded-xl lg:hidden md:flex flex ">
                 <div className="grid grid-cols-1 gap-2 p-3">
                         <div className="grid grid-cols-1 justify-items-center items-center my-[25px] gap-3">
                         <Link href={'/admindashboard/addproduct'}><button className="p-2.5 rounded-xl bg-gray-800 cursor-pointer text-white">+ Add Product</button></Link>
