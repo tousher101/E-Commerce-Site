@@ -12,7 +12,7 @@ import CourierInfoModal from"../../../../component/CourierInfoModal";
 
 export default function confirmedOrderDetails(){
     const BaseURI=process.env.NEXT_PUBLIC_API_URI;
-    const {id}=useParams();
+    const {orderId}=useParams();
     const [msg,setMsg]=useState(null);
     const [type, setType]=useState(null);
     const [detailsData, setDetailsData]=useState(null)
@@ -53,7 +53,7 @@ export default function confirmedOrderDetails(){
             duration:1000,once:false,mirror:false
              });
             AOS.refresh();
-        getDetailsData(id);
+        getDetailsData(orderId);
         getCourireData();
     },[])
     return(
@@ -130,7 +130,7 @@ export default function confirmedOrderDetails(){
             </div>
            
        {courierModal&&<CourierInfoModal closeModal={()=>{setCourierModal(false)}} courierData={courierData} courierNameValue={selectedCourier} courierNameOnCh={(e)=>{setSelectedCourier(e.target.value)}}
-         trackingNumber={trackingNumber} trackingNumberOnCh={(e)=>{setTrackingNumber(e.target.value)}} submitShippedOrder={()=>{makeShippedOrder(id)}} />}
+         trackingNumber={trackingNumber} trackingNumberOnCh={(e)=>{setTrackingNumber(e.target.value)}} submitShippedOrder={()=>{makeShippedOrder(orderId)}} />}
 
  
         </>

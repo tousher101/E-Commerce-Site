@@ -81,7 +81,8 @@ model Order {
   addressId Int?
   courier Courier? @relation(fields:[courierId],references:[id])
   courierId Int?
-
+  trackingNumber String? @unique
+  updatedAt DateTime @updatedAt
   createdAt DateTime    @default(now())
 
 }
@@ -90,9 +91,9 @@ model Courier {
   id Int @id @default(autoincrement())
   courierName String
   courierLink String
-  trackingNumber String?
   order Order[]
   createdAt DateTime @default(now())
+  
 }
 
 model ShippingRate {

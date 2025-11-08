@@ -5,6 +5,7 @@ const roleAuthorize=require('../middle-wear/roleAuthorize');;
 const prisma=require('../utils/prisma');
 const cloudinary=require('../utils/cloudinary');
 const upload =require('../middle-wear/multar');
+const genTrxCode=require('../utils/genTrxCode')
 
 
 
@@ -1213,7 +1214,6 @@ route.get('/perfume',async(req,res)=>{
             };
             let shippingFee=0
 
-
             if (totalWeight <= 0.5) {
              shippingFee = Math.round(shippingRate.baseFee);
                 } 
@@ -1320,17 +1320,28 @@ route.get('/perfume',async(req,res)=>{
                 subtotal+=product.price*item.quantity
              
             };
-            let shippingFee=0;
-            const shippingRate= await prisma.shippingRate.findFirst({
-                where:{location}
-            });
+       
 
             const bonusAount= await prisma.refWallet.findFirst({
                 where:{userId},
                 select:{amount:true}
             });
             const bonus= bonusAount?bonusAount.amount:0
-           if(shippingRate){shippingFee =Math.round(shippingRate.baseFee + (totalWeight * shippingRate.perKgFee))}
+
+                let shippingFee=0;
+            const shippingRate= await prisma.shippingRate.findFirst({
+                where:{location}
+            });
+
+            if (totalWeight <= 0.5) {
+             shippingFee = Math.round(shippingRate.baseFee);
+                } 
+            else if (totalWeight > 0.5 && totalWeight < 1) {
+            shippingFee = Math.round(shippingRate.perKgFee);
+            } 
+            else if (totalWeight >= 1) {
+        shippingFee = Math.round(shippingRate.perKgFee * totalWeight);
+                }
            else{ return res.status(400).json({msg:'Shipping Not Available for This Area'})}
 
             res.status(200).json({items:cart, bonus, shippingFee:Math.ceil(shippingFee), itemPrice:subtotal, subtotal:(subtotal-bonus), total:(subtotal-bonus)+shippingFee,})

@@ -269,19 +269,18 @@ route.put('/cancelorder/:id',verification,roleAuthorize('ADMIN'),async(req,res)=
 // Make Shipped Order
 route.put('/makeshippedorder/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
+        
         const orderId=Number(req.params.id);
         const {courierId,trackingNumber}=req.body
         const order=await prisma.order.findUnique({
             where:{id:orderId,status:'CONFIRMED'}
         });
         if(!order){return res.status(404).json({msg:'Order Not Found'})}
-        await prisma.courier.update({
-            where:{id:courierId},
-            data:{trackingNumber}
-        });
+
+      
          await prisma.order.update({
             where:{id:order.id, status:'CONFIRMED'},
-            data:{status:'SHIPPED', courier:{connect:{id:Number(courierId)}}}
+            data:{status:'SHIPPED', trackingNumber, courier:{connect:{id:Number(courierId)}}}
         });
         res.status(200).json({msg:'Order Shipped Successfully'})
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
