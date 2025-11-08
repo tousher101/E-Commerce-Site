@@ -79,9 +79,20 @@ model Order {
   paymentId Int? @unique
   address Address? @relation(fields:[addressId], references:[id])
   addressId Int?
+  courier Courier? @relation(fields:[courierId],references:[id])
+  courierId Int?
 
   createdAt DateTime    @default(now())
 
+}
+
+model Courier {
+  id Int @id @default(autoincrement())
+  courierName String
+  courierLink String
+  trackingNumber String?
+  order Order[]
+  createdAt DateTime @default(now())
 }
 
 model ShippingRate {
