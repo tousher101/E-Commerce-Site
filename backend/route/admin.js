@@ -174,8 +174,8 @@ route.get('/getorderrequestdetails/:id',verification,roleAuthorize('ADMIN'),asyn
     try{
         const orderId=Number(req.params.id);
 
-        const orderReq= await prisma.order.findFirst({
-            where:{id:orderId, status:'PENDING'},
+        const orderReq= await prisma.order.findUnique({
+            where:{id:orderId},
                     select:{
                 id:true,
                 createdAt:true,
@@ -272,8 +272,8 @@ route.put('/makeshippedorder/:id',verification,roleAuthorize('ADMIN'),async(req,
         
         const orderId=Number(req.params.id);
         const {courierId,trackingNumber}=req.body
-        const order=await prisma.order.findFirst({
-            where:{id:orderId,status:'CONFIRMED'}
+        const order=await prisma.order.findUnique({
+            where:{id:orderId}
         });
         if(!order){return res.status(404).json({msg:'Order Not Found'})}
 
@@ -290,8 +290,8 @@ route.put('/makeshippedorder/:id',verification,roleAuthorize('ADMIN'),async(req,
 route.put('/makedeliverdorder/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
         const orderId=Number(req.params.id);
-        const order=await prisma.order.findFirst({
-            where:{id:orderId,status:'SHIPPED'},
+        const order=await prisma.order.findUnique({
+            where:{id:orderId},
             select:{
                 items:{
                     select:{
@@ -370,8 +370,8 @@ route.get('/confirmedorder', verification,roleAuthorize('ADMIN'), async(req,res)
 route.get('/getconfirmedorderdetails/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
      const orderId=Number(req.params.id)
-        const conOrder= await prisma.order.findFirst({
-            where:{status:'CONFIRMED',id:orderId},
+        const conOrder= await prisma.order.findUnique({
+            where:{id:orderId},
             select:{
                 id:true,
                 createdAt:true,
@@ -479,8 +479,8 @@ route.get('/shippedorder', verification,roleAuthorize('ADMIN'), async(req,res)=>
 route.get('/getshippedorderdetails/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
        const orderId=Number(req.params.id)
-        const shippedOrder= await prisma.order.findFirst({
-            where:{status:'SHIPPED',id:orderId},
+        const shippedOrder= await prisma.order.findMany({
+            where:{id:orderId},
            select:{
                 id:true,
                 createdAt:true,
@@ -684,8 +684,8 @@ route.get('/previousmonthdeliverdorder', verification,roleAuthorize('ADMIN'), as
 route.get('/getdeliveredorder/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
       const orderId=Number(req.params.id)
-        const delOrder= await prisma.order.findFirst({
-            where:{status:'DELIVERED',id:orderId},
+        const delOrder= await prisma.order.findUnique({
+            where:{id:orderId},
             select:{
                 id:true,
                 createdAt:true,
@@ -881,8 +881,8 @@ route.get('/previousmonthcancelledorder', verification,roleAuthorize('ADMIN'), a
 route.get('/getcancelorder/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
        const orderId=Number(req.params.id)
-        const canOrder= await prisma.order.findFirst({
-            where:{status:'CANCELLED',id:orderId},
+        const canOrder= await prisma.order.findUnique({
+            where:{id:orderId},
            select:{
                 id:true,
                 createdAt:true,
@@ -1072,8 +1072,8 @@ route.get('/previousmonthpaidorder', verification,roleAuthorize('ADMIN'), async(
 route.get('/getpaidorderdetails/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
        const orderId=Number(req.params.id)
-        const paidOrder= await prisma.order.findFirst({
-            where:{payment:{status:'PAID'},id:orderId},
+        const paidOrder= await prisma.order.findUnique({
+            where:{id:orderId},
            select:{
                 id:true,
                 createdAt:true,
@@ -1272,8 +1272,8 @@ route.get('/previousmonthcodorder', verification,roleAuthorize('ADMIN'), async(r
 route.get('/getcodorderdetails/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
        const orderId=Number(req.params.id)
-        const codOrder= await prisma.order.findFirst({
-            where:{payment:{paymentmethod:'COD'},id:orderId},
+        const codOrder= await prisma.order.findUnique({
+            where:{id:orderId},
            select:{
                 id:true,
                 createdAt:true,

@@ -12,7 +12,7 @@ import CourierInfoModal from"../../../../component/CourierInfoModal";
 
 export default function confirmedOrderDetails(){
     const BaseURI=process.env.NEXT_PUBLIC_API_URI;
-    const {orderId}=useParams();
+    const params=useParams()
     const [msg,setMsg]=useState(null);
     const [type, setType]=useState(null);
     const [detailsData, setDetailsData]=useState(null)
@@ -21,7 +21,8 @@ export default function confirmedOrderDetails(){
     const [courierModal, setCourierModal]=useState(false);
     const [courierData, setCourierData]=useState([]);
     const [selectedCourier, setSelectedCourier]=useState('');
-    const [trackingNumber, setTrackingNumber]=useState('')
+    const [trackingNumber, setTrackingNumber]=useState('');
+    const {orderId}=params
  
     const getDetailsData=async(id)=>{
         const res= await fetchWithAuth(`${BaseURI}/api/admin/getconfirmedorderdetails/${id}`)
