@@ -22,7 +22,7 @@ export default function confirmedOrderDetails(){
     const [courierData, setCourierData]=useState([]);
     const [selectedCourier, setSelectedCourier]=useState('');
     const [trackingNumber, setTrackingNumber]=useState('');
-    const {orderId}=params
+    const {id}=params
  
     const getDetailsData=async(id)=>{
         const res= await fetchWithAuth(`${BaseURI}/api/admin/getconfirmedorderdetails/${id}`)
@@ -54,7 +54,7 @@ export default function confirmedOrderDetails(){
             duration:1000,once:false,mirror:false
              });
             AOS.refresh();
-        getDetailsData(orderId);
+        getDetailsData(id);
         getCourireData();
     },[])
     return(
@@ -131,7 +131,7 @@ export default function confirmedOrderDetails(){
             </div>
            
        {courierModal&&<CourierInfoModal closeModal={()=>{setCourierModal(false)}} courierData={courierData} courierNameValue={selectedCourier} courierNameOnCh={(e)=>{setSelectedCourier(e.target.value)}}
-         trackingNumber={trackingNumber} trackingNumberOnCh={(e)=>{setTrackingNumber(e.target.value)}} submitShippedOrder={()=>{makeShippedOrder(orderId)}} />}
+         trackingNumber={trackingNumber} trackingNumberOnCh={(e)=>{setTrackingNumber(e.target.value)}} submitShippedOrder={()=>{makeShippedOrder(id)}} />}
 
  
         </>

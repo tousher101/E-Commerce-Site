@@ -39,7 +39,7 @@ export default function confirmedOrder(){
         <div key={order.id} data-aos='slide-up'>
         <OrderCard photo={order?.items[0]?.product?.photos[0]?.url} orderId={order?.id} amount={order?.totalPrice} orderStatus={order?.status}
         paymentStatus={order?.payment?.status} paymentMethod={order?.payment?.paymentmethod} paymentCreate={order?.payment?.createdAt} userName={order?.user?.name}
-        userEmail={order?.user?.email} userPhone={order?.user?.phone} orderCreate={order?.createdAt} goDetails={()=>{goDetails(order.id)}} />
+        userEmail={order?.user?.email} userPhone={order?.user?.phone} orderCreate={order?.createdAt} goDetails={()=>{goDetails(order?.id)}} />
         </div>)) : <h1 className= 'text-center mt-50 text-4xl text-gray-500 font-semibold'> Confirmed Order Not Available</h1>}
         </div>
         </div>
