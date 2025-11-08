@@ -479,7 +479,7 @@ route.get('/shippedorder', verification,roleAuthorize('ADMIN'), async(req,res)=>
 route.get('/getshippedorderdetails/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
     try{
        const orderId=Number(req.params.id)
-        const shippedOrder= await prisma.order.findMany({
+        const shippedOrder= await prisma.order.findUnique({
             where:{id:orderId},
            select:{
                 id:true,

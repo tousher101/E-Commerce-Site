@@ -73,11 +73,12 @@ export default function paidOrderDetails(){
               <div className=" mx-[10px] my-[15px]"  data-aos='fade-up'>
                 <h1 className=" text-center text-xl text-gray-400 font-semibold mb-[15px]">Shipping Information</h1>
                 <div className=" w-full text-sm">
-               <div className="grid grid-cols-1 gap-1 border-1 p-3 rounded-xl border-gray-400 ">
+               {<div className="grid grid-cols-1 gap-1 border-1 p-3 rounded-xl border-gray-400 ">
                 <h1>Courier Name : {detailsData?.courier?.courierName}</h1>
                 <h1>Tracking Link : <Link href={`${detailsData?.courier?.courierLink}`} ><span>{detailsData?.courier?.courierLink}</span></Link> </h1>
                  <h1>Tracking Number : {detailsData?.trackingNumber} </h1>
-               </div>
+                    <h1>Shipping Date:{new Date(detailsData?.updatedAt).toDateString()}</h1>
+               </div>||<h1 className="text-xl text-center text-gray-500 font-semibold">Order Not Shipped Yet!</h1> }
                 </div>
             </div>
 

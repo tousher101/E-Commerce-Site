@@ -77,6 +77,7 @@ export default function confirmedOrderDetails(){
                 <h1>Courier Name : {detailsData?.courier?.courierName}</h1>
                 <h1>Tracking Link : <Link href={`${detailsData?.courier?.courierLink}`} ><span>{detailsData?.courier?.courierLink}</span></Link> </h1>
                  <h1>Tracking Number :  {detailsData?.trackingNumber} </h1>
+                 <h1>Shipping Date:{new Date(detailsData?.updatedAt).toDateString()}</h1>
                </div>
                 </div>
             </div>
