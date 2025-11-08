@@ -484,7 +484,7 @@ route.get('/getshippedorderdetails/:id',verification,roleAuthorize('ADMIN'),asyn
            select:{
                 id:true,
                 createdAt:true,
-                 trakingNumber:true,
+                trackingNumber:true,
                  updatedAt:true,
                 address:{
                      select:{
@@ -690,7 +690,7 @@ route.get('/getdeliveredorder/:id',verification,roleAuthorize('ADMIN'),async(req
             select:{
                 id:true,
                 createdAt:true,
-                  trakingNumber:true,
+                 trackingNumber:true,
                  updatedAt:true,
                 address:{
                      select:{
@@ -1079,7 +1079,7 @@ route.get('/getpaidorderdetails/:id',verification,roleAuthorize('ADMIN'),async(r
            select:{
                 id:true,
                 createdAt:true,
-                  trakingNumber:true,
+                  trackingNumber:true,
                  updatedAt:true,
                 address:{
                      select:{
@@ -1280,7 +1280,7 @@ route.get('/getcodorderdetails/:id',verification,roleAuthorize('ADMIN'),async(re
            select:{
                 id:true,
                 createdAt:true,
-                  trakingNumber:true,
+                 trackingNumber:true,
                  updatedAt:true,
                 address:{
                     select:{

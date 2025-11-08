@@ -657,7 +657,7 @@ route.get('/perfume',async(req,res)=>{
                 id:true,
                 createdAt:true,
                 address:true,
-                  trakingNumber:true,
+                  trackingNumber:true,
                  updatedAt:true,
                      user:{
                         select:{
@@ -782,7 +782,7 @@ route.get('/perfume',async(req,res)=>{
                 id:true,
                 createdAt:true,
                 address:true,
-                  trakingNumber:true,
+                 trackingNumber:true,
                  updatedAt:true,
                      user:{
                         select:{
@@ -1021,7 +1021,7 @@ route.get('/perfume',async(req,res)=>{
                 id:true,
                 createdAt:true,
                 address:true,
-                  trakingNumber:true,
+                trackingNumber:true,
                  updatedAt:true,
                      user:{
                         select:{
