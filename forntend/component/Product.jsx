@@ -9,15 +9,15 @@ export default function Product({name, description,price,stock,sold,photos,comme
   
     return(
         
-        <div className=" mx-[10px] overflow-hidden grid grid-cols-1 mt-[30px] ">
+        <div className=" max-w-[1380px] mx-[10px] overflow-hidden grid grid-cols-1 mt-[10px] ">
             
-                <div className="h-[380px] w-[302px] border-1 border-gray-400 grid grid-cols-1 rounded-xl mb-[10px]  ml-[5px] shadow-sm mt-[10px]">
-                    <div className='h-[180px] w-[300px]  relative rounded-xl'>
+                <div className="h-[380px] w-[300px] border-1 border-gray-400 grid grid-cols-1 rounded-xl mb-[10px] shadow-sm">
+                    <div className='h-[180px] w-[300px] p-1  rounded-xl'>
                          <Image src={photos||NoImage} height={180} width={300} priority className='rounded-xl object-cover h-full w-full ' alt='productphoto' />
                     </div>
                     <div className='mx-[5px] mt-[15px]'>
                     <h1 className='font-semibold text-m'>{name}</h1>
-                    <h2 className='text-[12px]'>{description}</h2>
+                    <h2 className='text-[12px] break-words'>{description}</h2>
                     <div className='flex gap-2'>
                         <h2 className='text-gray-500 line-through font-semibold'>₱{originalPrice}</h2>
                         <h2 className='font-bold'>₱{price} </h2>

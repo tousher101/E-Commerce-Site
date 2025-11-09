@@ -6,7 +6,7 @@ export default function productDetails({name, des, price, originalPrice, weight,
 
     return(
         <div className="nx-auto overflow-hidden mt-[20px]">
-            <h1 className='text-center text-3xl text-gray-400 font-semibold'>Product Summary</h1>
+            <h1 className='text-center text-3xl text-gray-500 font-bold'>Product <span className='text-green-500'>Summary</span></h1>
             <div className=' my-[30px]'>
            <ProductImageSlider photos={photos}/>
             </div>

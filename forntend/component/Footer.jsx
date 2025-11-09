@@ -16,12 +16,12 @@ import bank from '../public/Bank.png'
 
 export default function(){
     return(
-        <div className=" mx-[10px] overflow-hidden">
+        <div className=" max-w-[1380px] mx-[10px] overflow-hidden">
             <div className="lg:flex md:flex grid grid-cols-1 items-center lg:justify-between md:justify-between justify-items-center">
                 <div className="text-gray-700">
                 <Image src={logo} height='auto' width='auto' priority className="h-[80px] w-[180px]" alt="store-logo"/>
-                <p className="mt-[5px]">Touch & Take is the biggest market of treading products.</p>
-                <p>Get your tranding fashion products from our store with fast delivery and great prices.</p>
+                <p className="mt-[5px] text-sm text-gray-500">Touch & Take is the biggest <span className="text-green-500">market of tranding products.</span></p>
+                <p className="text-sm text-gray-500">Get your tranding fashion products from our <span className="text-green-500">store with fast delivery and great prices.</span></p>
                 </div>
                 <div className="flex justify-center items-center cursor-pointer ">
                     

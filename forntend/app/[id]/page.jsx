@@ -63,7 +63,7 @@ export default function productDetailsPage(){
     return(
         <>
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-        <div className="mx-auto overflow-hidden">
+        <div className=" max-w-[1380px] mx-[10px] overflow-hidden">
             <div>
             <ProductDetails name={productData?.name} des={productData?.description} price={productData?.price} originalPrice={productData?.originalPrice}
             weight={productData?.weight} color={productData?.color} size={productData?.size} variant={productData?.variant} stock={productData?.stock} photos={productData?.photos}
@@ -76,7 +76,7 @@ export default function productDetailsPage(){
             
 
             <div>
-                <h1 className="text-center text-3xl text-gray-400 font-semibold">Related Product</h1>
+                <h1 className=" ml-[20px] text-3xl text-gray-500 font-bold">Related <span className="text-green-500">Product</span></h1>
                 {relatedData?.map((rel)=>(
                         <div key={rel.id} className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 justify-items-center">
                     <Product name={rel?.name} description={rel?.description} price={rel?.price} originalPrice={rel?.originalPrice}

@@ -30,9 +30,9 @@ export default function womenFashion(){
     return(
         <>
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-        <div className=' mx-auto overflow-hidden'>
-            <h1 className="text-center font-semibold text-3xl mt-[50px]">Women's Product ({allproduct})</h1>
-            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 justify-items-center gap-1">
+        <div className='max-w-[1380px] mx-[10px] overflow-hidden'>
+            <h1 className="ml-[20px] font-bold text-3xl mt-[25px] text-gray-500">Women's <span className="text-green-500">Product ({allproduct})</span></h1>
+            <div className="flex flex-wrap justify-center gap-1">
             {productData?.map((pro)=>(
             <div key={pro.id}>
             <Product name={pro.name} description={pro.description} price={pro.price} stock={pro.stock} photos={pro?.photos[0]?.url}

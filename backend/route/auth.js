@@ -88,8 +88,8 @@ route.post('/logout', async(req,res)=>{
     try{
         res.clearCookie("refreshToken",{
             httpOnly:true,
-             secure: true, //true in Production
-            sameSite: 'None', //'none' in production
+             secure: false, //true in Production
+            sameSite: 'lax', //'none' in production
             path:'/'
         });
       return  res.status(200).json({msg:'Logout Successfully'})

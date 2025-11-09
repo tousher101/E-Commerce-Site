@@ -43,7 +43,7 @@ BigInt.prototype.toJSON = function() {
 
 
 app.use(hpp());
-app.use(globalLimiter);
+// app.use(globalLimiter);
 app.use(helmet());
 
 app.use(express.json({limit:'50mb'}));

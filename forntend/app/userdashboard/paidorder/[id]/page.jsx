@@ -70,7 +70,7 @@ export default function paidOrderDetails(){
                </div>
                 </div>
             </div>
-              <div className=" mx-[10px] my-[15px]"  data-aos='fade-up'>
+              <div className=" max-w-[1380px] mx-[10px] my-[15px]"  data-aos='fade-up'>
                 <h1 className=" text-center text-xl text-gray-400 font-semibold mb-[15px]">Shipping Information</h1>
                 <div className=" w-full text-sm">
                {<div className="grid grid-cols-1 gap-1 border-1 p-3 rounded-xl border-gray-400 ">

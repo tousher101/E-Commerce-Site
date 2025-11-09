@@ -10,7 +10,7 @@ export default function cart({closeModal, design, data, totalItems,submitItemDel
           <div className={`fixed top-0 left-0 h-full w-full bg-[rgba(0,0,0,0.5)] flex justify-center items-center z-50 transition-opacity duration-1000 ${design?'opacity-100':'opacity-0'}`}>
         <div className={`grid justify-items-center center content-center items-center bg-white p-[15px] rounded-2xl lg:w-[620px] md:w-[620px] w-[400px] text-center text-black duration-1000 ${design?'scale-100':'scale-0'}`}>
             <p className='text-2xl font-bold'>Cart Items ({totalItems||0})</p>
-            <div className='grid grid-cols-1 gap-1'>
+            <div className='grid grid-cols-1 gap-1 w-full'>
                 { data?.items?.map((item,index)=>(
                     <div key={index}>
                     <ProductSummary photo={item?.product?.photos[0]?.url} name={item?.product?.name} price={item?.product?.price} size={item?.size} quantity={item?.quantity} color={item?.color} variant={item?.variant} cartId={item?.id} submitItemDelete={submitItemDelete} mode={mode}    />

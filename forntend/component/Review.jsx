@@ -52,17 +52,17 @@ export default function review({productId}){
     return(
         <>
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-        <div className="mx-[auto] overflow-hidden mb-[25px]">
+        <div className="max-w-[1380px] mx-auto overflow-hidden mb-[25px]">
             <h1 className="text-xl ml-[10px] font-semibold">Review ({totalComment || 0})</h1>
-          <div className="grid grid-cols-1 mx-[10px] gap-3  bg-gray-400  p-3 rounded-xl ">
+          <div className="grid grid-cols-1 mx-[10px] gap-3  bg-green-500  p-3 rounded-xl ">
             {commentData.length>0?commentData?.map((com)=>(
-                <div key={com.id}  className="bg-gray-200 p-2 rounded-sm">
+                <div key={com.id}  className="bg-[#FBF5DF] p-2 rounded-sm">
                  <div className="flex items-center gap-1  p-2 rounded-sm">
                     <img className="h-[45px] w-[45px] rounded-4xl" src={com?.user?.photo ||'./User-2.gif'}/>
                     <h1 className="font-semibold">{com?.user?.name}</h1>
                     <h1 className="text-[11px]">@{com?.user?.role}</h1>
                     </div>
-                    <div className="  bg-gray-300 rounded-xl p-2">
+                    <div className="  bg-[#F0F8FF] rounded-xl p-2">
                         <p className="text-sm">{com?.comment}</p>
                     </div>
                     <div className="flex justify-between mx-[10px] items-center my-[10px] ">

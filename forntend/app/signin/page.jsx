@@ -46,26 +46,28 @@ else if(res.status===404 ||res.status===400||res.status===500){setMsg(data.msg);
     return(
         <>
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-        <div    className=" mx-auto overflow-hidden shadow-xl my-[50px] ">
-            <div data-aos='zoom-in' className="grid grid-cols-1 justify-items-center my-[30px]  ">
+        <div    className=" max-w-[1380px] mx-[10px] overflow-hidden   ">
+            <div data-aos='zoom-in' className="grid grid-cols-1 justify-items-center my-[25px]    ">
                 <div className="grid grid-cols-1 justify-items-center">
                     <Image src={logo} height='auto' width='auto' priority className="h-[60px] w-[120px]" alt="logo"/>
-                    <h1 className="text-gray-400 lg:text-sm md:text-sm text-[11px] mb-[10px] mt-[5px] ">Hello! Welcome Back To Our Shop! Please Login Your Account Here!</h1>
-                    <p className="text-gray-800 font-bold text-3xl">Login</p>
+                    <h1 className="text-gray-400 lg:text-sm md:text-sm text-[11px] mb-[10px] mt-[5px] ">Hello! Welcome Back To Our Shop! <span className="text-green-500">Please Login Your Account Here!</span></h1>
+                    <p className="text-gray-800 font-bold text-3xl">Lo<span className="text-green-500">gin</span></p>
                 </div>
 
-                <div className="grid grid-cols-1 gap-2 w-[400px] justify-items-center my-[15px]">
-                    <input value={email} onChange={(e)=>{setEmail(e.target.value)}} className="border-1 p-1.5 rounded-xl lg:w-[400px] md:w-[400px] w-[full]" type="email" placeholder="@Email"/>
-                    <input value={password} onChange={(e)=>{setPassword(e.target.value)}} className="border-1 p-1.5 rounded-xl lg:w-[400px] md:w-[400px] w-[full]" type="password" placeholder="Password"/>
+                <div className="grid grid-cols-1 gap-3 justify-items-center my-[15px]">
+                    <input value={email} onChange={(e)=>{setEmail(e.target.value)}} className="border-1 p-1.5 rounded-xl lg:w-[400px] md:w-[400px] w-[300px]" type="email" placeholder="@Email"/>
+                    <input value={password} onChange={(e)=>{setPassword(e.target.value)}} className="border-1 p-1.5 rounded-xl lg:w-[400px] md:w-[400px] w-[300px]" type="password" placeholder="Password"/>
                 </div>
+                <form onSubmit={submitLogin}>
                 <div className="flex justify-evenly w-[400px]">
                     <p>Remember Me <input type="checkbox"/></p>
                     <p>Forget Password</p>
                 </div>
 
-                <div className="flex justify-center items-center mb-[30px] mt-[25px]">
-                   <button onClick={submitLogin} className="h-[40px] w-[150px] bg-blue-500 rounded-2xl text-white font-semibold cursor-pointer hover:bg-gray-600 duration-500">Login</button>
+                <div className="flex justify-center items-center my-[20px]">
+                   <button type="Submit" className="h-[40px] w-[150px] bg-blue-500 rounded-2xl text-white font-semibold cursor-pointer hover:bg-gray-600 duration-500">Login</button>
                 </div>
+                </form>
                 <p>Don't Have Account? <Link href='/signup'><strong className="hover:underline">SignUp!</strong></Link></p>
 
             </div>
