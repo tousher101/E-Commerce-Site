@@ -1622,6 +1622,69 @@ const rawIds = await prisma.$queryRawUnsafe(
   }
 });
 
+//get all topselling product
+route.get('/gettopselling',async(req,res)=>{
+    try{
+        const topSelling= await prisma.product.findMany({
+            where:{productStatus:'TOP_SELLING'},
+            select:{
+                id:true,
+                name:true,
+                price:true,
+                originalPrice:true,
+                category:true,
+                stock:true,
+                productStatus:true,
+                photos:true,
+                  _count:{
+                    select:{comment:true}
+                }
+
+
+            },
+            take:10,
+            
+        });
+        return res.status(200).json({topSelling})
+
+    }catch (err) {
+    console.error("Search Error:", err);
+   return res.status(500).json({ msg: "Server Error" });
+  }
+});
+
+//get all top popular 
+route.get('/gettoppopular',async(req,res)=>{
+    try{
+        const topPopular= await prisma.product.findMany({
+            where:{productStatus:'MOST_POPULER'},
+            select:{
+                id:true,
+                name:true,
+                price:true,
+                originalPrice:true,
+                category:true,
+                stock:true,
+                productStatus:true,
+                photos:true,
+                  _count:{
+                    select:{comment:true}
+                }
+
+
+            },
+            take:10,
+           
+        });
+        return res.status(200).json({topPopular})
+
+    }catch (err) {
+    console.error("Search Error:", err);
+   return res.status(500).json({ msg: "Server Error" });
+  }
+});
+
+
 
 
 

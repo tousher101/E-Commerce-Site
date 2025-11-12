@@ -58,8 +58,8 @@ const changePassword=async()=>{
 
     return(
             <>
-            <div className=" mx-auto overflow-hidden mb-[80px]">
-            <div className="flex gap-3">
+            <div className=" max-w-[1380px] mx-auto overflow-hidden mb-[80px]">
+            <div className="flex gap-1">
 
             <div data-aos='fade-up' className=" flex-[20%] shadow-sm h-[950px] rounded-xl lg:flex md:hidden hidden ">
                 <div className="grid grid-cols-1 gap-2 p-3">
@@ -211,7 +211,7 @@ const changePassword=async()=>{
 
 
 
-            <div className="flex-[80%]  justify-center mx-auto overflow-x-hidden">
+            <div className="flex-[80%] w-full  mx-auto overflow-hidden">
                 {children}
                     </div>
                

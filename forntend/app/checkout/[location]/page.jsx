@@ -167,12 +167,12 @@ export default function checkOut() {
 return(
     <>
     {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-    <div className="lg:flex grid grid-cols-1 mx-auto overflow-hidden">
+    <div className="lg:flex grid grid-cols-1 mx-[10px] max-w-[1380px] overflow-hidden gap-2">
         <div className=" flex-[70%] justify-center my-[25px]">
             <div className="grid grid-cols-1 justify-items-center">
-                 <h1 className="  text-3xl text-gray-400 font-semibold">Order Summary</h1>
+                 <h1 className="  text-3xl text-gray-500 font-bold">Order <span className="text-green-500">Summary</span></h1>
                  {checkOutData?.items?.items?.map((item, index)=>(
-                <div key={index}>
+                <div key={index} className="w-full">
                 <ProductSummary photo={item?.product?.photos[0]?.url} name={item?.product?.name} price={item?.product?.price} size={item?.size} quantity={item?.quantity} color={item?.color} variant={item?.variant} mode={mode}/>
             </div>
                  ))}
@@ -180,11 +180,11 @@ return(
 
             </div>
 
-            <div className=" mx-[10px]">
-                <h1 className=" text-center text-xl text-gray-400 font-semibold mb-[15px]">Shipping Address</h1>
+            <div>
+                <h1 className=" text-center text-xl text-gray-500 font-bold mb-[15px]">Shipping <span className="text-green-500">Address</span></h1>
                 <p className="font-semibold text-xs text-gray-500 text-center mb-[15px]">Note: Please Make Sure! Your Selected Shipping Area & Your Shipping Address Is Same Area!</p>
                 
-                <div className=" grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-3 w-full">
+                <div className=" flex flex-wrap justify-center gap-3 w-full">
                     {addressData?.map((add)=>(
                         <label key={add?.id} htmlFor={`address-${add.id}`} className={`cursor-pointer block mb-[25px] border-1 rounded-md ${selectedAddressId===add.id?'border-blue-500 bg-blue-50 border-2': 'border-gray-400'}`}>
                              <input type="radio" name="address" value={add?.id} checked={selectedAddressId===add?.id} onChange={()=>{setSelectedAddressId(add?.id)}} id={`address-${add.id}`} className=" h-[20px] w-[20px] hidden"/>
@@ -197,8 +197,8 @@ return(
                 </div>
 
             </div>
-            <div className="flex justify-center mx-[10px]">
-                <button onClick={()=>{setAddAddress(true)}} className="p-2 bg-blue-600 rounded-xl text-white cursor-pointer">+Add New Address</button>
+            <div className="flex justify-center">
+                <button onClick={()=>{setAddAddress(true)}} className="h-[40px] w-[180px] bg-black rounded-sm text-white cursor-pointer">+Add New Address</button>
             </div>
             {addAddress&&<AddAddress cancel={()=>{setAddAddress(false)}} provinces={provinces} cities={cities} barangay={barangays} provinceValue={selectedProvince} provinceOnCh={provinceOnChange}
             citiesValue={selectedCities} citiesOnCh={cityOnChange} barangayValue={selectedBarangay} barangayOnCh={barangayOnChange} labelValue={label} labelOnCh={(e)=>{setLabel(e.target.value)}}
@@ -208,9 +208,9 @@ return(
 
         </div>
 
-        <div className=" flex-[30%] shadow-sm h-[450px] rounded-xl">
+        <div className=" flex-[30%] shadow-sm h-[450px] rounded-xl bg-[#FCFCF7]">
             <div className=" my-[15px]">
-                <h1 className=" text-center  text-xl text-gray-400 font-semibold">Payment Summary</h1>
+                <h1 className=" text-center  text-2xl text-gray-500 font-bold">Payment <span className="text-green-500">Summary</span></h1>
                 <div>
                     <PaymentSummary checkOut={checkOutData?.items} subTotal={checkOutData?.itemPrice} referralBonus={checkOutData?.bonus} subtotal={checkOutData?.subtotal}
                     shippingFee={checkOutData?.shippingFee} paymentAmount={checkOutData?.total}/>

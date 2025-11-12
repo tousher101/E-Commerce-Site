@@ -42,9 +42,10 @@ export default function accessories() {
             </div>
             ))}
             </div>
-              {totalPage>1&&<div className='flex justify-between mb-[20px] mx-[10px]'>
-                <button onClick={()=>{setCurrentPage((p)=>p-1,1)}} disabled={totalPage<1}  className='h-[40px] w-[100px] bg-black text-white rounded-xl cursor-pointer'>Previous</button>
-                <button onClick={handleNext} className='h-[40px] w-[100px] bg-black text-white rounded-xl cursor-pointer'>Next</button>
+              {totalPage>1&&<div className='flex justify-around items-center mb-[20px] mx-[10px]'>
+               <button onClick={()=>{setCurrentPage((p)=>p-1)}} disabled={totalPage===1}  className='h-[40px] w-[100px] text-gray-600  cursor-pointer'>&larr; Previous</button>
+                <h1 className='text-gray-600 text-sm'>Page {currentpage} of {totalPage} pages</h1>
+                <button onClick={handleNext}  className='h-[40px] w-[100px]  text-gray-600 cursor-pointer'>Next &rarr;</button>
             </div>}
         </div>
         </>

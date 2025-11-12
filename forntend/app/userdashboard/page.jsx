@@ -24,7 +24,7 @@ export default function userDashboard(){
 
     return(
         
-        <div     className='grid grid-cols-1  mx-auto overflow-hidden '>
+        <div     className='grid grid-cols-1  overflow-hidden w-full'>
             <h1 className="text-center text-3xl font-bold text-gray-500 my-[25px]">Your <span className="text-green-500">Dashboard</span></h1>
             <UserDashBoardCard pendingOrder={data?.totalPendingOrder} confirmedOrder={data?.totalConfirmedOrder} shippedOrder={data?.totalShippedOrder}
             deliveredOrder={data?.totalDeliveredOrder} paidOrder={data?.totalPaidOrder} cancelledOrder={data?.totalCancelOrder}  />

@@ -8,6 +8,8 @@ import Alert from '../Utils/Alert'
 import AOS from 'aos';
 import 'aos/dist/aos.css'
 import Cookie from '../component/Cookie'
+import ProductStatusCard from '../component/ProductStatusCard'
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
 const BaseURI=process.env.NEXT_PUBLIC_API_URI;
@@ -17,6 +19,9 @@ const [totalPage, setTotalPage]=useState(0);
 const [msg, setMsg]=useState(null);
 const [type, setType]=useState(null);
 const [cookie, setCookie]=useState(false);
+const [topSelling, setTopSelling]=useState([]);
+const [topPopular, setTopPopular]=useState([]);
+const router=useRouter();
 
 const getAllProducts=async(page)=>{
   const res= await fetchWithAuth(`${BaseURI}/api/user/allproduct?page=${page}&limit=${28}`)
@@ -25,14 +30,24 @@ const getAllProducts=async(page)=>{
 
 };
 
+const getTopSelling=async()=>{
+  const res= await fetchWithAuth(`${BaseURI}/api/user/gettopselling`)
+  setTopSelling(res.topSelling)
+};
+
+const getTopPopular=async()=>{
+  const res= await fetchWithAuth(`${BaseURI}/api/user/gettoppopular`)
+  setTopPopular(res.topPopular)
+}
+
 useEffect(()=>{
-  getAllProducts(page)
+  getAllProducts(page);
+  getTopSelling();
+  getTopPopular();
   AOS.init({
     duration:1000,once:false,mirror:false
   });
   AOS.refresh();
-  
-  
 },[page])
 
 useEffect(()=>{
@@ -46,8 +61,42 @@ const handelNext=()=>{
   return (
     <>
     {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-    <div className=' mx-auto overflow-hidden'>
+    <div className='max-w-[1380px] mx-auto overflow-hidden'>
       <Bannar/>
+      <div className='max-w-[1380px] mx-[10px] overflow-hidden flex gap-5 justify-center items-center mt-[25px]'>
+        <div className='flex-[50%] justify-center items-center'>
+          <h1 className='text-center text-2xl font-bold text-gray-500 mb-[10px] '>Top Sell<span className='text-green-500'>ing Product</span></h1>
+          <div className='grid grid-cols-1 justify-items-center gap-2'>
+            {topSelling?.map((top)=>(
+              <div key={top.id} onClick={()=>{router.push(`/${top.id}`)}} className='w-full cursor-pointer'>
+                <ProductStatusCard name={top?.name} price={top?.price} originalPrice={top?.originalPrice} stock={top?.stock} photo={top?.photos[0].url} 
+                review={top?._count?.comment} status={top?.productStatus} />
+              </div>
+                
+            ))}
+            
+
+          </div>
+
+        </div>
+
+
+           <div className='flex-[50%] justify-center items-center'>
+          <h1 className=' text-center text-2xl font-bold text-gray-500 mb-[10px] '>Top Pop<span className='text-green-500'>ular Product</span></h1>
+          <div className='grid grid-cols-1 justify-items-center gap-2'>
+                {topPopular?.map((top)=>(
+              <div key={top.id} onClick={()=>{router.push(`${top.id}`)}} className='w-full cursor-pointer'>
+                <ProductStatusCard name={top?.name} price={top?.price} originalPrice={top?.originalPrice} stock={top?.stock} photo={top?.photos[0].url} 
+                review={top?._count?.comment} status={top?.productStatus} />
+              </div>
+                
+            ))}
+
+          </div>
+
+        </div>
+
+      </div>
       <Category/>
       <div className='mb-[60px]'>
       <h1 className='ml-[25px] text-3xl text-gray-500 font-bold'>Pro<span className='text-green-500'>ducts</span></h1>
@@ -59,9 +108,10 @@ const handelNext=()=>{
            </div> ))}
       </div>
       
-        {totalPage>1&&<div className='flex justify-between mb-[20px] mx-[10px]'>
-                <button onClick={()=>{setPage((p)=>p-1,1)}} disabled={totalPage<1}  className='h-[40px] w-[100px] bg-black text-white rounded-xl cursor-pointer'>Previous</button>
-                <button onClick={handelNext}  className='h-[40px] w-[100px] bg-black text-white rounded-xl cursor-pointer'>Next</button>
+        {totalPage>1&&<div className='flex justify-around items-center mb-[20px] mx-[10px]'>
+                <button onClick={()=>{setPage((p)=>p-1)}} disabled={totalPage===1}  className='h-[40px] w-[100px] text-gray-600  cursor-pointer'>&larr; Previous</button>
+                <h1 className='text-gray-600 text-sm'>Page {page} of {totalPage} pages</h1>
+                <button onClick={handelNext}  className='h-[40px] w-[100px]  text-gray-600 cursor-pointer'>Next &rarr;</button>
             </div>}
             </div>
      

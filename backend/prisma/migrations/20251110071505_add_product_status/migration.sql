@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `product` ADD COLUMN `productStatus` ENUM('NONE', 'TOP_SELLING', 'MOST_POPULER') NOT NULL DEFAULT 'NONE';

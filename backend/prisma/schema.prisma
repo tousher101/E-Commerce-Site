@@ -56,6 +56,7 @@ model Product {
   comment       Comment[]
   order         OrderItem[]
   photos        ProductPhotos[]
+  productStatus ProductStatus @default(NONE)
 }
 
 model ProductPhotos {
@@ -236,4 +237,12 @@ enum Category {
 enum PaymentMethod {
   COD
   CARD
+}
+
+enum ProductStatus {
+  NONE
+  TOP_SELLING
+  MOST_POPULER
+  SALES_OFFER
+  PROMO_OFFER
 }

@@ -12,8 +12,6 @@ export default function allproductbycat(){
                   AOS.refresh();
     })
     return(
-        <div className="max-w-[1380px] mx-[10px] overflow-hidden">
-            <AdminCategory/>
-        </div>
+    <AdminCategory/>
     )
 }

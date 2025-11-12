@@ -37,10 +37,10 @@ export default function layout({children}){
                     <div>
                         <label htmlFor="sidebar-toggle" className="cursor-pointer"><Image src={closedSlide} width={40} height={60} alt="sidebar-toggle-icon-close"/></label>
                     </div>
-                      <div data-aos='slide-up' className="flex-[20%]   mt-[20px]   rounded-xl lg:hidden md:flex flex ">
+                      <div data-aos='slide-up' className="   mt-[20px]   rounded-xl lg:hidden md:flex flex ">
                 <div className="grid grid-cols-1 ">
                         <div className="grid grid-cols-1 justify-items-center items-center gap-2">
-                       <button onClick={()=>{setChangePassModal(true)}} className="h-[50px] w-[120px] mb-[15px] rounded-sm bg-gray-800 cursor-pointer text-white text-sm ">Change Password</button>
+                       <button onClick={()=>{setChangePassModal(true)}} className="h-[45px] w-[120px] mb-[15px] rounded-sm bg-gray-800 cursor-pointer text-white text-sm ">Change Password</button>
                         </div>
                     <div className="flex items-center gap-1">
                         <img className="w-[40px] h-[40px]" src="/task-management.gif"/>
@@ -91,12 +91,18 @@ export default function layout({children}){
                 </div>
             </div>
                 </aside>
+
                 </div>
-            <div className="flex gap-3">
-            <div data-aos='slide-up' className="flex-[20%]  h-[700px] rounded-xl lg:flex md:hidden hidden ">
-                <div className="grid grid-cols-1 gap-2 p-3">
-                        <div className="grid grid-cols-1 justify-items-center items-center my-[25px] gap-3">
-                       <button onClick={()=>{setChangePassModal(true)}} className="p-2.5 rounded-xl bg-gray-800 cursor-pointer text-white">Change Password</button>
+
+
+
+
+
+            <div className="flex ">
+            <div data-aos='slide-up' className="  h-[700px] rounded-xl lg:flex md:hidden hidden p-4 bg-[#FAF9F6]">
+                <div className="grid grid-cols-1 ">
+                        <div className="flex justify-center items-center ">
+                       <button onClick={()=>{setChangePassModal(true)}} className="h-[40px] w-[180px] rounded-sm bg-gray-800 cursor-pointer text-white">Change Password</button>
                         </div>
                     <div className="flex items-center gap-1">
                         <img className="w-[40px] h-[40px]" src="/task-management.gif"/>
@@ -146,14 +152,9 @@ export default function layout({children}){
 
                 </div>
             </div>
-            <div className="flex-[80%] h-full w-full mx-auto overflow-hidden  justify-center">
+            <div className="flex-[80%] h-full w-full  overflow-hidden  justify-center">
                 {children}
                     </div>
-
-            
-
-
-               
             </div>
    
         </div>  

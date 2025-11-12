@@ -19,13 +19,14 @@ export default function accessories(){
     const [totalProduct, setTotalProduct]=useState(0);
     const [msg, setMsg]=useState(null);
     const [type, setType]=useState(null);
-  
        const [deleteModal, setDeleteModal]=useState(false);
        const [editModal, setEditModal]=useState(false);
        const [animatedModal, setAnimatedModal]=useState(false);
        const [loading, setLoading]=useState(false);
        const [selectProduct, setSelectProduct]=useState(null);
-       const [productId, setProductId]=useState(null)
+       const [productId, setProductId]=useState(null);
+       const [barCode, setBarCode]=useState('');
+       const [searchData,setSearchData]=useState(null);
  
 
 
@@ -109,6 +110,33 @@ const variantArray = Array.isArray(selectProduct?.variant)
        
     };
 
+      const submitSearch=async(barCode)=>{
+      const res= await fetchWithAuth(`${BaseURI}/api/admin/searchproductbybarcodeaccessories?barCode=${barCode}`)
+      setSearchData(res.searchProduct);
+      setMsg(res.msg); setType('Error')
+    };
+
+    const makeTopSelling=async(id)=>{
+      const res=await fetchWithAuth(`${BaseURI}/api/admin/maketopselling/${id}`,{
+         method:'PUT'
+      });
+      setMsg(res.msg); setType('Success'); getAccessoriesProduct(page)
+    };
+
+      const makeTopPopular=async(id)=>{
+      const res=await fetchWithAuth(`${BaseURI}/api/admin/maketoppopuler/${id}`,{
+         method:'PUT'
+      });
+      setMsg(res.msg); setType('Success'); getAccessoriesProduct(page)
+    };
+
+      const makeDefaultProduct=async(id)=>{
+      const res=await fetchWithAuth(`${BaseURI}/api/admin/makechangeproductstatus/${id}`,{
+         method:'PUT'
+      });
+      setMsg(res.msg); setType('Success'); getAccessoriesProduct(page)
+    };
+
     useEffect(()=>{
             AOS.init({
             duration:1000,once:false,mirror:false
@@ -119,22 +147,30 @@ const variantArray = Array.isArray(selectProduct?.variant)
 
     const handleNext=()=>{
         if(totalPage>page){setPage((p)=>p+1)}else{setMsg('No More Product Available'); setType('Error'); return}
-    }
+    };
 
     return(
         <>
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-        <div className=" mx-auto overflow-hidden">
-            <h1 className='text-center text-3xl text-gray-400 font-semibold my-[30px]'>Accessories ({totalProduct})</h1>
+        <div className=" mx-auto w-full overflow-hidden">
+           <div className='flex justify-end gap-2 mx-[10px] items-center'>
+            <input value={barCode} onChange={(e)=>{setBarCode(e.target.value)}} type='text' className='p-2 border-1 border-gray-400 text-sm rounded-xl' placeholder='Barcode Number'/>
+            <button onClick={()=>{submitSearch(barCode)}} className='h-[35px] w-[100px] rounded-sm bg-black text-white cursor-pointer'>Search</button>
+         </div>
+            <h1 className='text-center text-3xl text-gray-400 font-semibold'>Accessories ({totalProduct})</h1>
             <div className='grid lg:grid-cols-1 md:grid-cols-2 grid-cols-1 gap-1 justify-items-center'>
-           {productData?.map((pro)=>(
-                 <div key={pro.id} onClick={()=>{setSelectProduct(pro);setProductId(pro.id)}} data-aos='slide-up'>
-                <AdminProduct productName={pro?.name} productDescription={pro?.description} productPhotos={pro?.photos[0]?.url} productPrice={pro?.price} productStock={pro?.stock}  
-                productColor={pro?.color} productSize={pro?.size} productVariant={pro?.variant} productWeight={pro?.weight} update={pro?.updatedAt} create={pro?.createdAt} 
-                 productOriginalPrice={pro?.originalPrice} openDeleteModal={openDeleteModal} openEditModal={openEditModal}/>
-                
+           {searchData&&Object.keys(searchData).length>0? <div key={searchData.id} className='w-full'><AdminProduct productName={searchData?.name} productDescription={searchData?.description} productPhotos={searchData?.photos[0]?.url} productPrice={searchData.price} productStock={searchData.stock}  
+            productColor={searchData.color} productSize={searchData.size} productVariant={searchData.variant} productWeight={searchData.weight} update={searchData.updatedAt} create={searchData.createdAt} 
+            productOriginalPrice={searchData.originalPrice} openDeleteModal={openDeleteModal} openEditModal={openEditModal} status={searchData.productStatus} 
+            submitMakeTopSelling={()=>{makeTopSelling(searchData.id)}} submitMakePopular={()=>{makeTopPopular(searchData.id)}} submitClearAll={()=>{makeDefaultProduct(searchData.id)}} /></div>         
+            :productData?.map((pro)=>(
+            <div key={pro.id}  onClick={()=>{setSelectProduct(pro);setProductId(pro.id)} } data-aos='slide-up' className=' w-full my-2' >
+            <AdminProduct productName={pro.name} productDescription={pro.description} productPhotos={pro?.photos[0]?.url} productPrice={pro.price} productStock={pro.stock}  
+            productColor={pro.color} productSize={pro.size} productVariant={pro.variant} productWeight={pro.weight} update={pro.updatedAt} create={pro.createdAt} 
+            productOriginalPrice={pro.originalPrice} openDeleteModal={openDeleteModal} openEditModal={openEditModal} status={pro.productStatus} 
+            submitMakeTopSelling={()=>{makeTopSelling(pro.id)}} submitMakePopular={()=>{makeTopPopular(pro.id)}} submitClearAll={()=>{makeDefaultProduct(pro.id)}} />
             </div>
-           ))}
+            ))}
            </div>
             
               {totalPage>1&&<div className="flex justify-between mx-[10px]">

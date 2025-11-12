@@ -31,9 +31,9 @@ export default function searchProduct(){
 
 
     return(
-        <div className="mx-auto overflow-hidden">
-            <h1 className="text-center text-2xl text-gray-400 font-semibold mt-[25px]">Total Product ({totalProduct})</h1>
-            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 justify-items-center items-center gap-2">
+        <div className="mx-[10px] max-w-[1380px] overflow-hidden">
+            <h1 className="ml-[20px] text-3xl text-gray-500 font-bold mt-[25px]">Total <span className="text-green-500">Product ({totalProduct})</span></h1>
+            <div className="flex flex-wrap justify-center items-center gap-3">
                 {srcData?.map((pro)=>(
                 <div key={pro.id} data-aos='fade-left'>
                 <Products name={pro?.name} description={pro?.description} price={pro?.price} photos={pro?.photos[0]?.url} stock={pro?.stock}

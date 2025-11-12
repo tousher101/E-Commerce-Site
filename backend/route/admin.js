@@ -1605,7 +1605,8 @@ route.get('/adminmensfashion',verification,roleAuthorize('ADMIN'),async(req,res)
                 weight:true,
                 updatedAt: true,
                 createdAt:true,
-                originalPrice:true
+                originalPrice:true,
+                productStatus:true
             },
             skip:skip,
             take:limit,
@@ -1639,7 +1640,8 @@ route.get('/adminwomensfashion',verification,roleAuthorize('ADMIN'),async(req,re
                 weight:true,
                 updatedAt: true,
                 createdAt:true,
-                originalPrice:true
+                originalPrice:true,
+                productStatus:true
             },
             skip:skip,
             take:limit,
@@ -1673,7 +1675,8 @@ route.get('/adminkidsfashion',verification,roleAuthorize('ADMIN'),async(req,res)
                 weight:true,
                 updatedAt: true,
                 createdAt:true,
-                originalPrice:true
+                originalPrice:true,
+                productStatus:true
             },
             skip:skip,
             take:limit,
@@ -1707,7 +1710,8 @@ route.get('/adminaccessories',verification,roleAuthorize('ADMIN'),async(req,res)
                 weight:true,
                 updatedAt: true,
                 createdAt:true,
-                originalPrice:true
+                originalPrice:true,
+                productStatus:true
             },
             skip:skip,
             take:limit,
@@ -1741,7 +1745,8 @@ route.get('/adminperfume',verification,roleAuthorize('ADMIN'),async(req,res)=>{
                 weight:true,
                 updatedAt: true,
                 createdAt:true,
-                originalPrice:true
+                originalPrice:true,
+                productStatus:true
             },
             skip:skip,
             take:limit,
@@ -1789,7 +1794,199 @@ route.get('/getallcourier',verification,roleAuthorize('ADMIN'),async(req,res)=>{
         });
         return res.status(200).json({courier})
     }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
-})
+});
+
+//make top selling product
+route.put('/maketopselling/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const productId=Number(req.params.id)
+        const product= await prisma.product.findUnique({
+            where:{id:productId},
+        });
+        if(!product){return res.status(404).json({msg:'Product Already Top Selling'})};
+        await prisma.product.update({
+            where:{id:product.id},
+            data:{productStatus:'TOP_SELLING'}
+        });
+        return res.status(200).json({msg:'Product Status Change To Top Selling Successfully'})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+//make top popular product
+route.put('/maketoppopuler/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const productId=Number(req.params.id)
+        const product= await prisma.product.findUnique({
+            where:{id:productId},
+        });
+        if(!product){return res.status(404).json({msg:'Product Already To Popular'})};
+        await prisma.product.update({
+            where:{id:product.id},
+            data:{productStatus:'MOST_POPULER'}
+        });
+        return res.status(200).json({msg:'Product Status Change To Top Popular Successfully'})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+// make none the product status
+route.put('/makechangeproductstatus/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const productId=Number(req.params.id)
+        const product= await prisma.product.findUnique({
+            where:{id:productId},
+        });
+        if(!product){return res.status(404).json({msg:'Product Already Default'})};
+        await prisma.product.update({
+            where:{id:product.id},
+            data:{productStatus:'NONE'}
+        });
+        return res.status(200).json({msg:'Product Status Change Successfully'})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+//searchProduct by Barcode Number mens
+route.get('/searchproductbybarcodemens',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const {barCode}= req.query
+        const searchProduct= await prisma.product.findFirst({
+            where:{barcode:barCode,category:'MENSFASHION'},
+           select:{
+                id:true,
+                name:true,
+                description:true,
+                price:true,
+                stock:true,
+                photos:true,
+                size:true,
+                color:true,
+                variant:true,
+                weight:true,
+                updatedAt: true,
+                createdAt:true,
+                originalPrice:true,
+                productStatus:true
+            }
+        });
+        if(!searchProduct){return res.status(404).json({msg:'Product Not Found'})}
+        return res.status(200).json({searchProduct})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+//searchProduct by Barcode Number womens
+route.get('/searchproductbybarcodewomens',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const {barCode}= req.query
+        const searchProduct= await prisma.product.findFirst({
+            where:{barcode:barCode,category:'WOMENFASHION'},
+           select:{
+                id:true,
+                name:true,
+                description:true,
+                price:true,
+                stock:true,
+                photos:true,
+                size:true,
+                color:true,
+                variant:true,
+                weight:true,
+                updatedAt: true,
+                createdAt:true,
+                originalPrice:true,
+                productStatus:true
+            }
+        });
+        if(!searchProduct){return res.status(404).json({msg:'Product Not Found'})}
+        return res.status(200).json({searchProduct})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+//searchProduct by Barcode Number kids
+route.get('/searchproductbybarcodekids',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const {barCode}= req.query
+        const searchProduct= await prisma.product.findFirst({
+            where:{barcode:barCode,category:'KIDSFASHION'},
+           select:{
+                id:true,
+                name:true,
+                description:true,
+                price:true,
+                stock:true,
+                photos:true,
+                size:true,
+                color:true,
+                variant:true,
+                weight:true,
+                updatedAt: true,
+                createdAt:true,
+                originalPrice:true,
+                productStatus:true
+            }
+        });
+        if(!searchProduct){return res.status(404).json({msg:'Product Not Found'})}
+        return res.status(200).json({searchProduct})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+
+//searchProduct by Barcode Number accessories
+route.get('/searchproductbybarcodeaccessories',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const {barCode}= req.query
+        const searchProduct= await prisma.product.findFirst({
+            where:{barcode:barCode,category:'ACCESSORIES'},
+           select:{
+                id:true,
+                name:true,
+                description:true,
+                price:true,
+                stock:true,
+                photos:true,
+                size:true,
+                color:true,
+                variant:true,
+                weight:true,
+                updatedAt: true,
+                createdAt:true,
+                originalPrice:true,
+                productStatus:true
+            }
+        });
+        if(!searchProduct){return res.status(404).json({msg:'Product Not Found'})}
+        return res.status(200).json({searchProduct})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+//searchProduct by Barcode Number prefume
+route.get('/searchproductbybarcodeprefume',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const {barCode}= req.query
+        const searchProduct= await prisma.product.findFirst({
+            where:{barcode:barCode,category:'PERFUME'},
+           select:{
+                id:true,
+                name:true,
+                description:true,
+                price:true,
+                stock:true,
+                photos:true,
+                size:true,
+                color:true,
+                variant:true,
+                weight:true,
+                updatedAt: true,
+                createdAt:true,
+                originalPrice:true,
+                productStatus:true
+            }
+        });
+        if(!searchProduct){return res.status(404).json({msg:'Product Not Found'})}
+        return res.status(200).json({searchProduct})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+
+
 
 
 

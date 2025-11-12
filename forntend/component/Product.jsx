@@ -9,7 +9,7 @@ export default function Product({name, description,price,stock,sold,photos,comme
   
     return(
         
-        <div className=" max-w-[1380px] mx-[10px] overflow-hidden grid grid-cols-1 mt-[10px] ">
+        <div className=" w-full overflow-hidden grid grid-cols-1 mt-[10px] ">
             
                 <div className="h-[380px] w-[300px] border-1 border-gray-400 grid grid-cols-1 rounded-xl mb-[10px] shadow-sm">
                     <div className='h-[180px] w-[300px] p-1  rounded-xl'>

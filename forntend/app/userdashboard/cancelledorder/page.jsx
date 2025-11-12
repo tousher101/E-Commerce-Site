@@ -42,7 +42,7 @@ export default function cancelledOrder(){
     return(
         <>
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-        <div className=" max-w-[1380px] h-screen mx-auto overflow-hidden">
+        <div className=" w-full h-screen mx-auto overflow-hidden">
                 <h1 className="text-center text-gray-500 my-[20px] text-3xl font-bold">Cancelled <span className='text-green-500'>Order ({totalOrder})</span></h1>
                 <div className='grid grid-cols-1 gap-1.5 items-center'>
                 {orderData?.length>0? orderData?.map((order)=>(
@@ -52,10 +52,11 @@ export default function cancelledOrder(){
                 userEmail={order?.user?.email} userPhone={order?.user?.phone} orderCreate={order?.createdAt} goDetails={()=>{goDetails(order.id)}} />
                 </div>)) : <h1 className= 'text-center mt-50 text-4xl text-gray-500 font-semibold'> Cancelled Order Not Available</h1>}
                 </div>
-                   {totalPage>1&&<div className='flex justify-between mb-[20px] mx-[10px]'>
-            <button onClick={()=>{setPage((p)=>p-1)}} disabled={totalPage<=1}  className='h-[40px] w-[100px] bg-black text-white rounded-xl cursor-pointer'>Previous</button>
-            <button onClick={handelNext}  className='h-[40px] w-[100px] bg-black text-white rounded-xl cursor-pointer'>Next</button>
-                </div>}
+                  {totalPage>1&&<div className='flex justify-around items-center mb-[20px] mx-[10px]'>
+                <button onClick={()=>{setPage((p)=>p-1)}} disabled={totalPage===1}  className='h-[40px] w-[100px] text-gray-600  cursor-pointer'>&larr; Previous</button>
+                <h1 className='text-gray-600 text-sm'>Page {page} of {totalPage} pages</h1>
+                <button onClick={handelNext}  className='h-[40px] w-[100px]  text-gray-600 cursor-pointer'>Next &rarr;</button>
+            </div>}
                  </div>
                  </>
     )

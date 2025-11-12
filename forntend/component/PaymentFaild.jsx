@@ -1,9 +1,9 @@
 import Link from "next/link"
 export default function paymentFaild(){
     return(
-      <div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+      <div className="bg-gray-100 min-h-screen flex items-center justify-center w-full">
     
-      <div className="bg-white p-8 md:p-12 rounded-2xl shadow-xl max-w-md w-full text-center">
+      <div className="bg-white p-8 md:p-12 rounded-2xl shadow-xl   text-center">
         
         
         <div className="mb-6">
