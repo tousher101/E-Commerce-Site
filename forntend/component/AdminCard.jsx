@@ -15,10 +15,10 @@ cancelledOrderGrowth,confOrder
 
 }){
     return(
-        <div className="  mx-auto overflow-hidden  mt-[50px]">
+        <div className="  mx-auto overflow-hidden w-full  mt-[50px] mb-[25px]">
             <h2 className="text-xl font-bold mb-4 text-gray-700">Monthly Report</h2>
-            <div className="  grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 ">
-                <div  data-aos='fade-up' className="  p-3 bg-gradient-to-r from-[#dfc6c6] to-[#00FFFF] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
+            <div className=" flex flex-wrap justify-center gap-2 ">
+                <div  data-aos='fade-up' className=" h-[180px] w-[320px]  p-3 bg-gradient-to-r from-[#dfc6c6] to-[#00FFFF] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
                     <div className="flex items-center justify-center gap-1">
                         <Image src={salesIcon} height={30} width={30} alt="sales-Icone"/>
                         <h1 className="grid text-center text-xl font-semibold">Total Sales (Monthly)</h1>
@@ -40,7 +40,7 @@ cancelledOrderGrowth,confOrder
                     </div>
                 </div>
 
-                 <div  data-aos='fade-up' className=" p-3 bg-gradient-to-r from-[#dfc6c6] to-[#FF69B4] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
+                 <div  data-aos='fade-up' className="  h-[180px] w-[320px] p-3 bg-gradient-to-r from-[#dfc6c6] to-[#FF69B4] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
                    <div className="flex items-center justify-center gap-1">
                         <Image src={orderIcone} height={40} width={40} alt="order-Icone"/>
                         <h1 className="grid text-center text-xl font-semibold">Total Order (Monthly)</h1>
@@ -60,7 +60,7 @@ cancelledOrderGrowth,confOrder
                         </div>
                     </div>
                 </div>
-                              <div  data-aos='fade-up' className=" p-3 bg-gradient-to-r from-[#dfc6c6] to-[#82ce95] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
+                              <div  data-aos='fade-up' className="  h-[180px] w-[320px] p-3 bg-gradient-to-r from-[#dfc6c6] to-[#82ce95] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
                       <div className="flex items-center justify-center gap-1">
                         <Image src={deliveredIcone} height={30} width={30} alt="delivered-order-Icone"/>
                         <h1 className="grid text-center text-xl font-semibold">Delivered Order (Monthly)</h1>
@@ -81,7 +81,7 @@ cancelledOrderGrowth,confOrder
                     </div>
                 </div>              
 
-                                <div  data-aos='fade-up' className=" p-3 bg-gradient-to-r from-[#dfc6c6] to-[#6d5ec2] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
+                                <div  data-aos='fade-up' className="  h-[180px] w-[320px] p-3 bg-gradient-to-r from-[#dfc6c6] to-[#6d5ec2] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
                       <div className="flex items-center justify-center gap-1">
                         <Image src={cancelledIcone} height={30} width={30} alt="cancelled-order-Icone"/>
                         <h1 className="grid text-center text-xl font-semibold">Cancelled Order (Monthly)</h1>
@@ -106,7 +106,7 @@ cancelledOrderGrowth,confOrder
 
 
                  
-                 <div data-aos='fade-up' className=" p-3 bg-gradient-to-r from-[#dfc6c6] to-[#FF69B4] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
+                 <div data-aos='fade-up' className="  h-[180px] w-[320px] p-3 bg-gradient-to-r from-[#dfc6c6] to-[#FF69B4] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
                      <div className="flex items-center justify-center gap-1">
                         <Image src={pendingIcone} height={30} width={30} alt="pending-order-Icone"/>
                         <h1 className="grid text-center text-xl font-semibold">Pending Order (Current)</h1>
@@ -116,7 +116,7 @@ cancelledOrderGrowth,confOrder
                     </div>
                 </div>
 
-                <div  data-aos='fade-up' className=" p-3 bg-gradient-to-r from-[#dfc6c6] to-[#71da8b] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
+                <div  data-aos='fade-up' className="  h-[180px] w-[320px] p-3 bg-gradient-to-r from-[#dfc6c6] to-[#71da8b] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
                       <div className="flex items-center justify-center gap-1">
                         <Image src={confIcone} height={30} width={30} alt="shipped-order-Icone"/>
                         <h1 className="grid text-center text-xl font-semibold">Confirmed Order (Current)</h1>
@@ -128,7 +128,7 @@ cancelledOrderGrowth,confOrder
             </div>
         </div>
              <div className="flex justify-center mt-[20px]">
-                          <div  data-aos='fade-up' className=" p-3 bg-gradient-to-r from-[#dfc6c6] to-[#82ce95] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
+                          <div  data-aos='fade-up' className="  h-[180px] w-[320px] p-3 bg-gradient-to-r from-[#dfc6c6] to-[#82ce95] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
                       <div className="flex items-center justify-center gap-1">
                         <Image src={shippedIcone} height={30} width={30} alt="shipped-order-Icone"/>
                         <h1 className="grid text-center text-xl font-semibold">Shipped Order (Current)</h1>

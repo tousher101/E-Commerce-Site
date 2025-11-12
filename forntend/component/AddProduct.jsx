@@ -3,8 +3,8 @@ export default function addProduct({name,nameOnCh,description,descriptionOnCh,pr
     originalPrice,originlPriceOnCh
 }){
     return(
-        <div className=" mx-auto overflow-hidden">
-            <h1 className="text-center text-gray-500 text-3xl font-semibold my-[20px]">Add Product</h1>
+        <div className=" mx-auto w-full h-screen overflow-hidden">
+            <h1 className="text-center text-gray-500 text-3xl font-bold my-[20px]">Add <span className="text-green-500">Product</span></h1>
             <div className="grid grid-cols-1 gap-2 p-4 ">
                 <input value={name} onChange={nameOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Product Name"/>
                 <input value={description} onChange={descriptionOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Description"/>

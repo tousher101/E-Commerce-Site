@@ -16,7 +16,7 @@ export default function changePassword({closeModal,submitChange,currentPassValue
     return(
         <div className={`fixed top-0 left-0 h-full w-full bg-[rgba(0,0,0,0.5)] flex justify-center items-center z-50`} >
         <div data-aos = 'flip-left' className= {` justify-center content-center items-center bg-white p-[25px] rounded-2xl w-[500px] text-center text-black`}>
-            <p className='text-3xl mb-[30px] text-gray-400 font-semibold'> Change Password</p>
+            <p className='text-3xl mb-[30px] text-gray-500 font-bold'> Change <span className="text-green-500">Password</span></p>
           
                   <div className=" grid grid-cols-1 justify-items-center gap-3 ">
 

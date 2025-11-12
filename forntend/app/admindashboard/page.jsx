@@ -34,9 +34,9 @@ useEffect(()=>{
 
     return (
         
-        <div className='grid grid-cols-1  mx-auto overflow-hidden '>
-           <h1 className="text-center text-3xl font-semibold text-gray-500 my-[30px]">Admin Dashboard</h1>
-           <div data-aos='fade-up' className='h-[400px] w-full'>
+        <div className='grid grid-cols-1 w-full  overflow-hidden mx-auto '>
+           <h1 className="text-center text-3xl font-bold text-gray-500 my-[30px]">Admin <span className='text-green-500'>Dashboard</span></h1>
+           <div data-aos='fade-up' className='h-[400px] w-full '>
             <Chart chartData={chartData}  />
            </div>
             

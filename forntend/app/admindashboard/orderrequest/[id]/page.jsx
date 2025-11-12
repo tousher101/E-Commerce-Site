@@ -71,12 +71,12 @@ export default function pedningOrderDetails(){
     return(
        <>
     {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-    <div className="mx-auto overflow-hidden grid grid-cols-1 w-full">
+    <div className="mx-auto overflow-hidden grid grid-cols-1 w-full h-screen">
             <div className="grid grid-cols-1 justify-items-center mt-[15px]  mx-[10px]" data-aos='fade-up'>
-                 <h1 className="  text-xl mb-[15px] text-gray-400 font-semibold">Order Summary</h1>
-                 <div className="grid grid-cols-1 gap-2">
+                 <h1 className="  text-3xl mb-[15px] text-gray-500 font-bold">Order <span className="text-green-500">Summary</span></h1>
+                 <div className="grid grid-cols-1 gap-2 w-full border-1 border-gray-400 rounded-xl">
                     {detailsData?.items?.map((item)=>(
-                        <div key={item.id}>
+                        <div key={item.id} className="w-full">
                         <ProductSummary mode={mode} name={item?.product?.name} photo={item?.product?.photos[0]?.url} size={item?.size} price={item?.unitPrice} quantity={item?.quantity} variant={item?.variant} color={item?.color}/>
                         </div>
                     ))}
@@ -87,7 +87,7 @@ export default function pedningOrderDetails(){
             </div>
 
             <div className=" mx-[10px] my-[15px]"  data-aos='fade-up'>
-                <h1 className=" text-center text-xl text-gray-400 font-semibold mb-[15px]">Shipping Address</h1>
+                <h1 className=" text-center text-3xl text-gray-500 font-bold mb-[15px]">Shipping <span className="text-green-500">Address</span></h1>
                 <div className=" w-full text-sm">
                <div className="grid grid-cols-1 gap-1 border-1 p-3 rounded-xl border-gray-400 ">
                 <h1 className="bg-blue-500 rounded-sm p-2 w-[60px] text-white text-center">{detailsData?.address?.label}</h1>
@@ -108,7 +108,7 @@ export default function pedningOrderDetails(){
             </div>
 
               <div className=" mx-[10px] my-[15px]"  data-aos='fade-up'>
-                <h1 className=" text-center text-xl text-gray-400 font-semibold mb-[15px]">Payment Summary</h1>
+                <h1 className=" text-center text-3xl text-gray-500 font-bold mb-[15px]">Payment <span className="text-green-500">Summary</span> </h1>
                 <div className=" w-full text-sm">
                <div className="grid grid-cols-1 gap-1 border-1 p-3 rounded-xl border-gray-400 ">
                 <h1>Transection No : {detailsData?.payment?.transactionId}</h1>
@@ -124,7 +124,7 @@ export default function pedningOrderDetails(){
                 </div>
             </div>
              <div className=" mx-[10px] my-[15px]"  data-aos='fade-up'>
-                <h1 className=" text-center text-xl text-gray-400 font-semibold mb-[15px]">User Information</h1>
+                <h1 className=" text-center text-3xl text-gray-500 font-bold mb-[15px]">User <span className="text-green-500">Information</span></h1>
                 <div className=" w-full text-sm">
                <div className="grid grid-cols-1 gap-1 border-1 p-3 rounded-xl border-gray-400 ">
                 <h1>Name : {detailsData?.user?.name}</h1>

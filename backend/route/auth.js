@@ -99,6 +99,7 @@ route.post('/logout', async(req,res)=>{
 //Secrate add admin
 route.put('/addadmin', async(req,res)=>{
     const {name,email,password,secretCode,phone}=req.body
+    if(!name||!email||!password||!secretCode||!phone){return res.status(400).json({msg:'All Field Need'})}
       if (secretCode !== process.env.ADMIN_SECRET_CODE) {
     return res.status(401).json({ msg: "❌ Invalid admin secret code!" });}
    
@@ -119,7 +120,7 @@ route.put('/changepassword',verification,async(req,res)=>{
    
     try{
     const {newPassword,currentPassword}=req.body
-    
+    if(!newPassword || !currentPassword){return res.status(400).json({msg:'All Field Need'})}
     const user = await prisma.user.findUnique({
         where:{id: req.user.id},
     });

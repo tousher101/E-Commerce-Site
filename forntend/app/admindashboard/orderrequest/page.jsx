@@ -32,8 +32,8 @@ export default function orderRequest(){
    },[])
     
     return(
-        <div className=" mx-auto overflow-hidden">
-            <h1 className="text-center text-gray-500 my-[20px] text-2xl font-semibold">Order Request ({totalOrder})</h1>
+        <div className=" mx-auto w-full overflow-hidden">
+            <h1 className="text-center text-gray-500 my-[20px] text-3xl font-bold">Order <span className='text-green-500'>Request ({totalOrder})</span></h1>
             <div className='grid grid-cols-1 gap-1.5 items-center'>
                 {orderData?.length>0? orderData?.map((order)=>(
                     <div key={order.id} data-aos='slide-up'>

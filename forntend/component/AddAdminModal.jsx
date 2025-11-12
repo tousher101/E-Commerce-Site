@@ -14,7 +14,7 @@ export default function addAdmin({closeModal, nameValue,nameOnCh,emailValue,emai
     return(
          <div className={`fixed top-0 left-0 h-full w-full bg-[rgba(0,0,0,0.5)] flex justify-center items-center z-50`} >
         <div data-aos = 'flip-left' className= {` justify-center content-center items-center bg-white p-[25px] rounded-2xl w-[500px] text-center text-black`}>
-            <p className='text-3xl mb-[30px] text-gray-400 font-semibold'> Add New Admin</p>
+            <h1 className='text-3xl mb-[30px] text-gray-500 font-bold'> Add New <span className="text-green-500"> Admin</span></h1>
           
                   <div className=" grid grid-cols-1 justify-items-center gap-3 ">
                     <input value={nameValue} onChange={nameOnCh} className="border-1 border-gray-300 p-2 rounded-xl w-full" type="text" placeholder="New Admin Name"/>

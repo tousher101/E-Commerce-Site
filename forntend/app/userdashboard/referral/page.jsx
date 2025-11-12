@@ -38,15 +38,15 @@ export default function referral(){
     return(
         <>
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-        <div className=" max-w-[1380px] mx-auto h-screen overflow-hidden ">
+        <div className=" w-full mx-auto h-screen overflow-hidden ">
            <h1 className="text-center text-3xl text-gray-500 font-bold my-[30px]">Referral <span className="text-green-500">Dashboard</span></h1>
-           <div className="mb-[10px] lg:flex md:flex grid grid-cols-1 lg:justify-center md:justify-center justify-items-center items-center  gap-2">
+           <div className="w-full mb-[10px] lg:flex md:flex grid grid-cols-1 lg:justify-center md:justify-center justify-items-center items-center  gap-2">
             <h1 className="text-center">Your Referral Code:</h1>
             <h1 className="border-1 border-gray-300 p-2 rounded-xl">{text}</h1>
             
             <button onClick={copyToClipboard} className="border-1 ml-[10px] rounded-xl border-gray-300 p-1 cursor-pointer"><img className="h-[35px] w-[35px]" src="/copy.gif"/></button>
            </div>
-           <div className="flex justify-center gap-5 mt-[30px]">
+           <div className="flex justify-center gap-5 mt-[30px] w-full">
             <div data-aos='flip-left' className="text-xl font-semibold h-[100px] grid grid-cols-1 justify-items-center items-center p-4 rounded-xl bg-gradient-to-r from-[#f7fdf6] to-[#77f55e] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a]">
                 <h1>Bonus Amout</h1>
                 <h2> ₱ {refData?.wallet}</h2>

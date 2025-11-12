@@ -102,19 +102,8 @@ route.get('/countorderstatus',verification, roleAuthorize('ADMIN'),async(req,res
         const totalShippedOrder= await prisma.order.count({
             where:{status:'SHIPPED'}
         });
-        const totalDeliveredOrder=await prisma.order.count({
-            where:{status:'DELIVERED'}
-        });
-        const totalCancelOrder=await prisma.order.count({
-            where:{status:'CANCELLED'}
-        });
-        const totalPaidOrder= await prisma.payment.count({
-            where:{status:'PAID'}
-        });
-        const totalCODOrder=await prisma.payment.count({
-            where:{paymentmethod:'COD'}
-        });
-        res.status(200).json({totalPendingOrder,totalShippedOrder,totalDeliveredOrder,totalCancelOrder, totalConfirmedOrder, totalCODOrder,totalPaidOrder})
+     
+        res.status(200).json({totalPendingOrder,totalShippedOrder,totalConfirmedOrder })
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 

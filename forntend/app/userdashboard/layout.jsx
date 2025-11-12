@@ -8,6 +8,7 @@ import openSlide from '../../public/bx-menu.svg'
 import closedSlide from '../../public/bx-x.svg'
 import Image from "next/image"
 
+
 export default function layout({children}){
     const [changePassModal,setChangePassModal]=useState(false);
     const [msg, setMsg]=useState(null);
@@ -163,8 +164,7 @@ export default function layout({children}){
         newPassValue={newPassword} newPassOnCh={(e)=>{setNewPassword(e.target.value)}} confirmNewPassValue={confirmNewPass} confirmNewPassOnCh={(e)=>{setConfirmNewPass(e.target.value)}}
         submitChange={()=>{changePassword()}}/>}
 
-
-
+      
 
         </>
         
