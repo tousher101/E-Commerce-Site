@@ -63,7 +63,7 @@ export default function signUp(){
             <div data-aos='slide-up' className="grid grid-cols-1 justify-items-center my-[25px]" >
                 <div className="grid grid-cols-1 justify-items-center">
                     <Image src={logo} height='auto' width='auto' priority className="h-[60px] w-[120px]" alt="logo"/>
-                    <h1 className="text-gray-400 lg:text-sm md:text-sm text-[11px] mb-[10px] mt-[5px] ">Hello! Welcome To Our Shop! <span className="text-green-500">Please Create Your Account Here!</span></h1>
+                    <h1 className="text-gray-400 lg:text-sm md:text-sm text-[11px] mb-[10px] mt-[5px] text-center">Hello! Welcome To Our Shop! <span className="text-green-500">Please Create Your Account Here!</span></h1>
                     <p className="text-gray-800 font-bold text-3xl">Create <span className="text-green-500">Account</span></p>
                 </div>
 
@@ -72,8 +72,8 @@ export default function signUp(){
                     <input className="border-1 p-1.5 rounded-xl lg:w-[400px] md:w-[400px] w-[300px]" value={email} onChange={(e)=>{setEmail(e.target.value)}} type="email" placeholder="@Email"/>
                     <div className="flex justify-between lg:w-[400px] md:w-[400px] w-[300px] gap-1 items-center">
                         <div className=" flex  border-1 p-1.5 rounded-xl justify-evenly items-center lg:flex-[20%] md:flex-[20%] flex-[30%]">
-                         <Image src={flag} className="h-[15px] w-[15px]" alt="flag"/>
-                            <p>+630</p>
+                         <Image src={flag} className="h-[10px] w-[10px]" alt="flag"/>
+                            <p className="text-sm">+630</p>
                         </div>
                         
                         <input className="border-1 p-1.5 rounded-xl  lg:flex-[80%] md:flex-[80%] flex-[70%]" value={phone} onChange={(e)=>{setPhone(e.target.value)}} type="number" placeholder="Phone Number"/>

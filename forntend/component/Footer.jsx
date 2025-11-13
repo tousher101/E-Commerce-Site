@@ -25,8 +25,8 @@ export default function(){
                 </div>
                 <div className="flex justify-center items-center cursor-pointer ">
                     
-                    <Image src={playStore} height='auto' width='auto' className="h-[160px] w-[300px] ml-[50px]"  alt="google-play-store"/>
-                    <Image src={appleStore} height='auto' width='auto' className="h-[80px] w-[180px]" alt="apple-store"/>
+                    <Image src={playStore} height='auto' width='auto' className="lg:h-[160px] lg:w-[300px] h-[80px] w-[150px]  lg:ml-[50px] ml-0"  alt="google-play-store"/>
+                    <Image src={appleStore} height='auto' width='auto' className="lg:h-[80px] lg:w-[180px] h-[40px] w-[90px]" alt="apple-store"/>
                 </div>
             </div>
 

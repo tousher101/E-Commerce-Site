@@ -59,7 +59,7 @@ const changePassword=async()=>{
     return(
             <>
             <div className=" max-w-[1380px] mx-auto overflow-hidden">
-                 <div className=" relative">
+                 <div className=" relative mb-[20px]">
                    <input type="checkbox" className=" peer/sidebar hidden" id='sidebar-toggle'/>
                 <label htmlFor="sidebar-toggle" className="lg:hidden md:block block cursor-pointer left-2 top-0 absolute z-50   ">
                <Image src={openSlide} height={40} width={40} alt="toggle-icone"/>
@@ -67,7 +67,7 @@ const changePassword=async()=>{
               
 
               
-                <aside className="bg-white absolute top-0 left-0 h-[1020px]  w-[250px] text-black transition-transform duration-1000 -translate-x-full peer-checked/sidebar:translate-x-0 z-50 rounded-r-xl">
+                <aside className="bg-white fixed md:top-20 top-50 left-0 h-[1020px]  w-[250px] text-black transition-transform duration-1000 -translate-x-full peer-checked/sidebar:translate-x-0 z-50 rounded-r-xl">
                         <div>
                         <label htmlFor="sidebar-toggle" className="cursor-pointer"><Image src={closedSlide} height={40} width={40} alt="toggle-close-icone"/></label>
                         </div>
@@ -93,6 +93,11 @@ const changePassword=async()=>{
                         <Link href={'/admindashboard/productbycat'}><h1 className="p-2 rounded-xl cursor-pointer ">All Product</h1></Link>
                     </div>
 
+                        <div className="flex items-center  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/bag.gif"/>
+                        <Link href={'/admindashboard/allorder'}><h1 className="p-2 rounded-xl cursor-pointer ">All Order</h1></Link>
+                    </div>
+
                      <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
                         <img className="w-[30px] h-[30px]" src="/rfp.gif"/>
                          <Link href={'/admindashboard/orderrequest'}><h1 className="p-2 ">Order Request ({adminDashboardCount?.totalPendingOrder})</h1></Link>
@@ -111,6 +116,11 @@ const changePassword=async()=>{
                      <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
                         <img className="w-[30px] h-[30px]" src="/shippe.gif"/>
                         <Link href={'/admindashboard/deliveredorder'}><h1 className="p-2 ">Delivered Order</h1></Link>
+                    </div>
+
+                      <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/rotate.gif"/>
+                        <Link href={'/admindashboard/returnorder'}><h1 className="p-2 ">Return Order</h1></Link>
                     </div>
 
                      <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
@@ -146,7 +156,7 @@ const changePassword=async()=>{
 
 
             <div className="flex gap-1">
-            <div data-aos='fade-up' className=" flex-[20%] shadow-sm h-[950px] rounded-xl lg:flex md:hidden hidden ">
+            <div data-aos='fade-up' className=" flex-[20%] shadow-sm h-[1000px] rounded-xl lg:flex md:hidden hidden ">
                 <div className="grid grid-cols-1 gap-2 p-3">
                         <div className="grid grid-cols-1 justify-items-center items-center my-[25px] gap-3">
                         <Link href={'/admindashboard/addproduct'}><button className="h-[40px] w-[200px] rounded-sm bg-gray-800 cursor-pointer text-white">+ Add Product</button></Link>
@@ -165,7 +175,12 @@ const changePassword=async()=>{
 
                      <div className="flex items-center  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
                         <img className="w-[30px] h-[30px]" src="/shopping-cart.gif"/>
-                        <Link href={'/admindashboard/productbycat'}><h1 className="p-2 rounded-xl cursor-pointer ">All Product</h1></Link>
+                        <Link href={'/admindashboard/productbycat'}><h1 className="p-2 rounded-xl cursor-pointer ">All Product's</h1></Link>
+                    </div>
+
+                       <div className="flex items-center  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/bag.gif"/>
+                        <Link href={'/admindashboard/allorder'}><h1 className="p-2 rounded-xl cursor-pointer ">All Order's</h1></Link>
                     </div>
 
                      <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
@@ -186,6 +201,11 @@ const changePassword=async()=>{
                      <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
                         <img className="w-[30px] h-[30px]" src="/shippe.gif"/>
                         <Link href={'/admindashboard/deliveredorder'}><h1 className="p-2 ">Delivered Order</h1></Link>
+                    </div>
+
+                     <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/rotate.gif"/>
+                        <Link href={'/admindashboard/returnorder'}><h1 className="p-2 ">Return Order</h1></Link>
                     </div>
 
                      <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">

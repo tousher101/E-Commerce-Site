@@ -50,7 +50,7 @@ else if(res.status===404 ||res.status===400||res.status===500){setMsg(data.msg);
             <div data-aos='zoom-in' className="grid grid-cols-1 justify-items-center my-[25px]    ">
                 <div className="grid grid-cols-1 justify-items-center">
                     <Image src={logo} height='auto' width='auto' priority className="h-[60px] w-[120px]" alt="logo"/>
-                    <h1 className="text-gray-400 lg:text-sm md:text-sm text-[11px] mb-[10px] mt-[5px] ">Hello! Welcome Back To Our Shop! <span className="text-green-500">Please Login Your Account Here!</span></h1>
+                    <h1 className="text-gray-400 lg:text-sm md:text-sm text-[11px] mb-[10px] mt-[5px] text-center ">Hello! Welcome Back To Our Shop! <span className="text-green-500">Please Login Your Account Here!</span></h1>
                     <p className="text-gray-800 font-bold text-3xl">Lo<span className="text-green-500">gin</span></p>
                 </div>
 

@@ -8,7 +8,7 @@ import 'aos/dist/aos.css'
 import Link from "next/link";
 
 
-export default function paidOrderDetails(){
+export default function returnOrderDetails(){
     const BaseURI=process.env.NEXT_PUBLIC_API_URI;
     const params=useParams();
     const [detailsData, setDetailsData]=useState(null)
@@ -16,8 +16,9 @@ export default function paidOrderDetails(){
   
  
     const getDetailsData=async(id)=>{
-        const res= await fetchWithAuth(`${BaseURI}/api/admin/getpaidorderdetails/${id}`)
-        setDetailsData(res.paidOrder);
+        const res= await fetchWithAuth(`${BaseURI}/api/admin/getreturnorderdetails/${id}`)
+        setDetailsData(res.returnOrder);
+       
         
     };
 
@@ -33,7 +34,7 @@ export default function paidOrderDetails(){
     
     <div className="mx-auto overflow-hidden grid grid-cols-1 w-full">
             <div className="grid grid-cols-1 justify-items-center mt-[15px]  mx-[10px]" data-aos='fade-up'>
-                  <h1 className="  text-3xl mb-[15px] text-gray-500 font-bold">Order <span className="text-green-500">Summary</span></h1>
+                 <h1 className="  text-3xl mb-[15px] text-gray-500 font-bold">Order <span className="text-green-500">Summary</span></h1>
                  <div className="grid grid-cols-1 gap-2 w-full border-1 border-gray-400 rounded-xl">
                     {detailsData?.items?.map((item)=>(
                         <div key={item.id} className="w-full">
@@ -66,8 +67,8 @@ export default function paidOrderDetails(){
                </div>
                 </div>
             </div>
-           
-              <div className=" mx-[10px] my-[15px]"  data-aos='fade-up'>
+
+                <div className=" mx-[10px] my-[15px]"  data-aos='fade-up'>
                <h1 className=" text-center text-3xl text-gray-500 font-bold mb-[15px]">Shipping <span className="text-green-500">Information</span> </h1>
                 <div className=" w-full text-sm">
                {<div className="grid grid-cols-1 gap-1 border-1 p-3 rounded-xl border-gray-400 ">
@@ -80,7 +81,7 @@ export default function paidOrderDetails(){
             </div>
 
               <div className=" mx-[10px] my-[15px]"  data-aos='fade-up'>
-                <h1 className=" text-center text-3xl text-gray-500 font-bold mb-[15px]">Payment <span className="text-green-500">Summary</span></h1>
+               <h1 className=" text-center text-3xl text-gray-500 font-bold mb-[15px]">Payment <span className="text-green-500">Summary</span> </h1>
                 <div className=" w-full text-sm">
                <div className="grid grid-cols-1 gap-1 border-1 p-3 rounded-xl border-gray-400 ">
                 <h1>Transection No : {detailsData?.payment?.transactionId}</h1>

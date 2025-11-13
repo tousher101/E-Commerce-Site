@@ -26,7 +26,7 @@ export default function shippedOrder(){
    },[]);
 
     return(
-       <div className=" w-full mx-auto overflow-hidden h-screen">
+       <div className=" w-full mx-auto overflow-hidden ">
         <h1 className="text-center text-gray-500 my-[20px] text-3xl font-bold">Shipped <span className='text-green-500'>Order ({totalOrder})</span></h1>
         <div className='grid grid-cols-1 gap-1.5 items-center'>
         {orderData?.length>0? orderData?.map((order)=>(

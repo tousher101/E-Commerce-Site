@@ -43,7 +43,7 @@ export default function deliveredOrder(){
     return(
         <>
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-        <div className=" w-full h-screen mx-auto overflow-hidden">
+        <div className=" w-full h-full mx-auto overflow-hidden">
         <h1 className="text-center text-gray-500 my-[20px] text-3xl font-bold">Delivered <span className='text-green-500'>Order ({totalOrder})</span></h1>
         <div className='grid grid-cols-1 gap-1.5 items-center'>
         {orderData?.length>0? orderData?.map((order)=>(

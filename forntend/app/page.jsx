@@ -63,10 +63,10 @@ const handelNext=()=>{
     {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
     <div className='max-w-[1380px] mx-auto overflow-hidden'>
       <Bannar/>
-      <div className='max-w-[1380px] mx-[10px] overflow-hidden flex gap-5 justify-center items-center mt-[25px]'>
-        <div className='flex-[50%] justify-center items-center'>
+      <div className='max-w-[1380px] mx-[10px] overflow-hidden lg:flex grid grid-cols-1 gap-5 lg:justify-center justify-items-center items-center mt-[25px]'>
+        <div className='flex-[50%]  justify-center  items-center'>
           <h1 className='text-center text-2xl font-bold text-gray-500 mb-[10px] '>Top Sell<span className='text-green-500'>ing Product</span></h1>
-          <div className='grid grid-cols-1 justify-items-center gap-2'>
+          <div className='flex flex-wrap gap-2'>
             {topSelling?.map((top)=>(
               <div key={top.id} onClick={()=>{router.push(`/${top.id}`)}} className='w-full cursor-pointer'>
                 <ProductStatusCard name={top?.name} price={top?.price} originalPrice={top?.originalPrice} stock={top?.stock} photo={top?.photos[0].url} 
@@ -81,9 +81,9 @@ const handelNext=()=>{
         </div>
 
 
-           <div className='flex-[50%] justify-center items-center'>
+           <div className='lg:flex-[50%]  justify-center items-center lg:mt-[0px] mt-[25px]'>
           <h1 className=' text-center text-2xl font-bold text-gray-500 mb-[10px] '>Top Pop<span className='text-green-500'>ular Product</span></h1>
-          <div className='grid grid-cols-1 justify-items-center gap-2'>
+          <div className='flex flex-wrap gap-2'>
                 {topPopular?.map((top)=>(
               <div key={top.id} onClick={()=>{router.push(`${top.id}`)}} className='w-full cursor-pointer'>
                 <ProductStatusCard name={top?.name} price={top?.price} originalPrice={top?.originalPrice} stock={top?.stock} photo={top?.photos[0].url} 

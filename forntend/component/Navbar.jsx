@@ -140,7 +140,7 @@ export default function navBar() {
     return(
       <>
       {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-        <nav className=" max-w-[1380px] mx-[10px]   my-[10px] lg:flex md:flex  grid lg:h-[70px] md:h-[70px] h-[180px] items-center lg:justify-between md:justify-between   overflow-hidden">
+        <nav className=" max-w-[1380px] mx-[10px]  my-[10px] lg:flex md:flex  grid lg:h-[70px] md:h-[70px] h-[180px] items-center lg:justify-between md:justify-between   overflow-hidden">
           <div className="flex justify-end lg:hidden md:hidden">
                 <div  className="flex  justify-around items-center ">
                 {userInfo?.role==='USER'&&<div onClick={openModal} className="cursor-pointer relative mr-[25px]">
@@ -156,7 +156,7 @@ export default function navBar() {
                   
                 {userInfo?.role==='USER'||userInfo?.role==='ADMIN'?  <div onClick={openUserModal} className="cursor-pointer">
                     <Image className="ml-[10px]" src={userIcon} alt="userIcon" height={25} width={25}/>
-                </div>:<Image src={loginIcon} height={30} width={30} alt="login-icon" className="cursor-pointer"/>}
+                </div>:<button onClick={goSingIn}><Image src={loginIcon} height={30} width={30} alt="login-icon" className="cursor-pointer"/></button>}
                 </div>
                 
               </div>
@@ -167,7 +167,7 @@ export default function navBar() {
             <Link href='/'><Image className="lg:w-[190px] lg:h-[80px] md:w-[190px] md:h-[80px] w-[120px] h-[60px]" src={logo} alt="logo" width={'auto'} height={'auto'} priority /></Link>
             </div>
             <div className=" flex items-center gap-3 mt-[10px] justify-center ">
-              <input value={searchData} onChange={(e)=>{setSearchData(e.target.value)}} className="border border-gray-400 lg:p-[5px] p-1  rounded-xl" type="text" placeholder="Search Product"/>
+              <input value={searchData} onChange={(e)=>{setSearchData(e.target.value)}} className="border border-gray-400 lg:p-[5px] p-1 lg:w-[300px] md:w-[250px] w-[200px]  rounded-xl" type="text" placeholder="Search Product"/>
               <button onClick={goSearch} className="lg:h-[35px] lg:w-[100px] h-[30px] w-[85px] bg-blue-500 text-white cursor-pointer rounded-2xl">Search</button>
             </div>
           

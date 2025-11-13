@@ -8,7 +8,7 @@ import 'aos/dist/aos.css'
 import Link from "next/link";
 
 
-export default function paidOrderDetails(){
+export default function allOrderDetails(){
     const BaseURI=process.env.NEXT_PUBLIC_API_URI;
     const params=useParams();
     const [detailsData, setDetailsData]=useState(null)
@@ -16,8 +16,8 @@ export default function paidOrderDetails(){
   
  
     const getDetailsData=async(id)=>{
-        const res= await fetchWithAuth(`${BaseURI}/api/admin/getpaidorderdetails/${id}`)
-        setDetailsData(res.paidOrder);
+        const res= await fetchWithAuth(`${BaseURI}/api/admin/getallorderdetails/${id}`)
+        setDetailsData(res.allOrder);
         
     };
 
@@ -66,7 +66,6 @@ export default function paidOrderDetails(){
                </div>
                 </div>
             </div>
-           
               <div className=" mx-[10px] my-[15px]"  data-aos='fade-up'>
                <h1 className=" text-center text-3xl text-gray-500 font-bold mb-[15px]">Shipping <span className="text-green-500">Information</span> </h1>
                 <div className=" w-full text-sm">
