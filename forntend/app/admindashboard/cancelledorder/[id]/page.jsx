@@ -27,73 +27,74 @@ export default function cancelledOrderDetails(){
         getDetailsData(id);
     },[])
     return(
-       <>
-    
-    <div className="mx-auto overflow-hidden grid grid-cols-1 w-full">
-            <div className="grid grid-cols-1 justify-items-center mt-[15px]  mx-[10px]" data-aos='fade-up'>
-                 <h1 className="  text-3xl mb-[15px] text-gray-500 font-bold">Order <span className="text-green-500">Summary</span></h1>
-                 <div className="grid grid-cols-1 gap-2 w-full border-1 border-gray-400 rounded-xl">
-                    {detailsData?.items?.map((item)=>(
-                        <div key={item.id} className="w-full">
-                        <ProductSummary name={item?.product?.name} photo={item?.product?.photos[0]?.url} size={item?.size} price={item?.unitPrice} quantity={item?.quantity} variant={item?.variant} color={item?.color}/>
-                        </div>
-                    ))}
-                        
-                        
-                 </div>
-             
-            </div>
-
-            <div className=" mx-[10px] my-[15px]"  data-aos='fade-up'>
-                <h1 className=" text-center text-3xl text-gray-500 font-bold mb-[15px]">Shipping <span className="text-green-500">Address</span></h1>
-                <div className=" w-full text-sm">
-                <div className=" w-full text-sm">
-               <div className="grid grid-cols-1 gap-1 border-1 p-3 rounded-xl border-gray-400 ">
-                <h1 className="bg-blue-500 rounded-sm p-2 w-[60px] text-white text-center">{detailsData?.address?.label}</h1>
-                <h1>{detailsData?.address?.name}</h1>
-                <h1>{detailsData?.address?.phone}</h1>
-                
-                <div className="flex gap-1">
-                    <h1>{detailsData?.address?.line1}</h1>
-                    <h1>{detailsData?.address?.barangay}</h1>
-                </div>
-                <div className="flex gap-1">
-                    <h1>{detailsData?.address?.city}-</h1>
-                    <h1>{detailsData?.address?.postalCode}</h1>
-                </div>
-                <h1>{detailsData?.address?.province}</h1>
-               </div>
-                </div>
-            </div>
-
-              <div className=" mx-[10px] my-[15px]"  data-aos='fade-up'>
-                <h1 className=" text-center text-3xl text-gray-500 font-bold mb-[15px]">Payment <span className="text-green-500">Summary</span> </h1>
-                <div className=" w-full text-sm">
-               <div className="grid grid-cols-1 gap-1 border-1 p-3 rounded-xl border-gray-400 ">
-                <h1>Transection No : {detailsData?.payment?.transactionId}</h1>
-                <h1 className="font-semibold">Payment Amount : ₱{detailsData?.payment?.amount} <span className="text-[11px] text-gray-400">(*Including Shipping Fee)</span></h1>
-                
-                 <div className="lg:flex md:flex gap-1 lg:justify-between  md:justify-between grid grid-cols-1   mr-[10px]">
-                    <h1 className="font-semibold">Payment Method : {detailsData?.payment?.paymentmethod}</h1>
-                    <h1 className="font-semibold">Payment Status : {detailsData?.payment?.status}</h1>
-                    <h1>Currancy : {detailsData?.payment?.currency}</h1>
-                </div>
-                 <h1>Created At : {new Date(detailsData?.payment?.createdAt).toDateString()}</h1>
-               </div>
-                </div>
-            </div>
-             <div className=" mx-[10px] my-[15px]"  data-aos='fade-up'>
-                <h1 className=" text-center text-3xl text-gray-500 font-bold mb-[15px]">User <span className="text-green-500">Information</span></h1>
-                <div className=" w-full text-sm">
-               <div className="grid grid-cols-1 gap-1 border-1 p-3 rounded-xl border-gray-400 ">
-                <h1>Name : {detailsData?.user?.name}</h1>
-                <h1>Email : {detailsData?.user?.email}</h1>
-                 <h1>Phone : {detailsData?.user?.phone} </h1>
-               </div>
-                </div>
-            </div>
-    </div>
-          
-        </>
+        <>
+      <div className="mx-auto overflow-hidden grid grid-cols-1 w-full">
+                  <div className="grid grid-cols-1 justify-items-center mt-[15px]  mx-[10px]" data-aos='fade-up'>
+                       <h1 className="  text-3xl mb-[15px] text-gray-500 font-bold">Order <span className="text-green-500">Summary</span></h1>
+                       <div className="grid grid-cols-1 gap-2 w-full border-1 border-gray-400 rounded-xl ">
+                          {detailsData?.items?.map((item)=>(
+                              <div key={item.id} className="w-full">
+                              <ProductSummary  name={item?.product?.name} photo={item?.product?.photos[0]?.url} size={item?.size} price={item?.unitPrice} quantity={item?.quantity} variant={item?.variant} color={item?.color}/>
+                              </div>
+                          ))}
+                              
+                              
+                       </div>
+                   
+                  </div>
+      
+                  <div className=" mx-[10px] my-[15px]"  data-aos='fade-up'>
+                      <h1 className=" text-center text-3xl text-gray-500 font-bold mb-[15px]">Shipping <span className="text-green-500">Address</span> </h1>
+                      <div className=" w-full text-sm">
+                     <div className="grid grid-cols-1 gap-1 border-1 p-3 rounded-xl border-gray-400 ">
+                      <h1 className="bg-blue-500 rounded-sm p-2 w-[60px] text-white text-center">{detailsData?.address?.label}</h1>
+                      <h1>{detailsData?.address?.name}</h1>
+                      <h1>{detailsData?.address?.phone}</h1>
+                      
+                      <div className="flex gap-1">
+                          <h1>{detailsData?.address?.line1}</h1>
+                          <h1>{detailsData?.address?.barangay}</h1>
+                      </div>
+                      <div className="flex gap-1">
+                          <h1>{detailsData?.address?.city}-</h1>
+                          <h1>{detailsData?.address?.postalCode}</h1>
+                      </div>
+                      <h1>{detailsData?.address?.province}</h1>
+                     </div>
+                      </div>
+                  </div>
+      
+                    <div className=" mx-[10px] my-[15px]"  data-aos='fade-up'>
+                      <h1 className=" text-center text-3xl text-gray-500 font-bold mb-[15px]">Payment <span className="text-green-500">Summary</span></h1>
+                      <div className=" w-full text-sm">
+                     <div className="grid grid-cols-1 gap-1 border-1 p-3 rounded-xl border-gray-400 ">
+                      <h1>Transection No : {detailsData?.payment?.transactionId}</h1>
+                      <h1 className="font-semibold">Payment Amount : ₱{detailsData?.payment?.amount} <span className="text-xs text-[11px] text-gray-400">(*Including Shipping Fee)</span></h1>
+                      
+                       <div className="flex gap-1 justify-between mr-[10px]">
+                          <h1 className="font-semibold">Payment Method : {detailsData?.payment?.paymentmethod}</h1>
+                          <h1 className="font-semibold">Payment Status : {detailsData?.payment?.status}</h1>
+                          <h1>Currancy : {detailsData?.payment?.currency}</h1>
+                      </div>
+                       <h1>Created At : {new Date(detailsData?.payment?.createdAt).toDateString()}</h1>
+                     </div>
+                      </div>
+                  </div>
+                   <div className=" mx-[10px] my-[15px]"  data-aos='fade-up'>
+                      <h1 className=" text-center text-3xl text-gray-500 font-bold mb-[15px]">User <span className="text-green-500">Information</span></h1>
+                      <div className=" w-full text-sm">
+                     <div className="grid grid-cols-1 gap-1 border-1 p-3 rounded-xl border-gray-400 ">
+                      <h1>Name : {detailsData?.user?.name}</h1>
+                      <h1>Email : {detailsData?.user?.email}</h1>
+                       <h1>Phone : {detailsData?.user?.phone} </h1>
+                     </div>
+                      </div>
+                  </div>
+      
+              
+      
+          </div>
+                 
+              </>
     )
 }
