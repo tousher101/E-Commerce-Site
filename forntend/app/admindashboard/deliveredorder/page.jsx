@@ -53,7 +53,6 @@ export default function deleiveredOrder(){
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
         <div className=" mx-auto w- h-full overflow-hidden">
         <h1 className="text-center text-gray-500 my-[20px] text-3xl font-bold"> Delivered <span className='text-green-500'>Order ({totalOrder})</span></h1>
-        <div className='flex gap-2 items-center ml-[10px] justify-center'>
               <div className='flex gap-2 items-center ml-[10px] justify-center'>
              <button onClick={()=>{setMode('today');}} className={`p-2 border-1 border-gray-300 rounded-sm text-gray-600 cursor-pointer ${
               mode === "today" ? "bg-gray-800 text-white" : "text-gray-600"
@@ -75,7 +74,6 @@ export default function deleiveredOrder(){
         <button onClick={()=>{setMode('year');}} className={`p-2 border-1 border-gray-300 rounded-sm text-gray-600 cursor-pointer ${
               mode === "year" ? "bg-gray-800 text-white" : "text-gray-600"
             }`}>This Year</button>
-        </div>
         </div>
         <div className='grid grid-cols-1 gap-1.5 items-center'>
         {orderData?.length>0? orderData?.map((order)=>(

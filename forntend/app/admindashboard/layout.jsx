@@ -67,7 +67,7 @@ const changePassword=async()=>{
               
 
               
-                <aside className="bg-white fixed md:top-20 top-50 left-0 h-[1020px]  w-[250px] text-black transition-transform duration-1000 -translate-x-full peer-checked/sidebar:translate-x-0 z-50 rounded-r-xl">
+                <aside className="bg-white fixed top-0 left-0 h-screen overflow-y-auto  w-[250px] text-black transition-transform duration-1000 -translate-x-full peer-checked/sidebar:translate-x-0 z-50 rounded-r-xl">
                         <div>
                         <label htmlFor="sidebar-toggle" className="cursor-pointer"><Image src={closedSlide} height={40} width={40} alt="toggle-close-icone"/></label>
                         </div>
@@ -145,6 +145,10 @@ const changePassword=async()=>{
                         <img className="w-[30px] h-[30px]" src="/courier.gif"/>
                          <Link href={'/admindashboard/managecourier'}><h1 className="p-2 text-sm">Manage Courier Service</h1></Link>
                     </div>
+                       <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/report.gif"/>
+                         <Link href={'/admindashboard/report'}><h1 className="p-2">Report</h1></Link>
+                    </div>
                 </div>
             </div>
 
@@ -156,7 +160,7 @@ const changePassword=async()=>{
 
 
             <div className="flex gap-1">
-            <div data-aos='fade-up' className=" flex-[20%] shadow-sm h-[1000px] rounded-xl lg:flex md:hidden hidden ">
+            <div data-aos='fade-up' className=" flex-[20%] shadow-sm h-[1050px] rounded-xl lg:flex md:hidden hidden ">
                 <div className="grid grid-cols-1 gap-2 p-3">
                         <div className="grid grid-cols-1 justify-items-center items-center my-[25px] gap-3">
                         <Link href={'/admindashboard/addproduct'}><button className="h-[40px] w-[200px] rounded-sm bg-gray-800 cursor-pointer text-white">+ Add Product</button></Link>
@@ -229,6 +233,10 @@ const changePassword=async()=>{
                         <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
                         <img className="w-[30px] h-[30px]" src="/courier.gif"/>
                          <Link href={'/admindashboard/managecourier'}><h1 className="p-2">Manage Courier Service</h1></Link>
+                    </div>
+                     <div className="flex items-center gap-1  hover:bg-blue-500 hover:text-white duration-500 p-1 rounded-xl">
+                        <img className="w-[30px] h-[30px]" src="/report.gif"/>
+                         <Link href={'/admindashboard/report'}><h1 className="p-2">Report</h1></Link>
                     </div>
                 </div>
             </div>

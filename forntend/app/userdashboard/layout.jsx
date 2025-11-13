@@ -34,7 +34,7 @@ export default function layout({children}){
                         <label htmlFor="sidebar-toggle" className="lg:hidden md:block block cursor-pointer top-0 left-2 absolute z-50   ">
                    <Image src={openSlide} width={40} height={60} alt="sidebar-toggle-icon-open"/>
                 </label>
-                <aside className="bg-[#FBF5DF] fixed md:top-20 top-50 left-0  shadow-sm w-[220px] text-black transition-transform duration-1000 -translate-x-full peer-checked/sidebar:translate-x-0 z-50 rounded-r-xl"> 
+                <aside className="bg-[#FBF5DF] fixed top-0 left-0 h-screen shadow-sm w-[220px] text-black transition-transform duration-1000 -translate-x-full peer-checked/sidebar:translate-x-0 z-50 rounded-r-xl"> 
                     <div>
                         <label htmlFor="sidebar-toggle" className="cursor-pointer"><Image src={closedSlide} width={40} height={60} alt="sidebar-toggle-icon-close"/></label>
                     </div>

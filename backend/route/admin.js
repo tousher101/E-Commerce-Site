@@ -928,10 +928,188 @@ route.get('/getdeliveredorder/:id',verification,roleAuthorize('ADMIN'),async(req
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
-//get all cancelled order/card/current Month
-route.get('/currentmonthcancelledorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
+
+//get cancelled order today/card
+route.get('/todaycancelledorders',verification, roleAuthorize('ADMIN'),async(req,res)=>{
     try{
-         const today= new Date();
+        const now = new Date();
+        const startOfToday = new Date(now.setHours(0, 0, 0, 0));
+        const endOfToday = new Date(now.setHours(23, 59, 59, 999));
+        const totalOrders= await prisma.order.count({
+            where:{status:'CANCELLED',createdAt:{gte:startOfToday, lt:endOfToday}}
+        });
+        const page= Number(req.params.page||1);
+        const limit= Number(req.params.limit||20);
+        const skip=(page-1)*limit
+
+        const allOrders= await prisma.order.findMany({
+            where:{status:'CANCELLED',createdAt:{gte:startOfToday, lt:endOfToday}},
+             select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                                paymentmethod:true,
+                                status:true,
+                                createdAt:true
+                        }
+                    },
+                    
+            },
+            take:limit,
+            skip:skip,
+            orderBy:{createdAt:'desc'}
+        });
+
+        return res.status(200).json({totalOrders, allOrders, totalPage:Math.ceil(totalOrders/limit)})
+
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+//get cancelled order yesterday/card
+route.get('/yesterdaycancelledorders',verification, roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const startOfYesterday = new Date(yesterday.setHours(0, 0, 0, 0));
+                const endOfYesterday = new Date(yesterday.setHours(23, 59, 59, 999));
+
+            const totalOrders= await prisma.order.count({
+            where:{status:'CANCELLED',createdAt:{gte:startOfYesterday, lt:endOfYesterday}} 
+        });
+        const page= Number(req.params.page||1);
+        const limit= Number(req.params.limit||20);
+        const skip=(page-1)*limit
+
+        const allOrders= await prisma.order.findMany({
+            where:{status:'CANCELLED',createdAt:{gte:startOfYesterday, lt:endOfYesterday}},
+             select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                                paymentmethod:true,
+                                status:true,
+                                createdAt:true
+                        }
+                    },
+                    
+            },
+            take:limit,
+            skip:skip,
+            orderBy:{createdAt:'desc'}
+        });
+
+        return res.status(200).json({totalOrders, allOrders, totalPage:Math.ceil(totalOrders/limit)})
+
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+
+//get cancelled order week/card
+route.get('/weeklycancelledorders',verification, roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+              const curr = new Date();
+                const firstDayOfWeek = new Date(curr.setDate(curr.getDate() - curr.getDay() + 1)); // Monday start
+                firstDayOfWeek.setHours(0, 0, 0, 0);
+                const lastDayOfWeek = new Date(firstDayOfWeek);
+                lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
+                    lastDayOfWeek.setHours(23, 59, 59, 999);
+
+            const totalOrders= await prisma.order.count({
+            where:{status:'CANCELLED',createdAt:{gte:firstDayOfWeek, lt:lastDayOfWeek}}
+        });
+        const page= Number(req.params.page||1);
+        const limit= Number(req.params.limit||20);
+        const skip=(page-1)*limit
+
+        const allOrders= await prisma.order.findMany({
+            where:{status:'CANCELLED',createdAt:{gte:firstDayOfWeek, lt:lastDayOfWeek}},
+             select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                                paymentmethod:true,
+                                status:true,
+                                createdAt:true
+                        }
+                    },
+                    
+            },
+            take:limit,
+            skip:skip,
+            orderBy:{createdAt:'desc'}
+        });
+
+        return res.status(200).json({totalOrders, allOrders, totalPage:Math.ceil(totalOrders/limit)})
+
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+
+
+//get cancelled order month/card
+route.get('/monthlycancelledorders',verification, roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+             const today= new Date();
         const currentMonth= today.getMonth()+1;
         const currentYear = today.getFullYear();
 
@@ -942,15 +1120,16 @@ route.get('/currentmonthcancelledorder', verification,roleAuthorize('ADMIN'), as
         const currentStart= new Date(currentYear, currentMonth -1, 1);
         const currentEnd = new Date(currentYear, currentMonth,1);
 
-        const page= Number(req.query.page||1);
-        const limit=Number(req.query.limit||20);
-         const skip= (page-1)*limit;
-            const totalCancelledOrder= await prisma.order.count({
-            where:{status:'CANCELLED', createdAt:{gte:currentStart,lt:currentEnd}}
+            const totalOrders= await prisma.order.count({
+            where:{status:'CANCELLED',createdAt:{gte:currentStart, lt:currentEnd}}
         });
-        const getCancelledOrder= await prisma.order.findMany({
-            where:{status:'CANCELLED',createdAt:{gte:currentStart,lt:currentEnd}},
-            select:{
+        const page= Number(req.params.page||1);
+        const limit= Number(req.params.limit||20);
+        const skip=(page-1)*limit
+
+        const allOrders= await prisma.order.findMany({
+            where:{status:'CANCELLED',createdAt:{gte:currentStart, lt:currentEnd}},
+             select:{
                 id:true,
                 totalPrice:true,
                 status:true,
@@ -974,46 +1153,40 @@ route.get('/currentmonthcancelledorder', verification,roleAuthorize('ADMIN'), as
                     },
                     payment:{
                         select:{
-                             status :true,
                                 paymentmethod:true,
+                                status:true,
                                 createdAt:true
                         }
                     },
                     
             },
-            skip:skip,
             take:limit,
+            skip:skip,
             orderBy:{createdAt:'desc'}
         });
 
-        res.status(200).json({getCancelledOrder, totalCancelledOrder, totalPage:Math.ceil(totalCancelledOrder/limit)})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+        return res.status(200).json({totalOrders, allOrders, totalPage:Math.ceil(totalOrders/limit)})
+
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
 
 
-//get all cancelled order/card/Prev Month
-route.get('/previousmonthcancelledorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
+//get cancelled order year/card
+route.get('/yearlycancelledorders',verification, roleAuthorize('ADMIN'),async(req,res)=>{
     try{
-          const today= new Date();
-        const currentMonth= today.getMonth()+1;
-        const currentYear = today.getFullYear();
+         const startOfYear = new Date(new Date().getFullYear(), 0, 1);
+        const endOfYear = new Date(new Date().getFullYear(), 11, 31, 23, 59, 59, 999);
 
-        let prevMonth= currentMonth -1;
-        let prevYear= currentYear
-        if(prevMonth===0){prevMonth= 12; prevYear= currentYear-1}
-
-        const prevStart= new Date(prevYear, prevMonth-1, 1);
-        const prevEnd = new Date(currentYear, currentMonth-1 ,1)
-
-        const page= Number(req.query.page||1);
-        const limit=Number(req.query.limit||20);
-         const skip= (page-1)*limit;
-            const totalCancelledOrder= await prisma.order.count({
-            where:{status:'CANCELLED', createdAt:{gte:prevStart,lt:prevEnd}}
+            const totalOrders= await prisma.order.count({
+            where:{status:'CANCELLED',createdAt:{gte:startOfYear, lt:endOfYear}}
         });
-        const getCancelledOrder= await prisma.order.findMany({
-            where:{status:'CANCELLED',createdAt:{gte:prevStart,lt:prevEnd}},
-            select:{
+        const page= Number(req.params.page||1);
+        const limit= Number(req.params.limit||20);
+        const skip=(page-1)*limit
+
+        const allOrders= await prisma.order.findMany({
+            where:{status:'CANCELLED',createdAt:{gte:startOfYear, lt:endOfYear}},
+             select:{
                 id:true,
                 totalPrice:true,
                 status:true,
@@ -1037,22 +1210,22 @@ route.get('/previousmonthcancelledorder', verification,roleAuthorize('ADMIN'), a
                     },
                     payment:{
                         select:{
-                             status :true,
                                 paymentmethod:true,
+                                status:true,
                                 createdAt:true
                         }
                     },
                     
             },
-            skip:skip,
             take:limit,
+            skip:skip,
             orderBy:{createdAt:'desc'}
         });
 
-        res.status(200).json({getCancelledOrder, totalCancelledOrder, totalPage:Math.ceil(totalCancelledOrder/limit)})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
-});
+        return res.status(200).json({totalOrders, allOrders, totalPage:Math.ceil(totalOrders/limit)})
 
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
 
 //get Cancel Order/details
 route.get('/getcancelorder/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
@@ -1119,10 +1292,187 @@ route.get('/getcancelorder/:id',verification,roleAuthorize('ADMIN'),async(req,re
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
 });
 
-//get Paid Order/card/currentMonth
-route.get('/currentmonthpaidorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
+//get paid order today/card
+route.get('/todaypaidorders',verification, roleAuthorize('ADMIN'),async(req,res)=>{
     try{
-        const today= new Date();
+        const now = new Date();
+        const startOfToday = new Date(now.setHours(0, 0, 0, 0));
+        const endOfToday = new Date(now.setHours(23, 59, 59, 999));
+        const totalOrders= await prisma.order.count({
+            where:{payment:{status:'PAID'},createdAt:{gte:startOfToday, lt:endOfToday}}
+        });
+        const page= Number(req.params.page||1);
+        const limit= Number(req.params.limit||20);
+        const skip=(page-1)*limit
+
+        const allOrders= await prisma.order.findMany({
+            where:{payment:{status:'PAID'},createdAt:{gte:startOfToday, lt:endOfToday}},
+             select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                                paymentmethod:true,
+                                status:true,
+                                createdAt:true
+                        }
+                    },
+                    
+            },
+            take:limit,
+            skip:skip,
+            orderBy:{createdAt:'desc'}
+        });
+
+        return res.status(200).json({totalOrders, allOrders, totalPage:Math.ceil(totalOrders/limit)})
+
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+//get paid order yesterday/card
+route.get('/yesterdaypaidorders',verification, roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const startOfYesterday = new Date(yesterday.setHours(0, 0, 0, 0));
+                const endOfYesterday = new Date(yesterday.setHours(23, 59, 59, 999));
+
+            const totalOrders= await prisma.order.count({
+            where:{payment:{status:'PAID'},createdAt:{gte:startOfYesterday, lt:endOfYesterday}} 
+        });
+        const page= Number(req.params.page||1);
+        const limit= Number(req.params.limit||20);
+        const skip=(page-1)*limit
+
+        const allOrders= await prisma.order.findMany({
+            where:{payment:{status:'PAID'},createdAt:{gte:startOfYesterday, lt:endOfYesterday}},
+             select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                                paymentmethod:true,
+                                status:true,
+                                createdAt:true
+                        }
+                    },
+                    
+            },
+            take:limit,
+            skip:skip,
+            orderBy:{createdAt:'desc'}
+        });
+
+        return res.status(200).json({totalOrders, allOrders, totalPage:Math.ceil(totalOrders/limit)})
+
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+
+//get paid order week/card
+route.get('/weeklypaidorders',verification, roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+              const curr = new Date();
+                const firstDayOfWeek = new Date(curr.setDate(curr.getDate() - curr.getDay() + 1)); // Monday start
+                firstDayOfWeek.setHours(0, 0, 0, 0);
+                const lastDayOfWeek = new Date(firstDayOfWeek);
+                lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
+                    lastDayOfWeek.setHours(23, 59, 59, 999);
+
+            const totalOrders= await prisma.order.count({
+            where:{payment:{status:'PAID'},createdAt:{gte:firstDayOfWeek, lt:lastDayOfWeek}}
+        });
+        const page= Number(req.params.page||1);
+        const limit= Number(req.params.limit||20);
+        const skip=(page-1)*limit
+
+        const allOrders= await prisma.order.findMany({
+            where:{payment:{status:'PAID'},createdAt:{gte:firstDayOfWeek, lt:lastDayOfWeek}},
+             select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                                paymentmethod:true,
+                                status:true,
+                                createdAt:true
+                        }
+                    },
+                    
+            },
+            take:limit,
+            skip:skip,
+            orderBy:{createdAt:'desc'}
+        });
+
+        return res.status(200).json({totalOrders, allOrders, totalPage:Math.ceil(totalOrders/limit)})
+
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+
+
+//get paid order month/card
+route.get('/monthlypaidorders',verification, roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+             const today= new Date();
         const currentMonth= today.getMonth()+1;
         const currentYear = today.getFullYear();
 
@@ -1132,15 +1482,17 @@ route.get('/currentmonthpaidorder', verification,roleAuthorize('ADMIN'), async(r
 
         const currentStart= new Date(currentYear, currentMonth -1, 1);
         const currentEnd = new Date(currentYear, currentMonth,1);
-        const page= Number(req.query.page||1);
-        const limit=Number(req.query.limit||20);
-         const skip= (page-1)*limit;
-            const totalPaidOrder= await prisma.order.count({
-            where:{payment:{status:'PAID',createdAt:{gte:currentStart, lt:currentEnd}}}
+
+            const totalOrders= await prisma.order.count({
+            where:{payment:{status:'PAID'},createdAt:{gte:currentStart, lt:currentEnd}}
         });
-        const getPaidOrder= await prisma.order.findMany({
-            where:{payment:{status:'PAID',createdAt:{gte:currentStart, lt:currentEnd}}},
-            select:{
+        const page= Number(req.params.page||1);
+        const limit= Number(req.params.limit||20);
+        const skip=(page-1)*limit
+
+        const allOrders= await prisma.order.findMany({
+            where:{payment:{status:'PAID'},createdAt:{gte:currentStart, lt:currentEnd}},
+             select:{
                 id:true,
                 totalPrice:true,
                 status:true,
@@ -1171,39 +1523,33 @@ route.get('/currentmonthpaidorder', verification,roleAuthorize('ADMIN'), async(r
                     },
                     
             },
-            skip:skip,
             take:limit,
+            skip:skip,
             orderBy:{createdAt:'desc'}
         });
 
-        res.status(200).json({getPaidOrder, totalPaidOrder, totalPage:Math.ceil(totalPaidOrder/limit)})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+        return res.status(200).json({totalOrders, allOrders, totalPage:Math.ceil(totalOrders/limit)})
+
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
 
 
-//get Paid Order/card/prevMonth
-route.get('/previousmonthpaidorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
+//get paid order year/card
+route.get('/yearlypaidorders',verification, roleAuthorize('ADMIN'),async(req,res)=>{
     try{
-        const today= new Date();
-        const currentMonth= today.getMonth()+1;
-        const currentYear = today.getFullYear();
+         const startOfYear = new Date(new Date().getFullYear(), 0, 1);
+        const endOfYear = new Date(new Date().getFullYear(), 11, 31, 23, 59, 59, 999);
 
-        let prevMonth= currentMonth -1;
-        let prevYear= currentYear
-        if(prevMonth===0){prevMonth= 12; prevYear= currentYear-1}
-
-       const prevStart= new Date(prevYear, prevMonth-1, 1);
-        const prevEnd = new Date(currentYear, currentMonth-1 ,1)
-
-        const page= Number(req.query.page||1);
-        const limit=Number(req.query.limit||20);
-         const skip= (page-1)*limit;
-            const totalPaidOrder= await prisma.order.count({
-            where:{payment:{status:'PAID',createdAt:{gte:prevStart, lt:prevEnd}}}
+            const totalOrders= await prisma.order.count({
+            where:{payment:{status:'PAID'},createdAt:{gte:startOfYear, lt:endOfYear}}
         });
-        const getPaidOrder= await prisma.order.findMany({
-            where:{payment:{status:'PAID',createdAt:{gte:prevStart, lt:prevEnd}}},
-            select:{
+        const page= Number(req.params.page||1);
+        const limit= Number(req.params.limit||20);
+        const skip=(page-1)*limit
+
+        const allOrders= await prisma.order.findMany({
+            where:{payment:{status:'PAID'},createdAt:{gte:startOfYear, lt:endOfYear}},
+             select:{
                 id:true,
                 totalPrice:true,
                 status:true,
@@ -1234,13 +1580,14 @@ route.get('/previousmonthpaidorder', verification,roleAuthorize('ADMIN'), async(
                     },
                     
             },
-            skip:skip,
             take:limit,
+            skip:skip,
             orderBy:{createdAt:'desc'}
         });
 
-        res.status(200).json({getPaidOrder, totalPaidOrder, totalPage:Math.ceil(totalPaidOrder/limit)})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+        return res.status(200).json({totalOrders, allOrders, totalPage:Math.ceil(totalOrders/limit)})
+
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
 
 
@@ -1320,10 +1667,187 @@ route.get('/getpaidorderdetails/:id',verification,roleAuthorize('ADMIN'),async(r
 });
 
 
-//get COD order/ card/currentMonth
-route.get('/currentmonthcodorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
+//get cod order today/card
+route.get('/todaycodorders',verification, roleAuthorize('ADMIN'),async(req,res)=>{
     try{
-           const today= new Date();
+        const now = new Date();
+        const startOfToday = new Date(now.setHours(0, 0, 0, 0));
+        const endOfToday = new Date(now.setHours(23, 59, 59, 999));
+        const totalOrders= await prisma.order.count({
+            where:{payment:{paymentmethod:'COD'},createdAt:{gte:startOfToday, lt:endOfToday}}
+        });
+        const page= Number(req.params.page||1);
+        const limit= Number(req.params.limit||20);
+        const skip=(page-1)*limit
+
+        const allOrders= await prisma.order.findMany({
+            where:{payment:{paymentmethod:'COD'},createdAt:{gte:startOfToday, lt:endOfToday}},
+             select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                                paymentmethod:true,
+                                status:true,
+                                createdAt:true
+                        }
+                    },
+                    
+            },
+            take:limit,
+            skip:skip,
+            orderBy:{createdAt:'desc'}
+        });
+
+        return res.status(200).json({totalOrders, allOrders, totalPage:Math.ceil(totalOrders/limit)})
+
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+//get cod order yesterday/card
+route.get('/yesterdaycodorders',verification, roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const startOfYesterday = new Date(yesterday.setHours(0, 0, 0, 0));
+                const endOfYesterday = new Date(yesterday.setHours(23, 59, 59, 999));
+
+            const totalOrders= await prisma.order.count({
+            where:{payment:{paymentmethod:'COD'},createdAt:{gte:startOfYesterday, lt:endOfYesterday}} 
+        });
+        const page= Number(req.params.page||1);
+        const limit= Number(req.params.limit||20);
+        const skip=(page-1)*limit
+
+        const allOrders= await prisma.order.findMany({
+            where:{payment:{paymentmethod:'COD'},createdAt:{gte:startOfYesterday, lt:endOfYesterday}},
+             select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                                paymentmethod:true,
+                                status:true,
+                                createdAt:true
+                        }
+                    },
+                    
+            },
+            take:limit,
+            skip:skip,
+            orderBy:{createdAt:'desc'}
+        });
+
+        return res.status(200).json({totalOrders, allOrders, totalPage:Math.ceil(totalOrders/limit)})
+
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+
+//get cod order week/card
+route.get('/weeklycodorders',verification, roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+              const curr = new Date();
+                const firstDayOfWeek = new Date(curr.setDate(curr.getDate() - curr.getDay() + 1)); // Monday start
+                firstDayOfWeek.setHours(0, 0, 0, 0);
+                const lastDayOfWeek = new Date(firstDayOfWeek);
+                lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
+                    lastDayOfWeek.setHours(23, 59, 59, 999);
+
+            const totalOrders= await prisma.order.count({
+            where:{payment:{paymentmethod:'COD'},createdAt:{gte:firstDayOfWeek, lt:lastDayOfWeek}}
+        });
+        const page= Number(req.params.page||1);
+        const limit= Number(req.params.limit||20);
+        const skip=(page-1)*limit
+
+        const allOrders= await prisma.order.findMany({
+            where:{payment:{paymentmethod:'COD'},createdAt:{gte:firstDayOfWeek, lt:lastDayOfWeek}},
+             select:{
+                id:true,
+                totalPrice:true,
+                status:true,
+                createdAt:true,
+                     user:{
+                        select:{
+                            name:true,
+                            email:true,
+                            phone:true,
+                            
+                        }
+                    },
+                    items:{
+                        select:{
+                            product:{
+                                select:{
+                                    photos:true
+                                }
+                            }
+                        }
+                    },
+                    payment:{
+                        select:{
+                                paymentmethod:true,
+                                status:true,
+                                createdAt:true
+                        }
+                    },
+                    
+            },
+            take:limit,
+            skip:skip,
+            orderBy:{createdAt:'desc'}
+        });
+
+        return res.status(200).json({totalOrders, allOrders, totalPage:Math.ceil(totalOrders/limit)})
+
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+
+
+//get cod order month/card
+route.get('/monthlycodorders',verification, roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+             const today= new Date();
         const currentMonth= today.getMonth()+1;
         const currentYear = today.getFullYear();
 
@@ -1334,15 +1858,16 @@ route.get('/currentmonthcodorder', verification,roleAuthorize('ADMIN'), async(re
         const currentStart= new Date(currentYear, currentMonth -1, 1);
         const currentEnd = new Date(currentYear, currentMonth,1);
 
-        const page= Number(req.query.page||1);
-        const limit=Number(req.query.limit||20);
-         const skip= (page-1)*limit;
-            const totalCodOrder= await prisma.order.count({
-            where:{payment:{paymentmethod:'COD',createdAt:{gte:currentStart,lt:currentEnd}}}
+            const totalOrders= await prisma.order.count({
+            where:{payment:{paymentmethod:'COD'},createdAt:{gte:currentStart, lt:currentEnd}}
         });
-        const getCodOrder= await prisma.order.findMany({
-            where:{payment:{paymentmethod:'COD',createdAt:{gte:currentStart,lt:currentEnd}}},
-            select:{
+        const page= Number(req.params.page||1);
+        const limit= Number(req.params.limit||20);
+        const skip=(page-1)*limit
+
+        const allOrders= await prisma.order.findMany({
+            where:{payment:{paymentmethod:'COD'},createdAt:{gte:currentStart, lt:currentEnd}},
+             select:{
                 id:true,
                 totalPrice:true,
                 status:true,
@@ -1366,46 +1891,40 @@ route.get('/currentmonthcodorder', verification,roleAuthorize('ADMIN'), async(re
                     },
                     payment:{
                         select:{
-                                status:true,
                                 paymentmethod:true,
+                                status:true,
                                 createdAt:true
                         }
                     },
                     
             },
-            skip:skip,
             take:limit,
+            skip:skip,
             orderBy:{createdAt:'desc'}
         });
 
-        res.status(200).json({getCodOrder, totalCodOrder, totalPage:Math.ceil(totalCodOrder/limit), mode:'PAID'})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
+        return res.status(200).json({totalOrders, allOrders, totalPage:Math.ceil(totalOrders/limit)})
+
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
 
 
-//get COD order/ card/previousMonth
-route.get('/previousmonthcodorder', verification,roleAuthorize('ADMIN'), async(req,res)=>{
+//get cod order year/card
+route.get('/yearlycodorders',verification, roleAuthorize('ADMIN'),async(req,res)=>{
     try{
-           const today= new Date();
-        const currentMonth= today.getMonth()+1;
-        const currentYear = today.getFullYear();
+         const startOfYear = new Date(new Date().getFullYear(), 0, 1);
+        const endOfYear = new Date(new Date().getFullYear(), 11, 31, 23, 59, 59, 999);
 
-        let prevMonth= currentMonth -1;
-        let prevYear= currentYear
-        if(prevMonth===0){prevMonth= 12; prevYear= currentYear-1}
-
-        const prevStart= new Date(prevYear, prevMonth-1, 1);
-        const prevEnd = new Date(currentYear, currentMonth-1 ,1)
-
-        const page= Number(req.query.page||1);
-        const limit=Number(req.query.limit||20);
-         const skip= (page-1)*limit;
-            const totalCodOrder= await prisma.order.count({
-            where:{payment:{paymentmethod:'COD',createdAt:{gte:prevStart,lt:prevEnd}}}
+            const totalOrders= await prisma.order.count({
+            where:{payment:{paymentmethod:'COD'},createdAt:{gte:startOfYear, lt:endOfYear}}
         });
-        const getCodOrder= await prisma.order.findMany({
-            where:{payment:{paymentmethod:'COD',createdAt:{gte:prevStart,lt:prevEnd}}},
-            select:{
+        const page= Number(req.params.page||1);
+        const limit= Number(req.params.limit||20);
+        const skip=(page-1)*limit
+
+        const allOrders= await prisma.order.findMany({
+            where:{payment:{paymentmethod:'COD'},createdAt:{gte:startOfYear, lt:endOfYear}},
+             select:{
                 id:true,
                 totalPrice:true,
                 status:true,
@@ -1429,22 +1948,22 @@ route.get('/previousmonthcodorder', verification,roleAuthorize('ADMIN'), async(r
                     },
                     payment:{
                         select:{
-                                status:true,
                                 paymentmethod:true,
+                                status:true,
                                 createdAt:true
                         }
                     },
                     
             },
-            skip:skip,
             take:limit,
+            skip:skip,
             orderBy:{createdAt:'desc'}
         });
 
-        res.status(200).json({getCodOrder, totalCodOrder, totalPage:Math.ceil(totalCodOrder/limit), mode:'PAID'})
-    }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}
-});
+        return res.status(200).json({totalOrders, allOrders, totalPage:Math.ceil(totalOrders/limit)})
 
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
 
 //get COD Order/details
 route.get('/getcodorderdetails/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
@@ -2719,7 +3238,7 @@ route.get('/weeklyallorders',verification, roleAuthorize('ADMIN'),async(req,res)
 //get all order month
 route.get('/monthlyallorders',verification, roleAuthorize('ADMIN'),async(req,res)=>{
     try{
-             const today= new Date();
+        const today= new Date();
         const currentMonth= today.getMonth()+1;
         const currentYear = today.getFullYear();
 
@@ -2913,18 +3432,365 @@ route.get('/getallorderdetails/:id',verification,roleAuthorize('ADMIN'),async(re
 });
 
 
-// //report for today
-// route.get('/todayreport',verification, roleAuthorize('ADMIN'),async(req,res)=>{
-//     try{
-//         const now = new Date();
-//         const startOfToday = new Date(now.setHours(0, 0, 0, 0));
-//         const endOfToday = new Date(now.setHours(23, 59, 59, 999));
+//report for today
+route.get('/todayreport',verification, roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const now = new Date();
+        const startOfToday = new Date(now.setHours(0, 0, 0, 0));
+        const endOfToday = new Date(now.setHours(23, 59, 59, 999));
 
-//         const totalSale
+        const totalSale= await prisma.order.aggregate({
+            _sum:{totalPrice: true},
+            where:{status: "DELIVERED", createdAt:{gte:startOfToday, lt:endOfToday}}
+        });
+
+        const totalDeliveredOrder= await prisma.order.count({
+        where:{status: "DELIVERED", createdAt:{gte:startOfToday, lt:endOfToday}} 
+        });
+
+        const totalOrder= await prisma.order.count({
+            where:{createdAt:{gte:startOfToday, lt:endOfToday}}
+        });
+
+        const totalAmountorder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{createdAt:{gte:startOfToday, lt:endOfToday}}
+        });
+
+        const totalCancelledOrder= await prisma.order.count({
+            where:{status:'CANCELLED',createdAt:{gte:startOfToday, lt:endOfToday}}
+        });
+        const totalAmountofCancelledorder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{status:'CANCELLED',createdAt:{gte:startOfToday, lt:endOfToday}}
+        });
+
+        const totalCODOrder= await prisma.order.count({
+            where:{payment:{paymentmethod:'COD'},createdAt:{gte:startOfToday, lt:endOfToday} }
+        });
+
+        const totalAmountOfCODOrder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{payment:{paymentmethod:'COD'},createdAt:{gte:startOfToday, lt:endOfToday} }
+        });
+
+          const totalPaidOrder= await prisma.order.count({
+            where:{payment:{status:'PAID'},createdAt:{gte:startOfToday, lt:endOfToday} }
+        });
+
+        const totalAmountOfPaidOrder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{payment:{status:'PAID'},createdAt:{gte:startOfToday, lt:endOfToday} }
+        });
+
+          const totalReturnOrder= await prisma.order.count({
+            where:{status:'RETURN',createdAt:{gte:startOfToday, lt:endOfToday} }
+        });
+
+        const totalAmountOfReturnOrder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{status:'RETURN',createdAt:{gte:startOfToday, lt:endOfToday} }
+        });
+
+          const totalShippedOrder= await prisma.order.count({
+            where:{status:'SHIPPED',createdAt:{gte:startOfToday, lt:endOfToday} }
+        });
+
+        const totalAmountOfShippedOrder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{status:'SHIPPED',createdAt:{gte:startOfToday, lt:endOfToday} }
+        });
+
+        
+       return res.status(200).json({totalSale, totalDeliveredOrder, totalOrder, totalAmountorder,totalCancelledOrder,totalAmountofCancelledorder,
+        totalReturnOrder,totalAmountOfReturnOrder,totalCODOrder,totalAmountOfCODOrder,totalPaidOrder,totalAmountOfPaidOrder,totalShippedOrder,totalAmountOfShippedOrder,mode:'today'
+       })
+
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
 
 
-//     }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
-// })
+//report for Yesterday
+route.get('/yesterdayreport',verification, roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+          const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const startOfYesterday = new Date(yesterday.setHours(0, 0, 0, 0));
+                const endOfYesterday = new Date(yesterday.setHours(23, 59, 59, 999));
+
+        const totalSale= await prisma.order.aggregate({
+            _sum:{totalPrice: true},
+            where:{status: "DELIVERED", createdAt:{gte:startOfYesterday, lt:endOfYesterday}}
+        });
+
+        const totalDeliveredOrder= await prisma.order.count({
+        where:{status: "DELIVERED", createdAt:{gte:startOfYesterday, lt:endOfYesterday}} 
+        });
+
+        const totalOrder= await prisma.order.count({
+            where:{createdAt:{gte:startOfYesterday, lt:endOfYesterday}}
+        });
+
+        const totalAmountorder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{createdAt:{gte:startOfYesterday, lt:endOfYesterday}}
+        });
+
+        const totalCancelledOrder= await prisma.order.count({
+            where:{status:'CANCELLED',createdAt:{gte:startOfYesterday, lt:endOfYesterday}}
+        });
+        const totalAmountofCancelledorder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{status:'CANCELLED',createdAt:{gte:startOfYesterday, lt:endOfYesterday}}
+        });
+
+        const totalCODOrder= await prisma.order.count({
+            where:{payment:{paymentmethod:'COD'},createdAt:{gte:startOfYesterday, lt:endOfYesterday} }
+        });
+
+        const totalAmountOfCODOrder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{payment:{paymentmethod:'COD'},createdAt:{gte:startOfYesterday, lt:endOfYesterday} }
+        });
+
+          const totalPaidOrder= await prisma.order.count({
+            where:{payment:{status:'PAID'},createdAt:{gte:startOfYesterday, lt:endOfYesterday} }
+        });
+
+        const totalAmountOfPaidOrder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{payment:{status:'PAID'},createdAt:{gte:startOfYesterday, lt:endOfYesterday} }
+        });
+
+          const totalReturnOrder= await prisma.order.count({
+            where:{status:'RETURN',createdAt:{gte:startOfYesterday, lt:endOfYesterday} }
+        });
+
+        const totalAmountOfReturnOrder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{status:'RETURN',createdAt:{gte:startOfYesterday, lt:endOfYesterday} }
+        });
+
+          
+       return res.status(200).json({totalSale, totalDeliveredOrder, totalOrder, totalAmountorder,totalCancelledOrder,totalAmountofCancelledorder,
+        totalReturnOrder,totalAmountOfReturnOrder,totalCODOrder,totalAmountOfCODOrder,totalPaidOrder,totalAmountOfPaidOrder})
+
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+
+//report for week
+route.get('/weekreport',verification, roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+           const curr = new Date();
+                const firstDayOfWeek = new Date(curr.setDate(curr.getDate() - curr.getDay() + 1)); // Monday start
+                firstDayOfWeek.setHours(0, 0, 0, 0);
+                const lastDayOfWeek = new Date(firstDayOfWeek);
+                lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
+                lastDayOfWeek.setHours(23, 59, 59, 999);
+
+        const totalSale= await prisma.order.aggregate({
+            _sum:{totalPrice: true},
+            where:{status: "DELIVERED", createdAt:{gte:firstDayOfWeek, lt:lastDayOfWeek}}
+        });
+
+        const totalDeliveredOrder= await prisma.order.count({
+        where:{status: "DELIVERED", createdAt:{gte:firstDayOfWeek, lt:lastDayOfWeek}} 
+        });
+
+        const totalOrder= await prisma.order.count({
+            where:{createdAt:{gte:firstDayOfWeek, lt:lastDayOfWeek}}
+        });
+
+        const totalAmountorder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{createdAt:{gte:firstDayOfWeek, lt:lastDayOfWeek}}
+        });
+
+        const totalCancelledOrder= await prisma.order.count({
+            where:{status:'CANCELLED',createdAt:{gte:firstDayOfWeek, lt:lastDayOfWeek}}
+        });
+        const totalAmountofCancelledorder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{status:'CANCELLED',createdAt:{gte:firstDayOfWeek, lt:lastDayOfWeek}}
+        });
+
+        const totalCODOrder= await prisma.order.count({
+            where:{payment:{paymentmethod:'COD'},createdAt:{gte:firstDayOfWeek, lt:lastDayOfWeek} }
+        });
+
+        const totalAmountOfCODOrder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{payment:{paymentmethod:'COD'},createdAt:{gte:firstDayOfWeek, lt:lastDayOfWeek} }
+        });
+
+          const totalPaidOrder= await prisma.order.count({
+            where:{payment:{status:'PAID'},createdAt:{gte:firstDayOfWeek, lt:lastDayOfWeek} }
+        });
+
+        const totalAmountOfPaidOrder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{payment:{status:'PAID'},createdAt:{gte:firstDayOfWeek, lt:lastDayOfWeek} }
+        });
+
+          const totalReturnOrder= await prisma.order.count({
+            where:{status:'RETURN',createdAt:{gte:firstDayOfWeek, lt:lastDayOfWeek} }
+        });
+
+        const totalAmountOfReturnOrder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{status:'RETURN',createdAt:{gte:firstDayOfWeek, lt:lastDayOfWeek} }
+        });
+
+          
+       return res.status(200).json({totalSale, totalDeliveredOrder, totalOrder, totalAmountorder,totalCancelledOrder,totalAmountofCancelledorder,
+        totalReturnOrder,totalAmountOfReturnOrder,totalCODOrder,totalAmountOfCODOrder,totalPaidOrder,totalAmountOfPaidOrder})
+
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+
+//report for month
+route.get('/monthreport',verification, roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+    const today= new Date();
+        const currentMonth= today.getMonth()+1;
+        const currentYear = today.getFullYear();
+
+        let prevMonth= currentMonth -1;
+        let prevYear= currentYear
+        if(prevMonth===0){prevMonth= 12; prevYear= currentYear-1}
+
+        const currentStart= new Date(currentYear, currentMonth -1, 1);
+        const currentEnd = new Date(currentYear, currentMonth,1);
+
+        const totalSale= await prisma.order.aggregate({
+            _sum:{totalPrice: true},
+            where:{status: "DELIVERED", createdAt:{gte:currentStart, lt:currentEnd}}
+        });
+
+        const totalDeliveredOrder= await prisma.order.count({
+        where:{status: "DELIVERED", createdAt:{gte:currentStart, lt:currentEnd}} 
+        });
+
+        const totalOrder= await prisma.order.count({
+            where:{createdAt:{gte:currentStart, lt:currentEnd}}
+        });
+
+        const totalAmountorder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{createdAt:{gte:currentStart, lt:currentEnd}}
+        });
+
+        const totalCancelledOrder= await prisma.order.count({
+            where:{status:'CANCELLED',createdAt:{gte:currentStart, lt:currentEnd}}
+        });
+        const totalAmountofCancelledorder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{status:'CANCELLED',createdAt:{gte:currentStart, lt:currentEnd}}
+        });
+
+        const totalCODOrder= await prisma.order.count({
+            where:{payment:{paymentmethod:'COD'},createdAt:{gte:currentStart, lt:currentEnd} }
+        });
+
+        const totalAmountOfCODOrder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{payment:{paymentmethod:'COD'},createdAt:{gte:currentStart, lt:currentEnd} }
+        });
+
+          const totalPaidOrder= await prisma.order.count({
+            where:{payment:{status:'PAID'},createdAt:{gte:currentStart, lt:currentEnd} }
+        });
+
+        const totalAmountOfPaidOrder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{payment:{status:'PAID'},createdAt:{gte:currentStart, lt:currentEnd} }
+        });
+
+          const totalReturnOrder= await prisma.order.count({
+            where:{status:'RETURN',createdAt:{gte:currentStart, lt:currentEnd} }
+        });
+
+        const totalAmountOfReturnOrder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{status:'RETURN',createdAt:{gte:currentStart, lt:currentEnd} }
+        });
+
+          
+       return res.status(200).json({totalSale, totalDeliveredOrder, totalOrder, totalAmountorder,totalCancelledOrder,totalAmountofCancelledorder,
+        totalReturnOrder,totalAmountOfReturnOrder,totalCODOrder,totalAmountOfCODOrder,totalPaidOrder,totalAmountOfPaidOrder})
+
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+
+//report for Year
+route.get('/yearreport',verification, roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const startOfYear = new Date(new Date().getFullYear(), 0, 1);
+        const endOfYear = new Date(new Date().getFullYear(), 11, 31, 23, 59, 59, 999);
+
+        const totalSale= await prisma.order.aggregate({
+            _sum:{totalPrice: true},
+            where:{status: "DELIVERED", createdAt:{gte:startOfYear, lt:endOfYear}}
+        });
+
+        const totalDeliveredOrder= await prisma.order.count({
+        where:{status: "DELIVERED", createdAt:{gte:startOfYear, lt:endOfYear}} 
+        });
+
+        const totalOrder= await prisma.order.count({
+            where:{createdAt:{gte:startOfYear, lt:endOfYear}}
+        });
+
+        const totalAmountorder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{createdAt:{gte:startOfYear, lt:endOfYear}}
+        });
+
+        const totalCancelledOrder= await prisma.order.count({
+            where:{status:'CANCELLED',createdAt:{gte:startOfYear, lt:endOfYear}}
+        });
+        const totalAmountofCancelledorder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{status:'CANCELLED',createdAt:{gte:startOfYear, lt:endOfYear}}
+        });
+
+        const totalCODOrder= await prisma.order.count({
+            where:{payment:{paymentmethod:'COD'},createdAt:{gte: startOfYear, lt:endOfYear} }
+        });
+
+        const totalAmountOfCODOrder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{payment:{paymentmethod:'COD'},createdAt:{gte:startOfYear, lt:endOfYear} }
+        });
+
+          const totalPaidOrder= await prisma.order.count({
+            where:{payment:{status:'PAID'},createdAt:{gte:startOfYear, lt:endOfYear} }
+        });
+
+        const totalAmountOfPaidOrder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{payment:{status:'PAID'},createdAt:{gte:startOfYear, lt:endOfYear} }
+        });
+
+          const totalReturnOrder= await prisma.order.count({
+            where:{status:'RETURN',createdAt:{gte:startOfYear, lt:endOfYear} }
+        });
+
+        const totalAmountOfReturnOrder= await prisma.order.aggregate({
+            _sum:{totalPrice:true},
+            where:{status:'RETURN',createdAt:{gte:startOfYear, lt:endOfYear} }
+        });
+
+          
+       return res.status(200).json({totalSale, totalDeliveredOrder, totalOrder, totalAmountorder,totalCancelledOrder,totalAmountofCancelledorder,
+        totalReturnOrder,totalAmountOfReturnOrder,totalCODOrder,totalAmountOfCODOrder,totalPaidOrder,totalAmountOfPaidOrder})
+
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
 
 
 

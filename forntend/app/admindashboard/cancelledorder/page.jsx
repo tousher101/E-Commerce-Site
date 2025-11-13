@@ -15,7 +15,7 @@ export default function cancelledOrder(){
    const [page, setPage]=useState(1);
    const [msg, setMsg]=useState(null);
    const [type, setType]=useState(null);
-   const [mode, setMode]=useState('CurrentMonth')
+   const [mode, setMode]=useState('today')
    const router=useRouter();
 
       const goDetails=(id)=>{
@@ -23,12 +23,16 @@ export default function cancelledOrder(){
    };
 
     const fetchData=async(page)=>{
-    const endPoint= mode==='PreviousMonth'?`${BaseURI}/api/admin/previousmonthcancelledorder?page=${page}&limit=${20}`
-    :`${BaseURI}/api/admin/currentmonthcancelledorder?page=${page}&limit=${20}`
-    const res= await fetchWithAuth(endPoint)
-    setOrderData(res.getCancelledOrder);
-    setTotalOrder(res.totalCancelledOrder);
-    setTotalPage(res.totalPage);
+      const endPoint= mode==='yesterday'?`${BaseURI}/api/admin/yesterdaycancelledorders?page=${page}&limit=${20}`
+       :mode==='week'?`${BaseURI}/api/admin/weeklycancelledorders?page=${page}&limit=${20}`
+       :mode==='currentmonth'?`${BaseURI}/api/admin/monthlycancelledorders?page=${page}&limit=${20}`
+       : mode==='year'?`${BaseURI}/api/admin/yearlycancelledorders?page=${page}&limit=${20}`
+       :`${BaseURI}/api/admin/todaycancelledorders?page=${page}&limit=${20}`
+   
+       const res= await fetchWithAuth(endPoint)
+       setOrderData(res.allOrders);
+       setTotalOrder(res.totalOrders);
+       setTotalPage(res.totalPage);
    }
 
    useEffect(()=>{
@@ -47,13 +51,27 @@ export default function cancelledOrder(){
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
         <div className=" mx-auto w-full overflow-hidden">
         <h1 className="text-center text-gray-500 my-[20px] text-3xl font-bold"> Cancelled <span className='text-green-500'>Order ({totalOrder})</span></h1>
-             <div className='flex gap-2 items-center ml-[10px] justify-center'>
-          <button onClick={()=>{setMode('CurrentMonth');}} className={`p-2 border-1 border-gray-300 rounded-sm text-gray-600 cursor-pointer ${
-              mode === "CurrentMonth" ? "bg-gray-800 text-white" : "text-gray-600"
+            <div className='flex gap-2 items-center ml-[10px] justify-center'>
+             <button onClick={()=>{setMode('today');}} className={`p-2 border-1 border-gray-300 rounded-sm text-gray-600 cursor-pointer ${
+              mode === "today" ? "bg-gray-800 text-white" : "text-gray-600"
+            } `}>Today</button>
+
+             <button onClick={()=>{setMode('yesterday');}} className={`p-2 border-1 border-gray-300 rounded-sm text-gray-600 cursor-pointer ${
+              mode === "yesterday" ? "bg-gray-800 text-white" : "text-gray-600"
+            } `}>Yesterday</button>
+
+             <button onClick={()=>{setMode('week');}} className={`p-2 border-1 border-gray-300 rounded-sm text-gray-600 cursor-pointer ${
+              mode === "week" ? "bg-gray-800 text-white" : "text-gray-600"
+            } `}>This Week</button>
+
+          <button onClick={()=>{setMode('currentmonth');}} className={`p-2 border-1 border-gray-300 rounded-sm text-gray-600 cursor-pointer ${
+              mode === "currentmonth" ? "bg-gray-800 text-white" : "text-gray-600"
             } `}>Current Month</button>
-        <button onClick={()=>{setMode('PreviousMonth');}} className={`p-2 border-1 border-gray-300 rounded-sm text-gray-600 cursor-pointer ${
-              mode === "PreviousMonth" ? "bg-gray-800 text-white" : "text-gray-600"
-            }`}>Previous Month</button>
+
+
+        <button onClick={()=>{setMode('year');}} className={`p-2 border-1 border-gray-300 rounded-sm text-gray-600 cursor-pointer ${
+              mode === "year" ? "bg-gray-800 text-white" : "text-gray-600"
+            }`}>This Year</button>
         </div>
         <div className='grid grid-cols-1 gap-1.5 items-center'>
         {orderData?.length>0? orderData?.map((order)=>(
