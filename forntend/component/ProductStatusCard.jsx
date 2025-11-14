@@ -6,7 +6,7 @@ export default function productStatusCard({photo, name, price, originalPrice, st
     return(
         <div className="w-full mx-auto overflow-hidden bg-[#FCFCF7]" data-aos='slide-up'>
             <div className="lg:flex grid md:flex grid-cols-1 lg:justify-around md:justify-around justify-items-center text-sm items-center rounded-xl border-1 border-gray-400 p-2 gap-6 w-full">
-                     <Image src={photo} width={100} height={80} alt="product-photo" className="h-[80px] w-[100px]" />
+                     <Image src={photo} width={100} height={80} alt="product-photo" className="h-[80px] w-[100px] rounded-sm" />
                
                 <div className=" grid grid-cols-1 gap-2">
                     <h1 className="text-center font-semibold">{name}</h1>

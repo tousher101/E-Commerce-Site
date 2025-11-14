@@ -61,7 +61,7 @@ const changePassword=async()=>{
             <div className=" max-w-[1380px] mx-auto overflow-hidden">
                  <div className=" relative mb-[20px]">
                    <input type="checkbox" className=" peer/sidebar hidden" id='sidebar-toggle'/>
-                <label htmlFor="sidebar-toggle" className="lg:hidden md:block block cursor-pointer left-2 top-0 absolute z-50   ">
+                <label htmlFor="sidebar-toggle" className="lg:hidden md:block block cursor-pointer left-2 top-0 absolute z-10  ">
                <Image src={openSlide} height={40} width={40} alt="toggle-icone"/>
                 </label>
               

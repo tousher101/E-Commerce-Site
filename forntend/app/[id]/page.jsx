@@ -78,7 +78,7 @@ export default function productDetailsPage(){
             <div>
                 <h1 className=" ml-[20px] text-3xl text-gray-500 font-bold">Related <span className="text-green-500">Product</span></h1>
                 {relatedData?.map((rel)=>(
-                        <div key={rel.id} className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 justify-items-center">
+                        <div key={rel.id} className="flex flex-wrap justify-center gap-2 w-full">
                     <Product name={rel?.name} description={rel?.description} price={rel?.price} originalPrice={rel?.originalPrice}
                     stock={rel?.stock} photos={rel?.photos[0]?.url} comment={rel?._count?.comment} sold={rel?.order?.quantity} productId={rel.id} />
                         </div>
