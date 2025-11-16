@@ -39,8 +39,11 @@ export default function RootLayout({ children }) {
         <UserProvider>
        <NavBar/>
         {children}
-        <Service/>
+        <div className="block print:hidden">
+       <Service/>
         <Footer/>
+        </div>
+       
         </UserProvider>
         </GlobalProvider>
       </body>

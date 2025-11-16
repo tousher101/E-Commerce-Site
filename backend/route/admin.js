@@ -2481,16 +2481,6 @@ route.get('/getmonthlydata', verification, roleAuthorize('ADMIN'), async(req,res
         const growth =  prev===0?100:((current-prev)/prev)*100;
 
 
-
-         const currentMonthPendingOrder= await prisma.order.count({
-            where:{status:'PENDING'}
-        });
-
-        const confOrder= await prisma.order.count({
-            where:{status:'CONFIRMED'}
-        })
-
-
         const currentMonthConfirmedOrder= await prisma.order.count({
             where:{createdAt:{gte:currentStart, lt:currentEnd}}
         });
@@ -2502,16 +2492,6 @@ route.get('/getmonthlydata', verification, roleAuthorize('ADMIN'), async(req,res
         const currentConfirmedOrder= currentMonthConfirmedOrder ||0;
         const prevConfirmedOrder = prevMonthConfirmedOrder || 0;
         const orderConfirmedGrowth = prevConfirmedOrder==0?100:((currentConfirmedOrder-prevConfirmedOrder)/prevConfirmedOrder)*100;
-
-
-        const currentMonthShippedOrder= await prisma.order.count({
-            where:{status:'SHIPPED'}
-        });
-
-        
-
-     
-        
 
 
         const currentMonthDeliverdOrder= await prisma.order.count({
@@ -2540,12 +2520,46 @@ route.get('/getmonthlydata', verification, roleAuthorize('ADMIN'), async(req,res
         const prevCancelledOrder = prevMonthCancelledOrder || 0;
         const orderCancelledGrowth = prevCancelledOrder==0?100:((currentCancelledOrder-prevCancelledOrder)/prevCancelledOrder)*100;
 
+        const currentMonthCODOrder= await prisma.order.count({
+            where:{payment:{paymentmethod:'COD'}, createdAt:{gte:currentStart, lt:currentEnd}}
+        });
+        const prevMonthCODOrder= await prisma.order.count({
+            where:{payment:{paymentmethod:'COD'}, createdAt:{gte:prevStart, lt:prevEnd}}
+        });
+        const currentCODOrder=currentMonthCODOrder ||0;
+        const prevCODOrder=prevMonthCODOrder || 0;
+        const orderCODGrowth= prevCODOrder==0?100:((currentCODOrder-prevCODOrder)/prevCODOrder)*100;
+
+
+        const currentMontPaidOrder= await prisma.order.count({
+            where:{payment:{status:'PAID'}, createdAt:{gte:currentStart, lt:currentEnd}}
+        });
+        const prevMonthPaidOrder= await prisma.order.count({
+            where:{payment:{status:'PAID'}, createdAt:{gte:prevStart, lt:prevEnd}}
+        });
+        const currentPaidOrder= currentMontPaidOrder ||0;
+        const prevPaidOrder=prevMonthPaidOrder||0;
+        const orderPaidGrowth= prevPaidOrder==0?100:((currentPaidOrder-prevPaidOrder)/prevPaidOrder)*100;
+
+
+        const currentMonthReturnOrder= await prisma.order.count({
+            where:{status:'RETURN', createdAt:{gte:currentStart, lt:currentEnd}}
+        });
+        const prevMonthReturnOrder= await prisma.order.count({
+            where:{status:'RETURN', createdAt:{gte:prevStart, lt:prevEnd}}
+        });
+        const currentReturnOrder=currentMonthReturnOrder ||0;
+        const prevReturnOrder=prevMonthReturnOrder ||0;
+        const orderReturnGrowth=prevReturnOrder==0?100:((currentReturnOrder-prevReturnOrder)/prevReturnOrder)*100;
+
 
         res.status(200).json({growth:growth.toFixed(2), current, prev, 
-           currentMonthPendingOrder, orderConfirmedGrowth:orderConfirmedGrowth.toFixed(2),
-            currentConfirmedOrder, prevConfirmedOrder,  currentMonthShippedOrder, confOrder,
-            orderDeliverdGrowth:orderDeliverdGrowth.toFixed(2), currentDeliverdOrder, prevDeliverdOrder,
-            orderCancelledGrowth:orderCancelledGrowth.toFixed(2),currentCancelledOrder, prevCancelledOrder
+           orderConfirmedGrowth:orderConfirmedGrowth.toFixed(2),
+            currentConfirmedOrder, prevConfirmedOrder, orderDeliverdGrowth:orderDeliverdGrowth.toFixed(2), 
+            currentDeliverdOrder, prevDeliverdOrder,orderCancelledGrowth:orderCancelledGrowth.toFixed(2),
+            currentCancelledOrder, prevCancelledOrder, orderCODGrowth:orderCODGrowth.toFixed(2), currentCODOrder,prevCODOrder,
+            orderPaidGrowth:orderPaidGrowth.toFixed(2), currentPaidOrder, prevPaidOrder, orderReturnGrowth:orderReturnGrowth.toFixed(2),
+            currentReturnOrder, prevReturnOrder
 
         });
     }catch(err){console.error(err); res.status(500).json({msg: 'Server Error'})}

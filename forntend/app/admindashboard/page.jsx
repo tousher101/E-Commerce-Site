@@ -42,11 +42,12 @@ useEffect(()=>{
             
             
             <AdminCard prevSales={cardData?.prev} currSales={cardData?.current} salesGrowth={cardData?.growth} prevOrder={cardData?.prevConfirmedOrder}
-            currOrder={cardData?.currentConfirmedOrder} orderGrowth={cardData?.orderConfirmedGrowth} 
-            currPendingOrder={cardData?.currentMonthPendingOrder}   
-            currShippendOrder={cardData?.currentMonthShippedOrder} prevDeliveredOrder={cardData?.prevDeliverdOrder}
-            currDeliveredOrder={cardData?.currentDeliverdOrder} deliveredOrderGrwoth={cardData?.orderDeliverdGrowth} prevCancelledOrder={cardData?.prevCancelledOrder}
-            currCancelledOrder={cardData?.currentCancelledOrder} cancelledOrderGrowth={cardData?.orderCancelledGrowth} confOrder={cardData?.confOrder} />
+            currOrder={cardData?.currentConfirmedOrder} orderGrowth={cardData?.orderConfirmedGrowth}   
+             prevDeliveredOrder={cardData?.prevDeliverdOrder} currDeliveredOrder={cardData?.currentDeliverdOrder} 
+            deliveredOrderGrwoth={cardData?.orderDeliverdGrowth} prevCancelledOrder={cardData?.prevCancelledOrder} currCancelledOrder={cardData?.currentCancelledOrder} 
+            cancelledOrderGrowth={cardData?.orderCancelledGrowth} currentPaidOrder={cardData?.currentPaidOrder} prevPaidOrder={cardData?.prevPaidOrder} paidOrderGrowth={cardData?.orderPaidGrowth} 
+            codOrderGrowth={cardData?.orderCODGrowth} currentCodOrder={cardData?.currentCODOrder} prevCodOrder={cardData?.prevCODOrder} 
+           returnOrderGrwoth={cardData?.orderReturnGrowth} currentReturnOrder={cardData?.currentReturnOrder} prevReturnOrder={cardData?.prevReturnOrder} />
             </div>
     )
     

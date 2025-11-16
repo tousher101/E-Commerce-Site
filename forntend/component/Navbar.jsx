@@ -142,7 +142,7 @@ export default function navBar() {
       {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
         <nav className=" max-w-[1380px] mx-[10px]  my-[10px] lg:flex md:flex  grid lg:h-[70px] md:h-[70px] h-[180px] items-center lg:justify-between md:justify-between   overflow-hidden">
           <div className="flex justify-end lg:hidden md:hidden">
-                <div  className="flex  justify-around items-center ">
+                <div  className="flex print:hidden  justify-around items-center ">
                 {userInfo?.role==='USER'&&<div onClick={openModal} className="cursor-pointer relative mr-[25px]">
                  <img className="h-[40px] w-[40px] " src="/shopping-cart.gif" alt="shopping-cart"/>
                  <h1 className=" absolute top-0 right-0 bg-red-600 h-[20px] w-[20px] rounded-3xl text-center text-white text-sm ">{totalCartItmes||0}</h1>
@@ -166,7 +166,7 @@ export default function navBar() {
             <div className="lg:h-[80px] lg:w-[120px] md:h-[80px] md:w-[120px] w-full  ml-[10px] flex lg:justify-between md:justify-between justify-around items-center">
             <Link href='/'><Image className="lg:w-[190px] lg:h-[80px] md:w-[190px] md:h-[80px] w-[120px] h-[60px]" src={logo} alt="logo" width={'auto'} height={'auto'} priority /></Link>
             </div>
-            <div className=" flex items-center gap-3 mt-[10px] justify-center ">
+            <div className=" flex items-center gap-3 mt-[10px] justify-center print:hidden ">
               <input value={searchData} onChange={(e)=>{setSearchData(e.target.value)}} className="border border-gray-400 lg:p-[5px] p-1 lg:w-[300px] md:w-[250px] w-[200px]  rounded-xl" type="text" placeholder="Search Product"/>
               <button onClick={goSearch} className="lg:h-[35px] lg:w-[100px] h-[30px] w-[85px] bg-blue-500 text-white cursor-pointer rounded-2xl">Search</button>
             </div>

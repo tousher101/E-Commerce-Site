@@ -9,9 +9,10 @@ import shippedIcone from '../public/cargo-ship.png'
 import deliveredIcone from '../public/package-delivered.png'
 import cancelledIcone from '../public/bag.png'
 import confIcone from '../public/sold.png'
-export default function adminCard({prevSales, currSales, salesGrowth, prevOrder, currOrder, orderGrowth,currPendingOrder, 
- currShippendOrder,  prevDeliveredOrder, currDeliveredOrder, deliveredOrderGrwoth, prevCancelledOrder, currCancelledOrder,
-cancelledOrderGrowth,confOrder
+export default function adminCard({prevSales, currSales, salesGrowth, prevOrder, currOrder, orderGrowth,
+   prevDeliveredOrder, currDeliveredOrder, deliveredOrderGrwoth, prevCancelledOrder, currCancelledOrder,
+cancelledOrderGrowth, paidOrderGrowth,currentPaidOrder,prevPaidOrder, codOrderGrowth, currentCodOrder, 
+prevCodOrder,returnOrderGrwoth,currentReturnOrder,prevReturnOrder
 
 }){
     return(
@@ -35,7 +36,7 @@ cancelledOrderGrowth,confOrder
                         </div>
                         <div className="flex items-center gap-1">
                             <Image src={growthIcon} height={25} width={25} alt="growth-icone"/>
-                            <h1 className={`font-semibold ${currSales>prevSales?'text-green-600':'text-red-600'}`}>Growth : {salesGrowth} %</h1>
+                            <h1 className={`font-semibold ${currSales>prevSales?'text-green-500':'text-red-500'}`}>Growth : {salesGrowth} %</h1>
                         </div>
                     </div>
                 </div>
@@ -56,7 +57,7 @@ cancelledOrderGrowth,confOrder
                         </div>
                         <div className="flex items-center gap-1">
                             <Image src={growthIcon} height={25} width={25} alt="growth-icone"/>
-                            <h1 className={`font-semibold ${currOrder>prevOrder?'text-green-600':'text-red-600'}`}>Growth : {orderGrowth} %</h1>
+                            <h1 className={`font-semibold ${currOrder>prevOrder?'text-green-500':'text-red-500'}`}>Growth : {orderGrowth} %</h1>
                         </div>
                     </div>
                 </div>
@@ -76,7 +77,7 @@ cancelledOrderGrowth,confOrder
                         </div>
                         <div className="flex items-center gap-1">
                             <Image src={growthIcon} height={25} width={25} alt="growth-icone"/>
-                            <h1 className={`font-semibold ${currDeliveredOrder>prevDeliveredOrder?'text-green-600':'text-red-600'}`}>Growth : {deliveredOrderGrwoth} %</h1>
+                            <h1 className={`font-semibold ${currDeliveredOrder>prevDeliveredOrder?'text-green-500':'text-red-500'}`}>Growth : {deliveredOrderGrwoth} %</h1>
                         </div>
                     </div>
                 </div>              
@@ -97,33 +98,52 @@ cancelledOrderGrowth,confOrder
                         </div>
                         <div className="flex items-center gap-1">
                             <Image src={growthIcon} height={25} width={25} alt="growth-icone"/>
-                            <h1 className={`font-semibold ${currCancelledOrder>prevCancelledOrder?'text-green-600':'text-red-600'}`}>Growth : {cancelledOrderGrowth} %</h1>
+                            <h1 className={`font-semibold ${currCancelledOrder>prevCancelledOrder?'text-green-500':'text-red-500'}`}>Growth : {cancelledOrderGrowth} %</h1>
                         </div>
                     </div>
                 </div>
 
 
-
-
-                 
                  <div data-aos='fade-up' className="  h-[180px] w-[320px] p-3 bg-gradient-to-r from-[#dfc6c6] to-[#FF69B4] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
                      <div className="flex items-center justify-center gap-1">
                         <Image src={pendingIcone} height={30} width={30} alt="pending-order-Icone"/>
-                        <h1 className="grid text-center text-xl font-semibold">Pending Order (Current)</h1>
+                        <h1 className="grid text-center text-xl font-semibold">Paid Order (Monthly)</h1>
                     </div>
-                  <div className="grid justify-items-center grid-cols-1 gap-3 mt-[15px] ">
-                      <h1 className="text-2xl font-semibold">{currPendingOrder}</h1>
+                         <div className="grid grid-cols-1 gap-3 mt-[15px] ">
+                        <div className="flex items-center gap-1">
+                            <Image src={presentIcon} height={25} width={25} alt="present-icone"/>
+                            <h1>Present : {currentPaidOrder} Orders  </h1>
+                        </div>
+                          <div className="flex items-center gap-1">
+                            <Image src={previousIcone} height={25} width={25} alt="previous-icone"/>
+                             <h1>Previous : {prevPaidOrder} Orders</h1>
+                        </div>
+                        <div className="flex items-center gap-1">
+                            <Image src={growthIcon} height={25} width={25} alt="growth-icone"/>
+                            <h1 className={`font-semibold ${currentPaidOrder>prevPaidOrder?'text-green-500':'text-red-500'}`}>Growth : {paidOrderGrowth} %</h1>
+                        </div>
                     </div>
                 </div>
 
                 <div  data-aos='fade-up' className="  h-[180px] w-[320px] p-3 bg-gradient-to-r from-[#dfc6c6] to-[#71da8b] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
                       <div className="flex items-center justify-center gap-1">
                         <Image src={confIcone} height={30} width={30} alt="shipped-order-Icone"/>
-                        <h1 className="grid text-center text-xl font-semibold">Confirmed Order (Current)</h1>
+                        <h1 className="grid text-center text-xl font-semibold">COD Order (Monthly)</h1>
                     </div>
-                       <div className="grid grid-cols-1 justify-items-center gap-3 mt-[15px] ">
-                     <h1 className="font-semibold text-2xl">{confOrder}</h1>
-                </div>
+                        <div className="grid grid-cols-1 gap-3 mt-[15px] ">
+                        <div className="flex items-center gap-1">
+                            <Image src={presentIcon} height={25} width={25} alt="present-icone"/>
+                            <h1>Present : {currentCodOrder} Orders  </h1>
+                        </div>
+                          <div className="flex items-center gap-1">
+                            <Image src={previousIcone} height={25} width={25} alt="previous-icone"/>
+                             <h1>Previous : {prevCodOrder} Orders</h1>
+                        </div>
+                        <div className="flex items-center gap-1">
+                            <Image src={growthIcon} height={25} width={25} alt="growth-icone"/>
+                            <h1 className={`font-semibold ${currentCodOrder>prevCodOrder?'text-green-600':'text-red-600'}`}>Growth : {codOrderGrowth} %</h1>
+                        </div>
+                    </div>
  
             </div>
         </div>
@@ -131,13 +151,22 @@ cancelledOrderGrowth,confOrder
                           <div  data-aos='fade-up' className="  h-[180px] w-[320px] p-3 bg-gradient-to-r from-[#dfc6c6] to-[#82ce95] shadow-[8px_8px_16px_#0a0a0a, -8px_-8px_-16px_#1a1a1a] rounded-xl">
                       <div className="flex items-center justify-center gap-1">
                         <Image src={shippedIcone} height={30} width={30} alt="shipped-order-Icone"/>
-                        <h1 className="grid text-center text-xl font-semibold">Shipped Order (Current)</h1>
+                        <h1 className="grid text-center text-xl font-semibold">Return Order (Monthly)</h1>
                     </div>
-                       <div className="grid grid-cols-1 justify-items-center gap-3 mt-[15px] ">
-                        
-                                <h1 className="text-2xl font-semibold">{currShippendOrder}</h1>
-                    
-                </div>
+                         <div className="grid grid-cols-1 gap-3 mt-[15px] ">
+                        <div className="flex items-center gap-1">
+                            <Image src={presentIcon} height={25} width={25} alt="present-icone"/>
+                            <h1>Present : {currentReturnOrder} Orders  </h1>
+                        </div>
+                          <div className="flex items-center gap-1">
+                            <Image src={previousIcone} height={25} width={25} alt="previous-icone"/>
+                             <h1>Previous : {prevReturnOrder} Orders</h1>
+                        </div>
+                        <div className="flex items-center gap-1">
+                            <Image src={growthIcon} height={25} width={25} alt="growth-icone"/>
+                            <h1 className={`font-semibold ${currentReturnOrder>prevReturnOrder?'text-green-600':'text-red-600'}`}>Growth : {returnOrderGrwoth} %</h1>
+                        </div>
+                    </div>
                 </div>
 
                     </div>

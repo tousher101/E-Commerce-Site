@@ -2,24 +2,10 @@
 import { useState,useEffect } from "react";
 import { fetchWithAuth } from "../../../Utils/fetchWithAuth";
 
+
 export default function report(){
     const BaseURI=process.env.NEXT_PUBLIC_API_URI
     const [mode, setMode]=useState('today');
-    // const [totalSale,setTotalSale]=useState(0);
-    // const [totalOrder,setTotalOrder]=useState(0);
-    // const [totalOrderAmount,setTotalOrderAmount]=useState(0);
-    // const [totalDelivererdOrder, setTotalDeliveredOrder]=useState(0);
-    // const [totalDeliveredOrderAmount, setTotalDeliveredOrderAmount]=useState(0)
-    // const [totalCancelOrder, setTotalCancelledOrder]=useState(0);
-    // const [totalCancelledOrderAmount, setTotalCancelledOrderAmount]=useState(0);
-    // const [totalCODOrder, setTotalCODOrder]=useState(0);
-    // const [totalCODOrderAmount, setTotalCODOrderAmount]=useState(0);
-    // const [totalPaidOrder, setTotalPaidOrder]=useState(0);
-    // const [totalPaidOrderAmount, setTotalPaidOrderAmount]=useState(0);
-    // const [totalReturnOrder, setTotalReturnOrder]=useState(0);
-    // const [totalReturnOrderAmount, setTotalReturnOrderAmount]=useState(0);
-    // const [totalShippedOrder,setTotalShippedOrder]=useState(0);
-    // const [totalShippedOrderAmount, setTotalShippedOrderAmount]=useState(0);
 
     const [reportData, setReportData]=useState(null)
 
@@ -35,15 +21,19 @@ export default function report(){
         setReportData(res)
    };
 
+   const printReport=()=>{
+    window.print();
+   }
+
    useEffect(()=>{
     fetchData();
    },[mode])
 
 
     return(
-        <div className="w-full overflow-hidden">
+        <div className="w-full overflow-hidden ">
             <h1 className="text-center text-gray-500 font-bold text-3xl">Rep<span className="text-green-500">ort</span></h1>
-                <div className='flex gap-2 items-center ml-[10px] justify-center mt-[25px]'>
+                <div className='flex flex-wrap gap-2 items-center ml-[10px] justify-center mt-[25px]'>
              <button onClick={()=>{setMode('today');}} className={`p-2 border-1 border-gray-300 rounded-sm text-gray-600 cursor-pointer ${
               mode === "today" ? "bg-gray-800 text-white" : "text-gray-600"
             } `}>Today</button>
@@ -64,6 +54,8 @@ export default function report(){
         <button onClick={()=>{setMode('year');}} className={`p-2 border-1 border-gray-300 rounded-sm text-gray-600 cursor-pointer ${
               mode === "year" ? "bg-gray-800 text-white" : "text-gray-600"
             }`}>This Year</button>
+
+            <button onClick={printReport} className="h-[35px] w-[35px] border-1 border-gray-400 rounded-sm cursor-pointer ml-[25px] block print:hidden"><img src="/printer.gif" className="h-[30px] w-[30px]"/></button>
         </div>
            
 
