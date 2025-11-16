@@ -11,6 +11,7 @@ import Cookie from '../component/Cookie'
 import ProductStatusCard from '../component/ProductStatusCard'
 import { useRouter } from 'next/navigation'
 
+
 export default function Home() {
 const BaseURI=process.env.NEXT_PUBLIC_API_URI;
 const [products,setProducts]=useState([]);
@@ -119,6 +120,7 @@ const handelNext=()=>{
       {cookie&&<Cookie acceptCookie={()=>{
         sessionStorage.setItem('cookieaccepted','true')
         setCookie(false)}}  closeCookie={()=>{setCookie(false)}}/>}
+
       </>
   )
 }

@@ -6,6 +6,9 @@ import Footer from '../component/Footer'
 import Service from '../component/Service'
 import {UserProvider} from '../context/userInfo'
 import { GlobalProvider } from "../context/globalContext";
+import Image from 'next/image'
+import contactIcon from '../public/whatsapp.png'
+import Link from "next/link";
 
 
 
@@ -43,7 +46,9 @@ export default function RootLayout({ children }) {
        <Service/>
         <Footer/>
         </div>
-       
+          <div className='h-[60px] w-[60px] fixed bottom-5 right-5 cursor-pointer'>
+         <Link href='https://wa.me/qr/B6D2HLNWDNWDH1'> <Image src={contactIcon} height={60} width={60} alt='contact-icon'/></Link>
+        </div>
         </UserProvider>
         </GlobalProvider>
       </body>
