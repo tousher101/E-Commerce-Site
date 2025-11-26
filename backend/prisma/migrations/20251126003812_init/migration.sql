@@ -34,20 +34,30 @@ CREATE TABLE `Product` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NULL,
-    `price` DOUBLE NOT NULL,
     `stock` INTEGER NOT NULL DEFAULT 0,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
-    `size` JSON NOT NULL,
-    `color` JSON NOT NULL,
-    `variant` JSON NOT NULL,
     `category` ENUM('MENSFASHION', 'WOMENFASHION', 'KIDSFASHION', 'ACCESSORIES', 'PERFUME') NOT NULL,
     `weight` DOUBLE NOT NULL,
+    `basePrice` DOUBLE NOT NULL,
+    `baseOriginalPrice` DOUBLE NOT NULL,
     `barcode` VARCHAR(191) NULL,
-    `originalPrice` DOUBLE NOT NULL,
     `productStatus` ENUM('NONE', 'TOP_SELLING', 'MOST_POPULER', 'SALES_OFFER', 'PROMO_OFFER') NOT NULL DEFAULT 'NONE',
 
     UNIQUE INDEX `Product_barcode_key`(`barcode`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Variants` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `variant` VARCHAR(191) NULL,
+    `size` VARCHAR(191) NULL,
+    `color` VARCHAR(191) NULL,
+    `price` DOUBLE NULL,
+    `originalPrice` DOUBLE NULL,
+    `productId` INTEGER NOT NULL,
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -205,6 +215,9 @@ ALTER TABLE `User` ADD CONSTRAINT `User_referredBy_fkey` FOREIGN KEY (`referredB
 
 -- AddForeignKey
 ALTER TABLE `RefWallet` ADD CONSTRAINT `RefWallet_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Variants` ADD CONSTRAINT `Variants_productId_fkey` FOREIGN KEY (`productId`) REFERENCES `Product`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `ProductPhotos` ADD CONSTRAINT `ProductPhotos_productId_fkey` FOREIGN KEY (`productId`) REFERENCES `Product`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
