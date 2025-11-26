@@ -54,7 +54,7 @@ route.post('/' ,express.raw({ type: 'application/json' }), async (req, res) => {
                     });
                     if(!product) continue;
                     totalWeight+= product.weight * item.quantity
-                    totalPrice+=product.price*item.quantity
+                    totalPrice+=item.unitPrice*item.quantity
                 };
                 let shippingFee=0
 

@@ -5,27 +5,28 @@ const roleAuthorize=require('../middle-wear/roleAuthorize');
 const prisma=require('../utils/prisma');
 const cloudinary=require('../utils/cloudinary');
 const upload =require('../middle-wear/multar');
+const { create } = require('domain');
 
 
 
 
 //Add Product By Admin
 route.post('/addproduct',verification,roleAuthorize('ADMIN'),upload.array('photos',5),async(req,res)=>{
-const size=JSON.parse(req.body.size);
-const color=JSON.parse(req.body.color);
-const variant=JSON.parse(req.body.variant)
-const {name,description,price,stock, category, weight, barcode, originalPrice}=req.body;
+
+const {name,description,stock, category, weight, barcode,basePrice,baseOriginalPrice }=req.body;
+let {variants}=req.body
 const photos=req.files
 
+
 try{
-    if(!name||!description||!price||!stock||!category||!photos||!weight||!originalPrice){return res.status(400).json({msg:'Add All Required Field'})}
+    if(!name||!description||!stock||!category||!photos||!weight||!basePrice||!baseOriginalPrice){return res.status(400).json({msg:'Add All Required Field'})}
+    if(typeof variants==='string'){variants=JSON.parse(variants)}
     const addproduct=await prisma.product.create({
-        data:{name,description,price:parseFloat(price),stock:parseInt(stock,10),category, barcode,
-            size, 
-            color,
-            variant,
-            weight: parseFloat(weight),
-            originalPrice:parseFloat(originalPrice)
+        data:{name,description,stock:parseInt(stock,10),category, barcode,weight: parseFloat(weight),basePrice:parseFloat(basePrice),baseOriginalPrice:parseFloat(baseOriginalPrice),
+            variants:{create:variants.map(v=>({
+                variant:v.variant, color:v.color, price:parseFloat(v.price),originalPrice:parseFloat(v.originalPrice), size:v.size
+            }))}
+          
         }
     });
     for(const photo of photos){const result=await cloudinary.uploader.upload(photo.path,{
@@ -74,16 +75,13 @@ route.put('/editproduct/:id', verification,roleAuthorize('ADMIN'),async(req,res)
     try{
         const productId=Number(req.params.id);
      
-        const {name,description,price,stock, weight, originalPrice, size,color,variant}=req.body
+        const {name,description,basePrice,stock, weight, baseOriginalPrice,}=req.body
         if(!productId){return res.status(404).json({msg:'Product Not Found'})}
         await prisma.product.update({
             where:{id:productId},
-            data:{name,description,price,stock,
-                size,
-                color,
+            data:{name,description,basePrice,stock,
                 weight,
-                variant,
-                originalPrice
+                baseOriginalPrice
             }
         });
         res.status(200).json({msg:'Product Edit Successfully'})
@@ -2683,17 +2681,15 @@ route.get('/adminmensfashion',verification,roleAuthorize('ADMIN'),async(req,res)
                 id:true,
                 name:true,
                 description:true,
-                price:true,
+                basePrice:true,
                 stock:true,
                 photos:true,
-                size:true,
-                color:true,
-                variant:true,
                 weight:true,
                 updatedAt: true,
                 createdAt:true,
-                originalPrice:true,
-                productStatus:true
+                baseOriginalPrice:true,
+                productStatus:true,
+                barcode:true
             },
             skip:skip,
             take:limit,
@@ -2718,17 +2714,15 @@ route.get('/adminwomensfashion',verification,roleAuthorize('ADMIN'),async(req,re
                 id:true,
                 name:true,
                 description:true,
-                price:true,
+                basePrice:true,
                 stock:true,
                 photos:true,
-                size:true,
-                color:true,
-                variant:true,
                 weight:true,
                 updatedAt: true,
                 createdAt:true,
-                originalPrice:true,
-                productStatus:true
+                baseOriginalPrice:true,
+                productStatus:true,
+                barcode:true
             },
             skip:skip,
             take:limit,
@@ -2753,17 +2747,15 @@ route.get('/adminkidsfashion',verification,roleAuthorize('ADMIN'),async(req,res)
                 id:true,
                 name:true,
                 description:true,
-                price:true,
+                basePrice:true,
                 stock:true,
                 photos:true,
-                size:true,
-                color:true,
-                variant:true,
                 weight:true,
                 updatedAt: true,
                 createdAt:true,
-                originalPrice:true,
-                productStatus:true
+                baseOriginalPrice:true,
+                productStatus:true,
+                barcode:true
             },
             skip:skip,
             take:limit,
@@ -2788,16 +2780,14 @@ route.get('/adminaccessories',verification,roleAuthorize('ADMIN'),async(req,res)
                 id:true,
                 name:true,
                 description:true,
-                price:true,
+                basePrice:true,
                 stock:true,
                 photos:true,
-                size:true,
-                color:true,
-                variant:true,
+                barcode:true,
                 weight:true,
                 updatedAt: true,
                 createdAt:true,
-                originalPrice:true,
+                baseOriginalPrice:true,
                 productStatus:true
             },
             skip:skip,
@@ -2823,16 +2813,14 @@ route.get('/adminperfume',verification,roleAuthorize('ADMIN'),async(req,res)=>{
                 id:true,
                 name:true,
                 description:true,
-                price:true,
+                basePrice:true,
                 stock:true,
                 photos:true,
-                size:true,
-                color:true,
-                variant:true,
+                barcode:true,
                 weight:true,
                 updatedAt: true,
                 createdAt:true,
-                originalPrice:true,
+                baseOriginalPrice:true,
                 productStatus:true
             },
             skip:skip,
@@ -2941,17 +2929,15 @@ route.get('/searchproductbybarcodemens',verification,roleAuthorize('ADMIN'),asyn
                 id:true,
                 name:true,
                 description:true,
-                price:true,
+                basePrice:true,
                 stock:true,
                 photos:true,
-                size:true,
-                color:true,
-                variant:true,
                 weight:true,
                 updatedAt: true,
                 createdAt:true,
-                originalPrice:true,
-                productStatus:true
+                baseOriginalPrice:true,
+                productStatus:true,
+                barcode:true
             }
         });
         if(!searchProduct){return res.status(404).json({msg:'Product Not Found'})}
@@ -2969,17 +2955,15 @@ route.get('/searchproductbybarcodewomens',verification,roleAuthorize('ADMIN'),as
                 id:true,
                 name:true,
                 description:true,
-                price:true,
+                basePrice:true,
                 stock:true,
                 photos:true,
-                size:true,
-                color:true,
-                variant:true,
                 weight:true,
                 updatedAt: true,
                 createdAt:true,
-                originalPrice:true,
-                productStatus:true
+                baseOriginalPrice:true,
+                productStatus:true,
+                barcode:true
             }
         });
         if(!searchProduct){return res.status(404).json({msg:'Product Not Found'})}
@@ -2997,17 +2981,15 @@ route.get('/searchproductbybarcodekids',verification,roleAuthorize('ADMIN'),asyn
                 id:true,
                 name:true,
                 description:true,
-                price:true,
+                basePrice:true,
                 stock:true,
                 photos:true,
-                size:true,
-                color:true,
-                variant:true,
                 weight:true,
                 updatedAt: true,
                 createdAt:true,
-                originalPrice:true,
-                productStatus:true
+                baseOriginalPrice:true,
+                productStatus:true,
+                barcode:true
             }
         });
         if(!searchProduct){return res.status(404).json({msg:'Product Not Found'})}
@@ -3026,16 +3008,14 @@ route.get('/searchproductbybarcodeaccessories',verification,roleAuthorize('ADMIN
                 id:true,
                 name:true,
                 description:true,
-                price:true,
+                basePrice:true,
                 stock:true,
                 photos:true,
-                size:true,
-                color:true,
-                variant:true,
+               barcode:true,
                 weight:true,
                 updatedAt: true,
                 createdAt:true,
-                originalPrice:true,
+                baseOriginalPrice:true,
                 productStatus:true
             }
         });
@@ -3054,16 +3034,14 @@ route.get('/searchproductbybarcodeprefume',verification,roleAuthorize('ADMIN'),a
                 id:true,
                 name:true,
                 description:true,
-                price:true,
+                basePrice:true,
                 stock:true,
                 photos:true,
-                size:true,
-                color:true,
-                variant:true,
+                barcode:true,
                 weight:true,
                 updatedAt: true,
                 createdAt:true,
-                originalPrice:true,
+                baseOriginalPrice:true,
                 productStatus:true
             }
         });
@@ -3802,6 +3780,53 @@ route.get('/yearreport',verification, roleAuthorize('ADMIN'),async(req,res)=>{
        return res.status(200).json({totalSale, totalDeliveredOrder, totalOrder, totalAmountorder,totalCancelledOrder,totalAmountofCancelledorder,
         totalReturnOrder,totalAmountOfReturnOrder,totalCODOrder,totalAmountOfCODOrder,totalPaidOrder,totalAmountOfPaidOrder})
 
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+// get all variant by product
+route.get('/allvariant/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const productId=Number(req.params.id)
+        const allVariants= await prisma.variants.findMany({
+            where:{productId},
+            select:{
+                price:true,originalPrice:true, size:true,color:true,variant:true, id:true
+            }
+        });
+        return res.status(200).json({allVariants})
+
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+//delete Varient by product
+route.delete('/deletevariant/:id',verification,roleAuthorize('ADMIN'),async(req,res)=>{
+    try{
+        const id=Number(req.params.id)
+        const variants= await prisma.variants.findUnique({
+            where:{id}
+        });
+        if(!variants){res.status(404).json({msg:'Variants Not Found'})}
+        await prisma.variants.delete({
+            where:{id}
+        });
+        res.status(200).json({msg:'Variant Delete Successfully'})
+    }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
+});
+
+//edit variant by product
+route.put('/editvariant/:id',verification,roleAuthorize('ADMIN'), async(req,res)=>{
+    try{
+        const id=Number(req.params.id);
+        const {price,originalPrice ,size,color,variant}=req.body;
+        const variants= await prisma.variants.findUnique({
+            where:{id}
+        });
+        if(!variants){res.status(404).json({msg:'Variants Not Found'})};
+        await prisma.variants.update({
+            where:{id},
+            data:{price:parseFloat(price), originalPrice:parseFloat(originalPrice) ,size, color,variant}
+        });
+        return res.status(200).json({msg:'Variant Update Successfully'})
     }catch(err){console.error(err); return res.status(500).json({msg: 'Server Error'})}
 });
 

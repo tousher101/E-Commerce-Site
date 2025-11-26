@@ -21,12 +21,13 @@ export default function productDetails({name, des, price, originalPrice, weight,
                 </div>
                 <div className='lg:flex md:flex  lg:justify-around md:justify-around grid grid-cols-2 justify-items-center gap-2 my-[30px]'>
                    
-                        <select value={selectedSizeValue} onChange={selectedSizeOnCh} className='border-1 border-gray-400 p-2 rounded-xl'>
+                    {size.length>0&&<select value={selectedSizeValue} onChange={selectedSizeOnCh} className='border-1 border-gray-400 p-2 rounded-xl'>
                         <option value={''}>Select Size</option>
                         {size?.map((siz,index)=>( 
                             <option key={index} value={siz}>{siz}</option>
                         ))}
-                    </select>
+                    </select>}
+
                       <select value={selectedQuantity} onChange={selectedQuantityOnCh} className='border-1 border-gray-400 p-2 rounded-xl'>
                         <option>Select Quantity</option>
                         <option value='1'>1</option>
@@ -41,18 +42,19 @@ export default function productDetails({name, des, price, originalPrice, weight,
                         <option value='10'>10</option>
                     </select>
                     
-                        <select value={selectedColorValue} onChange={selectedColorOnCh} className='border-1 border-gray-400 p-2 rounded-xl'>
+                        {color.length>0&&<select value={selectedColorValue} onChange={selectedColorOnCh} className='border-1 border-gray-400 p-2 rounded-xl'>
                         <option>Select Color</option>
                         {color?.map((col,index)=>(
                             <option value={col} key={index}>{col}</option>
                         ))}
-                    </select>
-                      <select value={selectedVariantValue} onChange={selectedVariantOnCh} className='border-1 border-gray-400 p-2 rounded-xl'>
+                    </select>}
+                      
+                      {variant.length>0&&<select value={selectedVariantValue} onChange={selectedVariantOnCh} className='border-1 border-gray-400 p-2 rounded-xl'>
                         <option>Select Variant</option>
                         {variant?.map((ver, index)=>(
                             <option key={index} value={ver}>{ver}</option>
                         ))}
-                    </select>
+                    </select>}
                     
                 </div>
             </div>

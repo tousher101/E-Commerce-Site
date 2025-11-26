@@ -70,7 +70,7 @@ const handelNext=()=>{
           <div className='flex flex-wrap gap-2'>
             {topSelling?.map((top)=>(
               <div key={top.id} onClick={()=>{router.push(`/${top.id}`)}} className='w-full cursor-pointer'>
-                <ProductStatusCard name={top?.name} price={top?.price} originalPrice={top?.originalPrice} stock={top?.stock} photo={top?.photos[0].url} 
+                <ProductStatusCard name={top?.name} price={top?.basePrice} originalPrice={top?.baseOriginalPrice} stock={top?.stock} photo={top?.photos[0].url} 
                 review={top?._count?.comment} status={top?.productStatus} />
               </div>
                 
@@ -87,7 +87,7 @@ const handelNext=()=>{
           <div className='flex flex-wrap gap-2'>
                 {topPopular?.map((top)=>(
               <div key={top.id} onClick={()=>{router.push(`${top.id}`)}} className='w-full cursor-pointer'>
-                <ProductStatusCard name={top?.name} price={top?.price} originalPrice={top?.originalPrice} stock={top?.stock} photo={top?.photos[0].url} 
+                <ProductStatusCard name={top?.name} price={top?.basePrice} originalPrice={top?.baseOriginalPrice} stock={top?.stock} photo={top?.photos[0].url} 
                 review={top?._count?.comment} status={top?.productStatus} />
               </div>
                 
@@ -104,8 +104,8 @@ const handelNext=()=>{
       <div  className='flex flex-wrap justify-center  gap-2   '>
         {products?.map((pro)=>(
           <div key={pro.id} data-aos='fade-left'>
-          <Products name={pro?.name} description={pro?.description} price={pro?.price} photos={pro?.photos[0]?.url} stock={pro?.stock}
-           comment={pro?._count?.comment} originalPrice={pro?.originalPrice} productId={pro.id} sold={pro?.soldCount} />
+          <Products name={pro?.name} description={pro?.description} price={pro?.basePrice} photos={pro?.photos[0]?.url} stock={pro?.stock}
+           comment={pro?._count?.comment} originalPrice={pro?.baseOriginalPrice} productId={pro.id} sold={pro?.soldCount} />
            </div> ))}
       </div>
       

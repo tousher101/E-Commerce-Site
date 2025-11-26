@@ -16,12 +16,12 @@ export default function productSummary({photo, name, price, quantity, size, colo
                                 <h2>Price : ₱{price}</h2>
                                 <h2 className="lg:flex md:flex hidden">||</h2>
                                 <h2>Quantity : {quantity}</h2>
-                                 <h2 className="lg:flex md:flex hidden">||</h2>
-                                <h2>Size : {size}</h2>
-                                 <h2 className="lg:flex md:flex hidden">||</h2>
-                                <h2>Color : {color}</h2>
-                                <h2 className="lg:flex md:flex hidden ">||</h2>
-                                <h2>Variant : {variant}</h2>
+                                 {size&&<h2 className="lg:flex md:flex hidden">||</h2>}
+                                {size&&<h2>Size : {size}</h2>}
+                                 {color&&<h2 className="lg:flex md:flex hidden">||</h2>}
+                                {color&&<h2>Color : {color}</h2>}
+                                {variant&&<h2 className="lg:flex md:flex hidden ">||</h2>}
+                                {variant&&<h2>Variant : {variant}</h2>}
                             </div>
                             </div>
         

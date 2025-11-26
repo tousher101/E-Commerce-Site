@@ -1,6 +1,6 @@
 export default function addProduct({name,nameOnCh,description,descriptionOnCh,price,priceOnCh,stock,stockOnCh,color,colorOnCh,
     size,sizeOnCh,category,categoryOnCh,variant,variantOnCh,weight,weightOnCh, bardcode, barcodeOnCh, submitAddProduct, photosOnCh,
-    originalPrice,originlPriceOnCh
+    originalPrice,originlPriceOnCh,variants
 }){
     return(
         <div className=" mx-auto w-full h-screen overflow-hidden">
@@ -9,16 +9,8 @@ export default function addProduct({name,nameOnCh,description,descriptionOnCh,pr
                 <input value={name} onChange={nameOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Product Name"/>
                 <input value={description} onChange={descriptionOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Description"/>
                 <div className="lg:flex  lg:justify-between  grid grid-cols-1 gap-2 items-center">
-                <input value={price} onChange={priceOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="number" placeholder="Price"/>
                 <input value={stock} onChange={stockOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="number" placeholder="Stock"/>
-                <input value={size} onChange={sizeOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Size"/>
                 <input value={weight} onChange={weightOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="number" placeholder="Weight"/>
-                </div> 
-
-                <div className="lg:flex   lg:justify-between  grid grid-cols-1 gap-2 items-center">
-                <input value={color} onChange={colorOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Color"/>
-                <input value={variant} onChange={variantOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Veriant"/>
-                <input value={originalPrice} onChange={originlPriceOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="number" placeholder="Original Price"/>
                 <select value={category} onChange={categoryOnCh} className="border-1 border-gray-500 rounded-xl p-2 px-11">
                     <option value=''>Select Category</option>
                     <option value="MENSFASHION">Men's Fashion</option>
@@ -27,9 +19,31 @@ export default function addProduct({name,nameOnCh,description,descriptionOnCh,pr
                     <option value='ACCESSORIES'>Accessories</option>
                     <option value='PERFUME'>Perfume</option>
                 </select>
+                </div> 
+                <input value={bardcode} onChange={barcodeOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Barcode Scan (If Need)"/>
+
+
+                {variants.map((variants,index)=>(
+                        <div className="grid grid-cols-1 gap-2">
+                <div className="lg:flex   lg:justify-between  grid grid-cols-1 gap-2 items-center">
+                <input value={price} onChange={priceOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="number" placeholder="Price"/>
+                <input value={color} onChange={colorOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Color"/>
+                <input value={size} onChange={sizeOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Size"/>
+                </div>
+
+                
+                <div className="lg:flex   lg:justify-between  grid grid-cols-1 gap-2 items-center">
+                <input value={variant} onChange={variantOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Veriant"/>
+                <input value={originalPrice} onChange={originlPriceOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="number" placeholder="Original Price"/>
+                </div>
+                <div className="lg:flex   lg:justify-between  grid grid-cols-1 gap-2 items-center">
+                    <button>Add Variant</button>
+                    <button>Remove Variant</button>
+                </div>
                 
                 </div>
-                <input value={bardcode} onChange={barcodeOnCh} className="border-1 border-gray-500 rounded-xl p-2" type="text" placeholder="Barcode Scan (If Need)"/>
+                ))}
+              
 
                 <div className="flex justify-center">
                     <input onChange={photosOnCh} className="hidden" type="file" name="photos" multiple accept="image" id="uploadImage"/>

@@ -8,6 +8,7 @@ import Loading from '../../../../Utils/Loading';
 import DeleteModal from '../../../../component/DeleteModal';
 import AOS from 'aos';
 import 'aos/dist/aos.css'
+import { useRouter } from 'next/navigation';
 
 export default function mensFashion(){
     const BaseURI=process.env.NEXT_PUBLIC_API_URI;
@@ -25,7 +26,7 @@ export default function mensFashion(){
        const [productId, setProductId]=useState(null);
        const [barCode, setBarCode]=useState('');
        const [searchData,setSearchData]=useState(null);
- 
+      const router=useRouter();
 
 
        const openDeleteModal=()=>{
@@ -66,17 +67,21 @@ export default function mensFashion(){
       getMensProduct;
 
     }
-const colorArray = Array.isArray(selectProduct?.color)
-  ? selectProduct.color
-  : selectProduct?.color?.split(/[\s,]+/).filter(Boolean) || [];
 
-const sizeArray = Array.isArray(selectProduct?.size)
-  ? selectProduct.size
-  : selectProduct?.size?.split(/[\s,]+/).filter(Boolean) || [];
+    const goVariantEdit=(id)=>{
+      router.push(`mensfashion/${id}`)
+    }
+// const colorArray = Array.isArray(selectProduct?.color)
+//   ? selectProduct.color
+//   : selectProduct?.color?.split(/[\s,]+/).filter(Boolean) || [];
 
-const variantArray = Array.isArray(selectProduct?.variant)
-  ? selectProduct.variant
-  : selectProduct?.variant?.split(/[\s,]+/).filter(Boolean) || [];
+// const sizeArray = Array.isArray(selectProduct?.size)
+//   ? selectProduct.size
+//   : selectProduct?.size?.split(/[\s,]+/).filter(Boolean) || [];
+
+// const variantArray = Array.isArray(selectProduct?.variant)
+//   ? selectProduct.variant
+//   : selectProduct?.variant?.split(/[\s,]+/).filter(Boolean) || [];
 
    const editProduct=async(id)=>{
       const res=await fetchWithAuth(`${BaseURI}/api/admin/editproduct/${id}`,{
@@ -84,12 +89,9 @@ const variantArray = Array.isArray(selectProduct?.variant)
          body: JSON.stringify({
             name:selectProduct.name,
             description:selectProduct.description,
-            size:sizeArray,
-            variant:variantArray,
-            color:colorArray,
-            price:parseFloat(selectProduct.price),
+            basePrice:parseFloat(selectProduct.basePrice),
             stock:parseInt(selectProduct.stock),
-            originalPrice:parseFloat(selectProduct.originalPrice),
+            baseOriginalPrice:parseFloat(selectProduct.baseOriginalPrice),
             weight:parseFloat(selectProduct.weight)
          })
       });
@@ -105,13 +107,14 @@ const variantArray = Array.isArray(selectProduct?.variant)
         setProductData(res.getMensFashion);
         setTotalPage(res.totalPage);
         setTotalProduct(res.totalMensFashion)
+        console.log(res?.getMensFashion.variants)
        
     };
 
       const submitSearch=async(barCode)=>{
       const res= await fetchWithAuth(`${BaseURI}/api/admin/searchproductbybarcodemens?barCode=${barCode}`)
       setSearchData(res.searchProduct);
-      setMsg(res.msg); setType('Error')
+      setMsg(res.msg); setType('Error');
     };
 
        const makeTopSelling=async(id)=>{
@@ -150,6 +153,8 @@ const variantArray = Array.isArray(selectProduct?.variant)
 
 
 
+
+
     return(
         <>
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
@@ -160,17 +165,22 @@ const variantArray = Array.isArray(selectProduct?.variant)
          </div>
             <h1 className='text-center text-3xl text-gray-400 font-semibold '>Men's ({totalProduct})</h1>
             <div className='grid lg:grid-cols-1 md:grid-cols-2 grid-cols-1 gap-1 justify-items-center'>
-           {searchData&&Object.keys(searchData).length>0? <div key={searchData.id} className='w-full'><AdminProduct productName={searchData?.name} productDescription={searchData?.description} productPhotos={searchData?.photos[0]?.url} productPrice={searchData.price} productStock={searchData.stock}  
-                productColor={searchData.color} productSize={searchData.size} productVariant={searchData.variant} productWeight={searchData.weight} update={searchData.updatedAt} create={searchData.createdAt} 
-                 productOriginalPrice={searchData.originalPrice} openDeleteModal={openDeleteModal} openEditModal={openEditModal} status={searchData.productStatus} 
-                  submitMakeTopSelling={()=>{makeTopSelling(searchData.id)}} submitMakePopular={()=>{makeTopPopular(searchData.id)}} submitClearAll={()=>{makeDefaultProduct(searchData.id)}} /></div>
+           {
            
-           :productData?.map((pro)=>(
+           
+                searchData&&Object.keys(searchData).length>0?
+                <div key={searchData.id} className='w-full'><AdminProduct productName={searchData?.name} productDescription={searchData?.description} productPhotos={searchData?.photos[0]?.url} productPrice={searchData.basePrice} productStock={searchData.stock}  
+                productWeight={searchData.weight} update={searchData.updatedAt} create={searchData.createdAt} barCode={searchData.barcode}
+                 productOriginalPrice={searchData.baseOriginalPrice} openDeleteModal={openDeleteModal} openEditModal={openEditModal} status={searchData.productStatus} 
+                  submitMakeTopSelling={()=>{makeTopSelling(searchData.id)}} submitMakePopular={()=>{makeTopPopular(searchData.id)}} submitClearAll={()=>{makeDefaultProduct(searchData.id)}} goVariantEdit={()=>{goVariantEdit(searchData.id)}}/></div>
+           
+                  :productData?.map((pro)=>(
+                      
                  <div key={pro.id}  onClick={()=>{setSelectProduct(pro);setProductId(pro.id)} } data-aos='slide-up' className=' w-full my-2' >
-                <AdminProduct productName={pro.name} productDescription={pro.description} productPhotos={pro?.photos[0]?.url} productPrice={pro.price} productStock={pro.stock}  
-                productColor={pro.color} productSize={pro.size} productVariant={pro.variant} productWeight={pro.weight} update={pro.updatedAt} create={pro.createdAt} 
-                 productOriginalPrice={pro.originalPrice} openDeleteModal={openDeleteModal} openEditModal={openEditModal} status={pro.productStatus}
-                 submitMakeTopSelling={()=>{makeTopSelling(pro.id)}} submitMakePopular={()=>{makeTopPopular(pro.id)}} submitClearAll={()=>{makeDefaultProduct(pro.id)}}/>
+                <AdminProduct productName={pro.name} productDescription={pro.description} productPhotos={pro?.photos[0]?.url} productPrice={pro.basePrice} productStock={pro.stock}  
+               productWeight={pro.weight} update={pro.updatedAt} create={pro.createdAt} barCode={pro.barcode}
+                 productOriginalPrice={pro.baseOriginalPrice} openDeleteModal={openDeleteModal} openEditModal={openEditModal} status={pro.productStatus}
+                 submitMakeTopSelling={()=>{makeTopSelling(pro.id)}} submitMakePopular={()=>{makeTopPopular(pro.id)}} submitClearAll={()=>{makeDefaultProduct(pro.id)}} goVariantEdit={()=>{goVariantEdit(pro.id)}}/>
             </div>
            ))}
            </div>
@@ -184,14 +194,11 @@ const variantArray = Array.isArray(selectProduct?.variant)
 
          {deleteModal&&<DeleteModal design={animatedModal} closeModal={closeDeleteModal} submitDelete={()=>{deleteProduct(productId)}}/>}
         
-        {selectProduct&&editModal&&<ProductEditModal design={animatedModal} closeModal={closeEditModal} nameValue={selectProduct.name} nameOnCh={(e)=>{setSelectProduct({...selectedProduct, name:e.target.value})}}
-         descriptionValue={selectProduct.description} descriptionOnCh={(e)=>{setSelectProduct({...selectProduct, description:e.target.value})}} priceValue={selectProduct.price} priceOnCh={(e)=>{setSelectProduct({...selectProduct, price:e.target.value})}}
+        {selectProduct&&editModal&&<ProductEditModal design={animatedModal} closeModal={closeEditModal} nameValue={selectProduct.name} nameOnCh={(e)=>{setSelectProduct({...selectProduct, name:e.target.value})}}
+         descriptionValue={selectProduct.description} descriptionOnCh={(e)=>{setSelectProduct({...selectProduct, description:e.target.value})}} priceValue={selectProduct.basePrice} priceOnCh={(e)=>{setSelectProduct({...selectProduct, basePrice:e.target.value})}}
          stockValue={selectProduct.stock} stockOnCh={(e)=>{setSelectProduct({...selectProduct, stock:e.target.value})}}
-         sizeValue={selectProduct.size} sizeOnCh={(e)=>{setSelectProduct({...selectProduct, size:e.target.value})}}
-         variantValue={selectProduct.variant} variantOnCh={(e)=>{setSelectProduct({...selectProduct, variant:e.target.value})}}
-         colorValue={selectProduct.color} colorOnCh={(e)=>{setSelectProduct({...selectProduct, color:e.target.value})}}
          weightValue={selectProduct.weight} weightOnCh={(e)=>{setSelectProduct({...selectProduct, weight:e.target.value})}}
-         originalPriceValue={selectProduct.originalPrice} originalPriceOnCh={(e)=>{setSelectProduct({...selectProduct, originalPrice:e.target.value})}}
+         originalPriceValue={selectProduct.baseOriginalPrice} originalPriceOnCh={(e)=>{setSelectProduct({...selectProduct, baseOriginalPrice:e.target.value})}}
          submitEdit={()=>{editProduct(productId)}}
          />}
         {loading&&<Loading/>}

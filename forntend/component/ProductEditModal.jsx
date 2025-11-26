@@ -1,7 +1,7 @@
 import React from 'react'
 
 function productEditModal({design, closeModal, submitEdit, nameValue, nameOnCh,descriptionValue, descriptionOnCh, priceValue, priceOnCh, stockValue, stockOnCh,
-sizeValue, sizeOnCh, variantValue, variantOnCh, colorValue, colorOnCh, weightValue, weightOnCh, originalPriceValue, originalPriceOnCh
+ weightValue, weightOnCh, originalPriceValue, originalPriceOnCh
 }) {
   return (
     <div className={`fixed top-0 left-0 h-full w-full bg-[rgba(0,0,0,0.5)] flex justify-center items-center z-50 transition-opacity duration-500 ${design?"opacity-100":'opacity-0'}`} >
@@ -11,22 +11,17 @@ sizeValue, sizeOnCh, variantValue, variantOnCh, colorValue, colorOnCh, weightVal
                   <div className="grid grid-cols-1 gap-1">
                 <input value={nameValue} onChange={nameOnCh} className="border-1 border-gray-300 p-2 rounded-xl" type="text" placeholder="Name"/>
                 <input value={descriptionValue} onChange={descriptionOnCh} className="border-1 border-gray-300 p-2 rounded-xl" type="text" placeholder="Description"/>
-                <div className='lg:flex lg:justify-between grid grid-cols-1'>
+                <div className='lg:flex lg:justify-between grid grid-cols-1 gap-2'>
                   <input value={priceValue} onChange={priceOnCh} className="border-1 border-gray-300 p-2 rounded-xl" type="number" placeholder="Price"/>
                   <input value={stockValue} onChange={stockOnCh} className="border-1 border-gray-300 p-2 rounded-xl" type="number" placeholder="Stock"/>
                   
                 </div>
-                <div className='lg:flex lg:justify-between grid grid-cols-1'>
-                  <input value={sizeValue} onChange={sizeOnCh} className="border-1 border-gray-300 p-2 rounded-xl" type="text" placeholder="Size (Seperate By (,))"/>
-                  <input value={colorValue} onChange={colorOnCh} className="border-1 border-gray-300 p-2 rounded-xl" type="text" placeholder="Color (Seperate By (,))"/>
-                </div>
-                  <div className='lg:flex lg:justify-between grid grid-cols-1'>
-                  <input value={variantValue} onChange={variantOnCh} className="border-1 border-gray-300 p-2 rounded-xl" type="text" placeholder="Variant (Seperate By (,))"/>
+             
+                  <div className='lg:flex lg:justify-between grid grid-cols-1 gap-2'>
+                 <input value={originalPriceValue} onChange={originalPriceOnCh} className="border-1 border-gray-300 p-2 rounded-xl" type="number" placeholder="Original Price"/>
                   <input value={weightValue} onChange={weightOnCh} className="border-1 border-gray-300 p-2 rounded-xl" type="number" placeholder="Weight"/>
                 </div>
-                <div className='lg:flex lg:justify-between grid grid-cols-1'>
-                  <input value={originalPriceValue} onChange={originalPriceOnCh} className="border-1 border-gray-300 p-2 rounded-xl" type="number" placeholder="Original Price"/>
-                </div>
+             
               
                <button onClick={submitEdit} className="p-2 text-white rounded-2xl bg-blue-400 mt-[15px] cursor-pointer">Submit Edit</button>
                <button onClick={closeModal} className="p-2 text-white rounded-2xl bg-blue-400  cursor-pointer">Cancel Edit</button>

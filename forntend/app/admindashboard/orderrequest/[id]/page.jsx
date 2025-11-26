@@ -71,7 +71,7 @@ export default function pedningOrderDetails(){
     return(
        <>
     {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
-    <div className="mx-auto overflow-hidden grid grid-cols-1 w-full h-screen">
+    <div className="mx-auto overflow-hidden grid grid-cols-1 w-full">
             <div className="grid grid-cols-1 justify-items-center mt-[15px]  mx-[10px]" data-aos='fade-up'>
                  <h1 className="  text-3xl mb-[15px] text-gray-500 font-bold">Order <span className="text-green-500">Summary</span></h1>
                  <div className="grid grid-cols-1 gap-2 w-full border-1 border-gray-400 rounded-xl">

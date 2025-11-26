@@ -41,22 +41,31 @@ model Product {
   id            Int             @id @default(autoincrement())
   name          String
   description   String?
-  price         Float
   stock         Int             @default(0)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
-  size          Json
-  color         Json
-  variant       Json
   category      Category
   weight        Float
+  basePrice     Float
+  baseOriginalPrice   Float
   barcode       String?         @unique
-  originalPrice Float
+  variants       Variants[]
   cart          CartItem[]
   comment       Comment[]
   order         OrderItem[]
   photos        ProductPhotos[]
   productStatus ProductStatus @default(NONE)
+}
+
+model Variants {
+  id Int @id @default(autoincrement())
+  variant String?
+  size String?
+  color String?
+  price Float?
+  originalPrice Float?
+  product Product @relation(fields:[productId], references:[id])
+  productId Int
 }
 
 model ProductPhotos {

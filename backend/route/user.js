@@ -75,10 +75,11 @@ route.get('/allproduct', async(req,res)=>{
                 id:true,
                 name:true,
                 description:true,
-                price:true,
+                basePrice:true,
+                baseOriginalPrice:true,
                 stock:true,
                 photos:true,
-                originalPrice:true,
+                variants:true,
                 _count:{
                     select:{comment:true}
                 },
@@ -110,13 +111,11 @@ route.get('/productdetails/:id',async(req,res)=>{
                 id:true,
                 name:true,
                 description:true,
-                price:true,
+                basePrice:true,
+                baseOriginalPrice:true,
                 stock:true,
                 photos:true,
-                originalPrice:true,
-                size:true,
-                color:true,
-                variant:true,
+                variants:true,
                 weight:true
             }
         });
@@ -142,11 +141,11 @@ route.get('/mensfashion',async(req,res)=>{
                 id:true,
                 name:true,
                 description:true,
-                price:true,
+                basePrice:true,
+                baseOriginalPrice:true,
                 stock:true,
                 photos:true,
                 category:true,
-                originalPrice:true,
                 _count:{
                     select:{comment:true}
                 }   
@@ -184,11 +183,11 @@ route.get('/womenfashion',async(req,res)=>{
                 id:true,
                 name:true,
                 description:true,
-                price:true,
+                basePrice:true,
+                baseOriginalPrice:true,
                 stock:true,
                 photos:true,
                 category:true,
-                originalPrice:true,
                 _count:{
                     select:{comment:true}
                 }
@@ -226,11 +225,11 @@ route.get('/kidsfashion',async(req,res)=>{
                 id:true,
                 name:true,
                 description:true,
-                price:true,
+                basePrice:true,
+                baseOriginalPrice:true,
                 stock:true,
                 photos:true,
                 category:true,
-                originalPrice:true,
                 _count:{
                     select:{comment:true}
                 }
@@ -268,11 +267,11 @@ route.get('/accessories',async(req,res)=>{
                 id:true,
                 name:true,
                 description:true,
-                price:true,
+                basePrice:true,
+                baseOriginalPrice:true,
                 stock:true,
                 photos:true,
                 category:true,
-                originalPrice:true,
                 _count:{
                     select:{comment:true}
                 }, 
@@ -310,11 +309,11 @@ route.get('/perfume',async(req,res)=>{
                 id:true,
                 name:true,
                 description:true,
-                price:true,
+                 basePrice:true,
+                baseOriginalPrice:true,
                 stock:true,
                 photos:true,
                 category:true,
-                originalPrice:true,
                 _count:{
                     select:{comment:true}
                 },  
@@ -1083,8 +1082,9 @@ route.get('/perfume',async(req,res)=>{
     route.post('/addtocart',verification,roleAuthorize('USER'),async(req,res)=>{
         try{
             const userId=Number(req.user.id)
-            const {productId, size, color, quantity,variant}=req.body
-            if(!quantity||!color||!size||!variant){return res.status(400).json({msg:'Please Add Quantity,Color, Size, Variant'})}
+            const {productId, size, color, quantity,variant, variantsId}=req.body;
+       
+            
             let cart= await prisma.cart.findFirst({where:{userId, status:'PENDING'}});
             if(!cart){cart=await prisma.cart.create({data:{userId, status:'PENDING'}})};
             const existingItem = await prisma.cartItem.findFirst({
@@ -1102,6 +1102,12 @@ route.get('/perfume',async(req,res)=>{
             })} else{const product = await prisma.product.findUnique({
                 where:{id:productId}
             });
+            let finalPrice=0;
+            const varients= await prisma.variants.findUnique({
+                where:{id:Number(variantsId)},
+                select:{price:true}
+            });
+           if(varients){finalPrice=varients.price ?? product.basePrice}else{finalPrice=product.basePrice}
              await prisma.cartItem.create({
                 data:{
                     cartId:cart.id,
@@ -1110,8 +1116,8 @@ route.get('/perfume',async(req,res)=>{
                     color,
                     quantity,
                     variant,
-                    unitPrice: product.price,
-                    totalPrice: product.price*quantity
+                    unitPrice: finalPrice,
+                    totalPrice:finalPrice*quantity
                 }
             });
         }
@@ -1135,11 +1141,12 @@ route.get('/perfume',async(req,res)=>{
                             color:true,
                             variant:true,
                             quantity:true,
+                             unitPrice:true,
                             product:{
                                 select:{
                                     photos:true,
                                     name:true,
-                                    price:true
+
                                 }
                             }
                         }
@@ -1213,7 +1220,7 @@ route.get('/perfume',async(req,res)=>{
                 });
                 if(!product) continue;
                 totalWeight+= product.weight * item.quantity
-                totalPrice+=product.price*item.quantity
+                totalPrice+=item.unitPrice*item.quantity
             };
             let shippingFee=0
 
@@ -1297,12 +1304,12 @@ route.get('/perfume',async(req,res)=>{
                             color:true,
                             variant:true,
                             quantity:true,
+                            unitPrice:true,
                             product:{
                                 select:{
                                     id:true,
                                     photos:true,
                                     name:true,
-                                    price:true
                                 }
                             }
                         }
@@ -1320,7 +1327,7 @@ route.get('/perfume',async(req,res)=>{
                 });
                 if(!product) continue;
                 totalWeight+= product.weight * item.quantity
-                subtotal+=product.price*item.quantity
+                subtotal+=item.unitPrice*item.quantity
              
             };
        
@@ -1428,11 +1435,11 @@ route.get('/relatedproduct/:id',async(req,res)=>{
                 id:true,
                 name:true,
                 description:true,
-                price:true,
+                basePrice:true,
                 stock:true,
                 photos:true,
                 category:true,
-                originalPrice:true,
+                baseOriginalPrice:true,
                 _count:{
                     select:{comment:true}
                 },
@@ -1630,8 +1637,8 @@ route.get('/gettopselling',async(req,res)=>{
             select:{
                 id:true,
                 name:true,
-                price:true,
-                originalPrice:true,
+                basePrice:true,
+                baseOriginalPrice:true,
                 category:true,
                 stock:true,
                 productStatus:true,
@@ -1661,8 +1668,8 @@ route.get('/gettoppopular',async(req,res)=>{
             select:{
                 id:true,
                 name:true,
-                price:true,
-                originalPrice:true,
+                basePrice:true,
+                baseOriginalPrice:true,
                 category:true,
                 stock:true,
                 productStatus:true,

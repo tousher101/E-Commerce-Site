@@ -173,7 +173,7 @@ return(
                  <h1 className="  text-3xl text-gray-500 font-bold">Order <span className="text-green-500">Summary</span></h1>
                  {checkOutData?.items?.items?.map((item, index)=>(
                 <div key={index} className="w-full">
-                <ProductSummary photo={item?.product?.photos[0]?.url} name={item?.product?.name} price={item?.product?.price} size={item?.size} quantity={item?.quantity} color={item?.color} variant={item?.variant} mode={mode}/>
+                <ProductSummary photo={item?.product?.photos[0]?.url} name={item?.product?.name} price={item?.unitPrice} size={item?.size} quantity={item?.quantity} color={item?.color} variant={item?.variant} mode={mode}/>
             </div>
                  ))}
           

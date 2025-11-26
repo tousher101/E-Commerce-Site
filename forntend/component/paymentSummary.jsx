@@ -8,9 +8,9 @@ export default function paymentSummary({checkOut,subTotal,referralBonus, subtota
                         <div key={index} className="flex justify-between text-xs   gap-2">
                         <p>{item?.product?.name}</p>
                         <div className="flex justify-between gap-4">
-                      <p>({item?.product?.price} x {item.quantity}) </p>
+                      <p>({item?.unitPrice} x {item.quantity}) </p>
                         <p>=</p>
-                        <p> ₱{item?.product?.price*item.quantity} </p>
+                        <p> ₱{item?.unitPrice*item.quantity} </p>
                         </div>
                     </div>
                     ))}

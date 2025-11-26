@@ -16,20 +16,27 @@ export default function productDetailsPage(){
     const [relatedData, setRelatedDate]=useState([]);
     const [msg,setMsg]=useState(null);
     const [type, setType]=useState(null);
-    const [size, setSize]=useState('');
-    const [variant, setVariant]=useState('');
-    const [color, setColor]=useState('');
     const [quantity, setQuantity]=useState('');
     const router=useRouter();
     const {user,getTotalCartItems,getCartItems}=useUserInfo();
- 
+    const [selectedSize, setSelectedSize]=useState('');
+    const [selectedColor, setSelectedColor]=useState('');
+    const [selectedVariant, setSelectedVariant]=useState('');
+    const [selectedVariants, setSelectedVariants]=useState(null)
 
+
+ 
 
 
     const getProductData=async(id)=>{
         const res= await fetchWithAuth(`${BaseURI}/api/user/productdetails/${id}`)
         setProductData(res.productDetails)
+    
     };
+
+    const sizes= [...new Set(productData?.variants.filter(v=>v.size).map(v=>v.size))];
+    const colors=[...new Set(productData?.variants.filter(v=>v.color).map(v=>v.color))];
+    const variants=[...new Set(productData?.variants.filter(v=>v.variant).map(v=>v.variant))];
 
         const getRelatedProduct=async(id)=>{
         const res= await fetchWithAuth(`${BaseURI}/api/user/relatedproduct/${id}`)
@@ -37,14 +44,19 @@ export default function productDetailsPage(){
     };
 
     useEffect(()=>{
-        getProductData(id)
-        getRelatedProduct(id)
-    },[]);
+        getProductData(id);
+        getRelatedProduct(id);
+        const match= productData?.variants.find(v=>(selectedSize?v.size===selectedSize:true&&
+            (selectedVariant?v.variant===selectedVariant:true)
+        ));
+        setSelectedVariants(match)
+    },[selectedSize,selectedVariant]);
+
 
     const addToCart=async()=>{
         const res= await fetchWithAuth(`${BaseURI}/api/user/addtocart`,{
             method:'POST',
-            body: JSON.stringify({productId:Number(id),size,color,quantity:Number(quantity),variant})
+            body: JSON.stringify({productId:Number(id),size:selectedSize,color:selectedColor,quantity:Number(quantity),variant:selectedVariant,variantsId:Number(selectedVariants?.id) })
         });
      
         setMsg(res.msg);
@@ -65,10 +77,10 @@ export default function productDetailsPage(){
         {msg&&<Alert message={msg} type={type} onClose={()=>{setMsg('')}}/>}
         <div className=" max-w-[1380px] mx-[10px] overflow-hidden">
             <div>
-            <ProductDetails name={productData?.name} des={productData?.description} price={productData?.price} originalPrice={productData?.originalPrice}
-            weight={productData?.weight} color={productData?.color} size={productData?.size} variant={productData?.variant} stock={productData?.stock} photos={productData?.photos}
-            selectedSizeValue={size} selectedSizeOnCh={(e)=>{setSize(e.target.value)}} selectedColorValue={color} selectedColorOnCh={(e)=>{setColor(e.target.value)}}
-            selectedVariant={variant} selectedVariantOnCh={(e)=>{setVariant(e.target.value)}} selectedQuantity={quantity} selectedQuantityOnCh={(e)=>{setQuantity(e.target.value)}}
+            <ProductDetails name={productData?.name} des={productData?.description} price={selectedVariants?.price||productData?.basePrice} originalPrice={selectedVariants?.originalPrice||productData?.baseOriginalPrice}
+            weight={productData?.weight} color={colors} size={sizes} variant={variants} stock={productData?.stock} photos={productData?.photos}
+            selectedSizeValue={selectedSize} selectedSizeOnCh={(e)=>{setSelectedSize(e.target.value)}} selectedColorValue={selectedColor} selectedColorOnCh={(e)=>{setSelectedColor(e.target.value)}}
+            selectedVariant={selectedVariant} selectedVariantOnCh={(e)=>{setSelectedVariant(e.target.value)}} selectedQuantity={quantity} selectedQuantityOnCh={(e)=>{setQuantity(e.target.value)}}
             submitAddToCart={handleAddToCart} />
             </div>
 
@@ -80,7 +92,7 @@ export default function productDetailsPage(){
                 <div className="flex flex-wrap justify-center gap-2">
                 {relatedData?.map((rel)=>(
                         <div key={rel.id}>
-                    <Product name={rel?.name} description={rel?.description} price={rel?.price} originalPrice={rel?.originalPrice}
+                    <Product name={rel?.name} description={rel?.description} price={rel?.basePrice} originalPrice={rel?.baseOriginalPrice}
                     stock={rel?.stock} photos={rel?.photos[0]?.url} comment={rel?._count?.comment} sold={rel?.order?.quantity} productId={rel.id} />
                         </div>
                 ))}

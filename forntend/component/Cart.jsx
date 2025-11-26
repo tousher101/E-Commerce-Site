@@ -13,7 +13,7 @@ export default function cart({closeModal, design, data, totalItems,submitItemDel
             <div className='grid grid-cols-1 gap-1 w-full'>
                 { data?.items?.map((item,index)=>(
                     <div key={index}>
-                    <ProductSummary photo={item?.product?.photos[0]?.url} name={item?.product?.name} price={item?.product?.price} size={item?.size} quantity={item?.quantity} color={item?.color} variant={item?.variant} cartId={item?.id} submitItemDelete={submitItemDelete} mode={mode}    />
+                    <ProductSummary photo={item?.product?.photos[0]?.url} name={item?.product?.name} price={item?.unitPrice} size={item?.size} quantity={item?.quantity} color={item?.color} variant={item?.variant} cartId={item?.id} submitItemDelete={submitItemDelete} mode={mode}    />
                      </div>
                 ))||<h1 className='text-center text-gray-400 mt-[30px] text-xl'>Cart Is Empty </h1>}
                   
