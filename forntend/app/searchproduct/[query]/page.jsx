@@ -14,7 +14,6 @@ export default function searchProduct(){
     const [totalProduct, setTotalProduct]=useState(0);
     const params=useParams();
     const {query}=params
-    console.log(query)
     const getSearchProduct=async(q,page)=>{
         const res= await fetchWithAuth(`${BaseURI}/api/user/search?query=${q}&page=${page}&limit=${20}`)
         setSrcData(res.products); setTotalPage(res.totalPage);setTotalProduct(res.totalProduct)

@@ -1598,7 +1598,7 @@ const rawIds = await prisma.$queryRawUnsafe(
                 id:true,
                 name:true,
                 description:true,
-                price:true,
+                basePrice:true,
                 stock:true,
                 photos:true,
                 originalPrice:true,
