@@ -1601,7 +1601,7 @@ const rawIds = await prisma.$queryRawUnsafe(
                 basePrice:true,
                 stock:true,
                 photos:true,
-                originalPrice:true,
+                baseOriginalPrice:true,
                 _count:{
                     select:{comment:true}
                 },
