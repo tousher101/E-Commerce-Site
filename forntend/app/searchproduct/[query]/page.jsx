@@ -35,8 +35,8 @@ export default function searchProduct(){
             <div className="flex flex-wrap justify-center items-center gap-3">
                 {srcData?.map((pro)=>(
                 <div key={pro.id} data-aos='fade-left'>
-                <Products name={pro?.name} description={pro?.description} price={pro?.price} photos={pro?.photos[0]?.url} stock={pro?.stock}
-                comment={pro?._count?.comment} originalPrice={pro?.originalPrice} productId={pro.id} sold={pro?.soldCount} />
+                <Products name={pro?.name} description={pro?.description} price={pro?.basePrice } photos={pro?.photos[0]?.url} stock={pro?.stock}
+                comment={pro?._count?.comment} originalPrice={pro?.baseOriginalPrice} productId={pro.id} sold={pro?.soldCount} />
                 </div>
                 ))}
             </div>
